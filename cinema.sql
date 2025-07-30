@@ -141,7 +141,6 @@ CREATE TABLE actors (
     nationality VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 -- Movie-Actor junction table (cast)
 CREATE TABLE movie_cast (
     movie_id INT NOT NULL,
@@ -152,7 +151,6 @@ CREATE TABLE movie_cast (
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
     FOREIGN KEY (actor_id) REFERENCES actors(actor_id) ON DELETE CASCADE
 );
-
 -- Reviews table - customer movie reviews
 CREATE TABLE reviews (
     review_id INT PRIMARY KEY AUTO_INCREMENT,
