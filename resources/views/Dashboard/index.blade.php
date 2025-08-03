@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('Layouts.app')
 @section('title' , 'dashboard')
 {{-- @section('dashboard' , 'active' ) --}}
   @section('dashboard' , 'active' )

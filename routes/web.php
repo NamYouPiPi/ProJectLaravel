@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\VendorController;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\SupplierController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,5 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('layout.app');
+    return view('Dashboard.index');
 });
+// Route::get('/suppliers', function () {
+//     return redirect('suppliers');
+// });
+
+
+Route::resource('/suppliers', SupplierController::class);
+
+//Route::get('/category' , [CategoryController::class , 'index'])->name('category.index');
