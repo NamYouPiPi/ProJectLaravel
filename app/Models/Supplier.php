@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Supplier extends Model
 {
@@ -14,9 +16,13 @@ class Supplier extends Model
         'email',
         'phone',
         'address',
-        'contact_person', 
+        'contact_person',
         'supplier_type',
         'status',
     ];
+    public function inventory():HasOne
+    {
+    return $this->HasOne(Inventory::class);
+    }
 
 }

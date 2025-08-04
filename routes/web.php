@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\VendorController;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
@@ -19,11 +20,8 @@ use App\Http\Controllers\SupplierController;
 Route::get('/', function () {
     return view('Dashboard.index');
 });
-// Route::get('/suppliers', function () {
-//     return redirect('suppliers');
-// });
-
-
 Route::resource('/suppliers', SupplierController::class);
+// Route::p('/suppliers/{supplier}', [SupplierController::class, 'update']);
+Route::resource('/inventory',InventoryController::class );
 
 //Route::get('/category' , [CategoryController::class , 'index'])->name('category.index');

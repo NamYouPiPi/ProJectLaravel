@@ -1,80 +1,109 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class SupplierController extends Controller
 {
     public function index(Request $request)
     {
-//        dd($request->all());
-        $search = $request->input('search');
+        $search = $request->get('search');
 
         $suppliers = Supplier::when($search, function ($query, $search) {
             return $query->where('name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%");
-        })->orderBy('id', 'desc')->paginate(5);
+        })->paginate(10);
 
         return view('supplier.index', compact('suppliers', 'search'));
     }
 
     public function create()
     {
-        return view('supplier.create');
+        return view('suppliers.create');
     }
 
     public function store(Request $request)
     {
-        //        dd($request->all());;
-//        $data= $request->validate([
-//            'name'=>"required|unique:suppliers,name",
-//            'email'=>"required|email|unique:suppliers,email",
-//            'phone'=>"required|string|max:20|unique:suppliers,phone",
-//            'address'=>"required|string|max:255",
-//            'contact_person'=>"required|string|max:255",
-//            'supplier_type'=>"required|in:snacks,foods,drinks,others",
-//            'status'=>"required|in:active,inactive",
-//        ]);
-        $data = $request->only([
-            'name',
-            'email',
-            'phone',
-            'address',
-            'contact_person',
-            'supplier_type',
-            'status',
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:suppliers,email',
+            'phone' => 'nullable|string|max:20',
+            'contact_person' => 'nullable|string|max:255',
+            'supplier_type' => 'required|string|max:255',
+            'status' => 'required|in:active,inactive',
+            'address' => 'nullable|string|max:500',
         ]);
-        Supplier::create($data);
-        // echo "hello world ";
-//      Supplier::create($data);
-     return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully.');
+
+        $supplier = Supplier::create($validatedData);
+
+        // Check if request is AJAX
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Supplier created successfully!',
+                'supplier' => $supplier
+            ]);
+        }
+
+        return redirect()->route('suppliers.index')
+            ->with('success', 'Supplier created successfully!');
+    }
+
+    public function show(Supplier $supplier)
+    {
+        return view('supplier.show', compact('supplier'));
     }
 
     public function edit(Supplier $supplier)
     {
-        return view('supplier.Update', compact('supplier'));
+        // If it's an AJAX request, return only the form partial
+        if (request()->ajax()) {
+            return view('supplier.edit', compact('supplier'))->render();
+        }
+
+        return view('supplier.edit', compact('supplier'));
     }
 
     public function update(Request $request, Supplier $supplier)
     {
-        $request->validate([
-            'name' => 'required|unique:suppliers,name,'.$supplier->id,
-            'email' => 'required|email|unique:suppliers,email,'.$supplier->id,
-            'phone' => 'required',
-        ]);
+   
 
-        $supplier->update($request->all());
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:suppliers,email,' . $supplier->id,
+                'phone' => 'nullable|string|max:20',
+                'contact_person' => 'nullable|string|max:255',
+                'supplier_type' => 'required|string|max:255',
+                'status' => 'required|in:active,inactive',
+                'address' => 'nullable|string|max:500',
+            ]);
+            $supplier->update($validatedData);
+            // Check if request is AJAX
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Supplier updated successfully!',
+                    'supplier' => $supplier->fresh() // Get fresh data from database
+                ]);}
 
-        return redirect()->route('supplier.index')->with('success', 'Supplier updated successfully.');
+        return redirect()->route('suppliers.index')
+            ->with('success', 'Supplier updated successfully!');
     }
-
     public function destroy(Supplier $supplier)
     {
         $supplier->delete();
 
-        return redirect()->route('suppliers.index');
-    }
+        // Check if request is AJAX
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Supplier deleted successfully!'
+            ]);
+        }
 
+        return redirect()->route('suppliers.index')
+            ->with('success', 'Supplier deleted successfully!');
+    }
 }
