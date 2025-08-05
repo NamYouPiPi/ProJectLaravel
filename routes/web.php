@@ -17,11 +17,9 @@ use App\Http\Controllers\SupplierController;
 |
 */
 
-Route::get('/', function () {
-    return view('Dashboard.index');
-});
+//add route
+Route::get('/', function () {return view('Dashboard.index');});
 Route::resource('/suppliers', SupplierController::class);
-// Route::p('/suppliers/{supplier}', [SupplierController::class, 'update']);
 Route::resource('/inventory',InventoryController::class );
 
-//Route::get('/category' , [CategoryController::class , 'index'])->name('category.index');
+

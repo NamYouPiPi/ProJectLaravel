@@ -20,9 +20,9 @@ class Supplier extends Model
         'supplier_type',
         'status',
     ];
-    public function inventory():HasOne
+    public function Inventory()
     {
-    return $this->HasOne(Inventory::class);
+    return $this->hasMany(Inventory::class);
     }
 
 }

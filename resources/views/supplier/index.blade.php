@@ -15,21 +15,6 @@
         <div class="alert alert-success" id="success-alert">
             {{ session('success') }}
         </div>
-        {{--
-        <script>--}}
-            {
-                { --setTimeout(function () { --}}
-                { { --                const alertBox = document.getElementById('success-alert'); --} }
-                {
-                    { --                if (alertBox) { --} }
-                    { { --alertBox.style.display = 'none'; --} }
-                    { { --                } --}
-                }
-                {
-                    { --            }, 2000); // 2 seconds--}}
-                    {
-                        {
-{{--                            --        </script>--}}
     @endif
     {{-- ======================= end of check messange ========================= --}}
 
@@ -264,10 +249,10 @@
                                             }
                                         }
                                     });
-
-
-
                                 });
+
+
+
 
                                 // Delete Supplier
                                 $('.deleteSupplierBtn').on('click', function () {

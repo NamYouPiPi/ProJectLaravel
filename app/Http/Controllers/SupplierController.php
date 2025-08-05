@@ -68,8 +68,8 @@ class SupplierController extends Controller
 
     public function update(Request $request, Supplier $supplier)
     {
-   
 
+//        dd($request->all());
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:suppliers,email,' . $supplier->id,

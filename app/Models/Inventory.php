@@ -12,13 +12,20 @@ class Inventory extends Model
     protected $table = 'inventories';
     protected $fillable = [
        'supplier_id',
-        'item_type',
-        'item_name',
+       'item_name',
+        'category',
         'quantity',
-        'unit_price',
+        'unit',
+        'cost_price',
+        'sale_price',
+        'stock_level',
+        'reorder_level',
+        'stock',
+        'image',
+        'status',
     ];
-    public function supplier():HasMany
+    public function Supplier()
     {
-    return $this->hasMany(Supplier::class);
+    return $this->belongsTo(Supplier::class);
     }
 }

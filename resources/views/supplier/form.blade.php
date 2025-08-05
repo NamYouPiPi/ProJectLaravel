@@ -4,18 +4,18 @@
     <div class="row g-3">
         <!--begin::Col-->
         <div class="col-md-6">
-            <label for="validationCustom01" class="form-label">Name</label>
+            <label for="validationCustom01" class="form-label">Name <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="name" value="{{old('name',$suppliers->name ?? "")}}" id="validationCustom01" required />
         </div>
         <div class="col-md-6">
-            <label for="validationCustom02" class="form-label">Email</label>
+            <label for="validationCustom02" class="form-label">Email <span class="text-danger">*</span></label>
             <input type="text" class="form-control" id="validationCustom02" value="{{old('email',$suppliers->email ?? "")}}" name="email" required />
         </div>
     </div>
     <div class="row g-3">
         <!--begin::Col-->
         <div class="col-md-6">
-            <label for="validationCustom01" class="form-label">Phone</label>
+            <label for="validationCustom01" class="form-label">Phone <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="phone" id="validationCustom01" value="{{old('phone',$suppliers->phone ?? "")}}" maxlength="15" />
         </div>
         <div class="col-md-6">
@@ -26,7 +26,7 @@
     <div class="row g-3">
         <!--begin::Col-->
         <div class="col-md-6">
-            <label for="supplier_type" class="form-label">supplier type</label>
+            <label for="supplier_type" class="form-label">supplier type <span class="text-danger">*</span></label>
             <select class="form-select" name="supplier_type" aria-label="Please select status">
                 <option selected>Open this select menu</option>
                 <option value="drinks">Drinks</option>
@@ -37,7 +37,7 @@
             </select>
         </div>
         <div class="col-md-6">
-            <label for="status" class="form-label">Status</label>
+            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
             <select class="form-select" name="status" aria-label="Please select status">
                 <option selected>Open this select menu</option>
                 <option value="active">Active</option>
