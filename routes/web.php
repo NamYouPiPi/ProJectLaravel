@@ -25,3 +25,4 @@ Route::resource('/inventory',InventoryController::class );
 Route::resource('/distributors ', DistributorsController::class);
 
 //Route::get('/modal/createForm',[CreateModalController::class,'getCreateForm'])->name('modal.createForm');
+
