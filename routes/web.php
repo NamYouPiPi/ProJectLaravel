@@ -5,6 +5,8 @@ use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CreateModalController;
+use App\Http\Controllers\DistributorsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,5 +22,6 @@ use App\Http\Controllers\CreateModalController;
 Route::get('/', function () {return view('Dashboard.index');});
 Route::resource('/suppliers', SupplierController::class);
 Route::resource('/inventory',InventoryController::class );
+Route::resource('/distributors ', DistributorsController::class);
 
 //Route::get('/modal/createForm',[CreateModalController::class,'getCreateForm'])->name('modal.createForm');

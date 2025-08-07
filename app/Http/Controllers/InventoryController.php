@@ -15,10 +15,7 @@ class InventoryController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public  function getByCategory ()
-    {
 
-    }
     public function index()
     {
         //
@@ -26,6 +23,7 @@ class InventoryController extends Controller
             $inventories = Inventory::select('inventories.*', 'suppliers.name as supplier_name')
                 ->join('suppliers', 'suppliers.id', '=', 'inventories.supplier_id')->paginate(10);
         $Suppliers = Supplier::all(); // Get all suppliers for the dropdown
+        $category = Inventory::select('category')->distinct()->get();
         return view('inventory.index', compact('inventories' ,'Suppliers'));
 
     }

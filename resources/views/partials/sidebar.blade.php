@@ -64,7 +64,12 @@
                         </li>
                     </ul>
                 </li>
-
+                  <li class="nav-item  @yield('distributors ')">
+                    <a href="{{url('/distributors ')}}" class="nav-link">
+                     <i class="bi bi-building"></i>
+                        <p>distributors  </p>
+                    </a>
+                </li>
             </ul>
             <!--end::Sidebar Menu-->
         </nav>
