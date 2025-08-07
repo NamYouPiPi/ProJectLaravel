@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\View\Components\CreateModal;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+
+
+
     }
 
     /**
@@ -26,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 //        Paginator::useBootstrap(); // for Bootstrap 4/5
+        \Blade::component('create_modal',CreateModal::class);
 
     }
 }

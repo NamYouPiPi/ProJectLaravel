@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('content')
-@section('title', 'inventory')
-@section('inventory', 'active')
-@section('menu-open', 'menu-open')
+    @section('title', 'inventory')
+    @section('inventory', 'active')
+    @section('menu-open', 'menu-open')
 
     {{-- ================== check message add and update if succeed =======================--}}
     @if(session('success'))
@@ -12,37 +12,23 @@
     @elseif(session('error'))
         <div class="alert alert-danger" id=alert-danger">
             {{ session('error') }}
-    @endif
+            @endif
+            {{-- ======================= end of check messange ========================= --}}
 
-        {{-- ======================= end of check messange ========================= --}}
+
+{{--            ==================== begin button add new ========================--}}
+            <x-create_modal dataTable="inventory" title="Add New Inentory">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                    Add New Inventroy
+                </button>
+            </x-create_modal>
+{{--================================= end of button add new ==========================--}}
 
 
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Launch demo modal
-        </button>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        @include('Inventory.create')
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{--------------------- end modal --------------------}}
-        <table id="example" class="display table table-striped table-bordered table-hover  " style="width:100%">
-            <thead>
+{{--            ===================== display data on table ===========================--}}
+            <table id="example" class="display table table-striped table-bordered table-hover  " style="width:100%">
+                <thead>
                 <tr class="text-center ">
                     <th>Id</th>
                     <th>Supplier Name</th>
@@ -61,13 +47,12 @@
                     <th>Update_at</th>
                     <th>Action</th>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach($Inventories as $inventory)
-
-                    <tr class="text-center">
+                </thead>
+                <tbody>
+                @foreach($inventories as $inventory)
+                    <tr class="text-center" id="inventory{{$inventory->id}}">
                         <td>{{$inventory->id}}</td>
-                        <td>{{$inventory->supplier_id}}</td>
+                        <td>{{$inventory->supplier_name}}</td>
                         <td>{{$inventory->item_name}}</td>
                         <td>{{$inventory->category}}</td>
                         <td>{{$inventory->quantity}}</td>
@@ -77,24 +62,53 @@
                         <td>{{$inventory->stock_level}}</td>
                         <td>{{$inventory->reorder_level}}</td>
                         <td>{{$inventory->stock}}</td>
-                        <td>{{$inventory->image}}</td>
+                        {{-- ====== base image url i read from .end file ============ --}}
+                        <td><img src="{{config('app.image_base_url')}}{{$inventory->image}}" alt="Avatar"
+                                 class="rounded-circle img-fluid" style="width: 50px; height: 50px;"></td>
                         <td>{{$inventory->status}}</td>
                         <td>{{ $inventory->created_at->format("Y/m/d") }}</td>
                         <td>{{ $inventory->updated_at->format("Y/m/d") }}</td>
+                        <td class="d-flex gap-1">
+                            <button type="button" class="btn btn-warning" data-id="{{$inventory->id}}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#viewmodal">View
+                            </button>
+                          <x-update-modal>
+                              <button type="button" class="btn btn-primary btnEditInventory" data-id="{{$inventory->id}}"
+                                      data-bs-toggle="modal" data-bs-target="#updateModal">Eidt
+                              </button>
+                          </x-update-modal>
+                            <x-delete-modal dataTable="supplier" title="Add New Supplier">
+                                <button type="button" class="btn btn-danger btndeleteInventory"
+                                        data-id="{{ $inventory->id}}" data-bs-toggle="modal" data-bs-target="#deletemodal">
+                                    Delete
+                                </button>
+                            </x-delete-modal>
 
-                        {{-- <td><img src="" class="rounded mx-auto d-block" alt="..."></td>--}}
-                        <td>
-                            <a href="" class="btn btn-info">Edit</a>
-                            <a href="" class="btn btn-danger">Delete</a>
+
                         </td>
-
                     </tr>
-
                 @endforeach
+                </tbody>
 
-            </tbody>
-        </table>
+            </table>
+{{--            --------------- end of display data --------------------------}}
+
+
+{{--            ========== paginate ----------------}}
             <div class="flex justify-center mt-1">
-                {{ $Inventories->links() }}
+                {{ $inventories->links() }}
             </div>
-@endsection
+{{--            ---------- end of paginate ------------}}
+
+{{--            ------------ add file ajax ---------------}}
+
+
+            <script src="{{ asset('js/ajax.js')}}"></script>
+            <script>
+                DeleteById($('.btndeleteInventory'), 'inventory', "#inventory")
+                EditById($('.btnEditInventory'), 'inventory')
+            </script>
+
+
+        @endsection

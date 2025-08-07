@@ -13,17 +13,15 @@
             </div>
             <div class="col-md-6">
                 <label for="supplier_id" class="form-label">Supplier Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="supplier_id" id="validationCustom01" required />
-                {{-- <select class="form-select" name="supplier_id" id="supplier_id"
-                    aria-label="Please select status">--}}
-                    {{-- <option selected>Select Suppliers</option>--}}
-                    {{-- @foreach ($suppliers as $supplier )--}}
-                    {{-- <option value="{{ $supplier->id }}">--}}
-                        {{-- --}}{{----}}{{-- {{ old('supplier_id', $inventory->supplier_id ?? '') == $supplier->id ?
-                        'selected' : '' }} --}}
-                        {{-- {{ $supplier->name }}</option>--}}
-                    {{-- @endforeach--}}
-                    {{-- </select>--}}
+                {{-- <input type="text" class="form-control" name="supplier_id" id="validationCustom01" required />--}}
+                <select class="form-select" name="supplier_id" id="supplier_id" required>
+                    <option value="">Select Supplier</option>
+                    @foreach($suppliers as $supplier)
+                        <option value="{{ $supplier->id }}" {{ old('supplier_id', $inventory->supplier_id ?? '') == $supplier->id ? 'selected' : '' }}>
+                            {{ $supplier->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
         </div>
 
@@ -108,7 +106,7 @@
     </div>
     <!--end::Body-->
     <!--begin::Footer-->
-    <div class="card-footer mt-2">
+    <div class="card-footer mt-4">
         <button class="btn btn-info float-start" type="submit">Save</button>
         <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Cancel</button>
     </div>

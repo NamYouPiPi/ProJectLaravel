@@ -1,4 +1,5 @@
  @include ("partials.header")
+ <meta name="csrf-token" content="{{ csrf_token() }}">
   </head>
   <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
     <!--begin::App Wrapper-->
@@ -38,6 +39,7 @@
     <!--end::App Wrapper-->
     <!--begin::Script-->
  @include("partials.footer")
+
     <!--end::Script-->
   </body>
   <!--end::Body-->

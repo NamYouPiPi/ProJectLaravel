@@ -31,7 +31,7 @@ class SupplierController extends Controller
             'email' => 'required|email|unique:suppliers,email',
             'phone' => 'nullable|string|max:20',
             'contact_person' => 'nullable|string|max:255',
-            'supplier_type' => 'required|string|max:255',
+            'supplier_type' => 'required|in:foods,drinks,snacks,others',
             'status' => 'required|in:active,inactive',
             'address' => 'nullable|string|max:500',
         ]);
@@ -79,6 +79,7 @@ class SupplierController extends Controller
                 'status' => 'required|in:active,inactive',
                 'address' => 'nullable|string|max:500',
             ]);
+            // $supplier->update($validatedData);
             $supplier->update($validatedData);
             // Check if request is AJAX
             if ($request->ajax()) {

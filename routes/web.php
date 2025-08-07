@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\VendorController;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\CreateModalController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,4 +21,4 @@ Route::get('/', function () {return view('Dashboard.index');});
 Route::resource('/suppliers', SupplierController::class);
 Route::resource('/inventory',InventoryController::class );
 
-
+//Route::get('/modal/createForm',[CreateModalController::class,'getCreateForm'])->name('modal.createForm');

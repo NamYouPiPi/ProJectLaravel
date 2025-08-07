@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class AjaxForm extends Component
+class Modal extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class AjaxForm extends Component
      */
     public function render()
     {
-        return view('components.ajax-form');
+        return view('components.create_modal');
     }
 }
