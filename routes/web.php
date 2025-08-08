@@ -19,7 +19,7 @@ use App\Http\Controllers\DistributorsController;
 */
 
 //add route
-Route::get('/', function () {return view('Dashboard.index');});
+Route::get('/', function () {return view('Backend.Dashboard.index');});
 Route::resource('/suppliers', SupplierController::class);
 Route::resource('/inventory',InventoryController::class );
 Route::resource('/distributors ', DistributorsController::class);

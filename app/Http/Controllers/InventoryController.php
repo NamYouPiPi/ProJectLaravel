@@ -24,7 +24,7 @@ class InventoryController extends Controller
                 ->join('suppliers', 'suppliers.id', '=', 'inventories.supplier_id')->paginate(10);
         $Suppliers = Supplier::all(); // Get all suppliers for the dropdown
         $category = Inventory::select('category')->distinct()->get();
-        return view('inventory.index', compact('inventories' ,'Suppliers'));
+        return view('Backend.inventory.index', compact('inventories' ,'Suppliers'));
 
     }
 
@@ -37,7 +37,7 @@ class InventoryController extends Controller
     {
         //
 //        $Suppliers = Supplier::all();
-        return view('inventory.create');
+        return view('Backend.inventory.create');
     }
 
     /**
@@ -114,7 +114,7 @@ class InventoryController extends Controller
         //
           Inventory::all();
         $suppliers = Supplier::all(); // Get all suppliers for the dropdown
-        return view('inventory.edit', compact('inventory', 'suppliers'));
+        return view('Backend.Inventory.edit', compact('inventory', 'suppliers'));
 
     }
 
@@ -205,7 +205,7 @@ class InventoryController extends Controller
     public  function  lowStock()
     {
         $item = Inventory::whereColumn('stock_level', '<', 'reorder_level')->get();
-        return view('inventory.index', compact('item'));
+        return view('Backend.Inventory.index', compact('item'));
     }
 
 }

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('Backend.layouts.app')
 @section('content')
 {{-- ============ add title and active =======================--}}
 @section('title', 'supplier')
@@ -45,7 +45,7 @@
 
     {{-- ================ Table for Suppliers detail all ===================== --}}
     <div class="table-responsive">
-        <table class="table table-bordered" id="suppliersTable">
+        <table class="table table-hover " id="suppliersTable">
             <thead>
                 <tr>
                     <th>ID</th>

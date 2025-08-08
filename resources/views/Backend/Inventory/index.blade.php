@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('Backend.layouts.app')
 @section('content')
 @section('title', 'inventory')
 @section('inventory', 'active')
@@ -38,7 +38,7 @@
 
         </div>
 
-        <table id="example" class="display table table-striped table-bordered table-hover  " style="width:100%">
+        <table id="example" class="display table table-responsive table-hover  " style="width:100%">
             <thead>
                 <tr class="text-center ">
                     <th>Id</th>

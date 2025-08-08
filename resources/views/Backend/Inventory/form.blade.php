@@ -104,3 +104,4 @@
         <button class="btn btn-info float-start" type="submit">Save</button>
         <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Cancel</button>
     </div>
+</div>

@@ -1,4 +1,4 @@
- @include ("partials.header")
+ @include ("Backend.partials.header")
  <meta name="csrf-token" content="{{ csrf_token() }}">
   </head>
   <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
@@ -7,12 +7,12 @@
       <!--begin::Header-->
       <nav class="app-header navbar navbar-expand bg-body">
         <!--begin::Container-->
-   @include("partials.navbar")
+   @include("Backend.partials.navbar")
         <!--end::Container-->
       </nav>
       <!--end::Header-->
       <!--begin::Sidebar-->
-      @include("partials.sidebar")
+      @include("Backend.partials.sidebar")
       <!--end::Sidebar-->
       <!--begin::App Main-->
       <main class="app-main">
@@ -38,7 +38,7 @@
     </div>
     <!--end::App Wrapper-->
     <!--begin::Script-->
- @include("partials.footer")
+ @include("Backend.partials.footer")
 
     <!--end::Script-->
   </body>

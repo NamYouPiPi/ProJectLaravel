@@ -30,7 +30,7 @@ class CreateModal extends Component
      */
     public function render()
     {
-        return view('components.create_modal',[
+        return view('Backend.components.create_modal',[
             'suppliers' => $this->suppliers,
         ]);
     }

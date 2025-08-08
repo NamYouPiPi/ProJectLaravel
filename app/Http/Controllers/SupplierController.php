@@ -16,12 +16,12 @@ class SupplierController extends Controller
                 ->orWhere('email', 'like', "%{$search}%");
         })->paginate(10);
 
-        return view('supplier.index', compact('suppliers', 'search'));
+        return view('Backend.supplier.index', compact('suppliers', 'search'));
     }
 
     public function create()
     {
-        return view('suppliers.create');
+        return view('Backend.supplier.create');
     }
 
     public function store(Request $request)
@@ -38,7 +38,6 @@ class SupplierController extends Controller
 
         $supplier = Supplier::create($validatedData);
 
-        // Check if request is AJAX
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
@@ -53,17 +52,17 @@ class SupplierController extends Controller
 
     public function show(Supplier $supplier)
     {
-        return view('supplier.show', compact('supplier'));
+//        return view('Backend.supplier.show', compact('supplier'));
     }
 
     public function edit(Supplier $supplier)
     {
         // If it's an AJAX request, return only the form partial
         if (request()->ajax()) {
-            return view('supplier.edit', compact('supplier'))->render();
+            return view('Backend.supplier.edit', compact('supplier'))->render();
         }
 
-        return view('supplier.edit', compact('supplier'));
+        return view('Backend.supplier.edit', compact('supplier'));
     }
 
     public function update(Request $request, Supplier $supplier)
@@ -81,12 +80,11 @@ class SupplierController extends Controller
             ]);
             // $supplier->update($validatedData);
             $supplier->update($validatedData);
-            // Check if request is AJAX
             if ($request->ajax()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Supplier updated successfully!',
-                    'supplier' => $supplier->fresh() // Get fresh data from database
+                    'supplier' => $supplier->fresh()
                 ]);}
 
         return redirect()->route('suppliers.index')
@@ -96,7 +94,6 @@ class SupplierController extends Controller
     {
         $supplier->delete();
 
-        // Check if request is AJAX
         if (request()->ajax()) {
             return response()->json([
                 'success' => true,

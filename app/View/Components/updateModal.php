@@ -28,6 +28,6 @@ class updateModal extends Component
      */
     public function render()
     {
-        return view('components.update_modal');
+        return view('Backend.components.update_modal');
     }
 }

@@ -1,6 +1,6 @@
 @props(['dataTable' => 'default', 'title' => 'default'])
 
-<<div {{ $attributes }}>
+<div {{ $attributes }}>
     {{ $slot }}
 </div>
 {{--             ------------ modal update -------------------- --}}

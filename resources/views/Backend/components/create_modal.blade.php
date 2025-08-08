@@ -14,10 +14,10 @@
             <div class="modal-body">
                 @switch($dataTable)
                     @case("supplier")
-                        @include('supplier.create')
+                        @include('Backend.supplier.create')
                         @break
                     @case('inventory')
-                        @include('inventory.create',['suppliers' => $suppliers])
+                        @include('Backend.inventory.create',['suppliers' => $suppliers])
                         @break
                     @default
                         <div>No data available</div>

@@ -30,7 +30,7 @@ class deleteModal extends Component
      */
     public function render()
     {
-        return view('components.delete_modal',
+        return view('Backend.components.delete_modal',
             ['inventory' => $this->inventory]);
     }
 }

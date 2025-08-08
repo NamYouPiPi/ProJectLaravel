@@ -2,6 +2,6 @@
       action="{{ route('suppliers.update', $supplier->id) }}">
     @csrf
     @method('PUT')
-    @include('supplier.form')
+    @include('Backend.supplier.form')
 
 </form>
