@@ -4,10 +4,10 @@
 // Show alert function
 function showAlert(message, type = "success") {
     const alertHtml = `
-                                            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                                                ${message}
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                            </div>
+              <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                  ${message}
+         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+         </div>
                                         `;
     $("#alert-container").html(alertHtml);
 

@@ -14,10 +14,14 @@
             <div class="modal-body">
                 @switch($dataTable)
                     @case("supplier")
-                        @include('supplier.edit')
+                        @include('Backend.supplier.edit')
                         @break
                     @case('inventory')
-                        @include('Inventory.edit')
+                        @include('Backend.Inventory.edit')
+                        @break
+                    @case('sale')
+{{--                        @include('')--}}
+                       @include('Backend.ConnectionSale.edit')
                         @break
                     @default
                         <div>No data available</div>

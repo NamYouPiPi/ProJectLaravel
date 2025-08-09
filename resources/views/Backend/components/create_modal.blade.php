@@ -19,6 +19,9 @@
                     @case('inventory')
                         @include('Backend.inventory.create',['suppliers' => $suppliers])
                         @break
+                    @case('sale')
+                        @include('Backend.ConnectionSale.create',['inventories'=>$inventories])
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch

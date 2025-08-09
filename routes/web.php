@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CreateModalController;
 use App\Http\Controllers\DistributorsController;
+use App\Http\Controllers\ConnectionSaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,6 @@ use App\Http\Controllers\DistributorsController;
 Route::get('/', function () {return view('Backend.Dashboard.index');});
 Route::resource('/suppliers', SupplierController::class);
 Route::resource('/inventory',InventoryController::class );
-Route::resource('/distributors ', DistributorsController::class);
-
-//Route::get('/modal/createForm',[CreateModalController::class,'getCreateForm'])->name('modal.createForm');
-
+Route::resource('/sale'  , ConnectionSaleController::class);
+Route::get('/connection-sales/report', [ConnectionSaleController::class, 'generateReport'])->name('sale.report');
+Route::get('/connection-sales/best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');

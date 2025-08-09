@@ -39,7 +39,7 @@
                     <a href="#" class="nav-link ">
                         <i class="nav-icon bi bi-speedometer"></i>
                         <p>
-                            Vendor
+                            Inventory
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
@@ -57,9 +57,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="" class="nav-link">
+                            <a href="{{ route('sale.index')  }}" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
-                                <p>Item</p>
+                                <p>Sale</p>
                             </a>
                         </li>
                     </ul>

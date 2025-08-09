@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Models\Inventory;
 use App\Models\Supplier;
 use Illuminate\View\Component;
 
@@ -20,6 +21,7 @@ class CreateModal extends Component
         $this->dataTable = $dataTable;
         $this->title = $title;
         $this->suppliers = Supplier::all();
+        $this->inventories = Inventory::all();
 
     }
 
@@ -32,6 +34,7 @@ class CreateModal extends Component
     {
         return view('Backend.components.create_modal',[
             'suppliers' => $this->suppliers,
+            'inventories' => $this->inventories,
         ]);
     }
 }

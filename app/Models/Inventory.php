@@ -28,4 +28,8 @@ class Inventory extends Model
     {
     return $this->belongsTo(Supplier::class);
     }
+    public function connection_sale()
+    {
+        return $this->hasMany(connection_sale::class , 'inventory_id');
+    }
 }
