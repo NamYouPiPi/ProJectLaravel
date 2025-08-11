@@ -29,10 +29,11 @@
         <div class="col-md-6">
             <label for="validationCustom01" class="form-label float-start">Category <span class="text-danger">*</span></label>
             <select type="text" class="form-control" name="category" id="validationCustom01" required >
-                <option value="snacks">snack</option>
-                <option value="foods">food</option>
-                <option value="drinks">drink</option>
-                <option value="others">others</option>
+                <option >Please select category</option>
+                <option value="snacks" {{ (old('status', $inventory->category ?? '') == 'snacks') ? 'selected' : '' }}>snack</option>
+                <option value="foods" {{ (old('status', $inventory->category ?? '') == 'foods') ? 'selected' : '' }}>food</option>
+                <option value="drinks" {{ (old('status', $inventory->category ?? '') == 'drinks') ? 'selected' : '' }}>drink</option>
+                <option value="others"  {{ (old('status', $inventory->category ?? '') == 'others') ? 'selected' : '' }}>others</option>
             </select>
         </div>
         <div class="col-md-6">
@@ -54,8 +55,8 @@
 {{--                   value="{{old('stock', $inventory->stock ?? "")}}" />--}}
         <select class="form-select" name="stock" id="stock" required>
             <option>Select Stock</option>
-            <option value="in_stock">In Stock</option>
-            <option value="out_of_stock">Out of Stock</option>
+            <option value="in_stock"  {{ (old('status', $inventory->stock ?? '') == 'in_stock') ? 'selected' : '' }}>In Stock</option>
+            <option value="out_of_stock"  {{ (old('status', $inventory->stock ?? '') == 'out_of_stock') ? 'selected' : '' }}>Out of Stock</option>
         </select>
         </div>
     </div>
@@ -93,9 +94,9 @@
         <div class="col-md-6">
             <label for="status" class="form-label float-start">Status <span class="text-danger">*</span></label>
             <select class="form-select" name="status" aria-label="Please select status">
-                <option selected>Open this select menu</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
+                <option value="">Please select status</option>
+                <option value="active" {{ (old('status', $inventory->status ?? '') == 'active') ? 'selected' : '' }}>Active</option>
+                <option value="inactive" {{ (old('status', $inventory->status ?? '') == 'inactive') ? 'selected' : '' }}>Inactive</option>
             </select>
         </div>
         <div class="col-md-6">
@@ -106,8 +107,9 @@
 </div>
 
 {{---------------- start cart footer ----------------------}}
-<div class="card-footer mt-3">
-    <button class="btn btn-info float-start" type="submit">Save</button>
+<div class="card-footer mt-2">
+    <button class="btn btn-info float-start" type="submit">{{ isset($inventory) ? 'Update' : 'Save' }}</button>
     <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Cancel</button>
 </div>
+
 {{---------------- end cart footer ----------------------}}

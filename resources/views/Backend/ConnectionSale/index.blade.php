@@ -67,6 +67,10 @@
     </div>
 
     {{--    end best sellr--}}
+
+
+
+
     <!-- Report Modal -->
     <div class="modal fade" id="reportModal" tabindex="-1">
         <div class="modal-dialog">
@@ -111,9 +115,11 @@
             </div>
         </div>
     </div>
-
-
 {{-------------------- end of generator a report -------------------------}}
+
+
+
+
 
 
 {{----------------- add test sale ------------------------------}}

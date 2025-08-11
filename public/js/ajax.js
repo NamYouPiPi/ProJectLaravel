@@ -19,13 +19,24 @@ function showAlert(message, type = "success") {
 
 // ================ Button Edit ========================
 let currentSupplierId   = null;
-function  EditById(btnEdit ,Base_url ){
+function EditById(btnEdit, Base_url) {
     btnEdit.on("click", function () {
         let id = $(this).data("id");
         currentSupplierId = id;
         console.log(currentSupplierId);
+
+        // Update modal title based on the data type
+        let modalTitle = "Edit " + Base_url.charAt(0).toUpperCase() + Base_url.slice(1);
+        $("#updateModalLabel").text(modalTitle);
+
         // Show loading spinner
-        $("#updateModal .modal-body").html(`<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>`);
+        $("#updateModal .modal-body").html(`
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `);
 
         // Show modal first
         $("#updateModal").modal("show");
@@ -39,17 +50,19 @@ function  EditById(btnEdit ,Base_url ){
             },
             error: function (xhr) {
                 $("#updateModal .modal-body").html(
-                    '<div class="alert alert-danger">Error loading supplier data. Please try again.</div>'
+                    '<div class="alert alert-danger">Error loading data. Please try again.</div>'
                 );
                 console.error("Error loading edit form:", xhr);
             },
         });
     });
-// =========== update submit ===================
+
+    // Handle form submission
     $(document).on("submit", "#updateForm", function (e) {
         e.preventDefault();
         let form = $(this);
         let id = form.find('[name="id"]').val() || currentSupplierId;
+
         form.find('button[type="submit"]')
             .prop("disabled", true)
             .text("Updating...");
@@ -64,44 +77,39 @@ function  EditById(btnEdit ,Base_url ){
             success: function (response) {
                 console.log("Update response:", response);
                 $("#updateModal").modal("hide");
-                showAlert("Supplier updated successfully!", "success");
+                showAlert("Data updated successfully!", "success");
 
-                // Update the table row with new data
-                if (response.Base_url) {
-                    updateTableRow(response.Base_url);
-                } else {
-                    setTimeout(() => location.reload(), 1000);
-                }
+                // Reload page or update table row
+                setTimeout(() => location.reload(), 1000);
             },
-            //  ============= handle error ===================
             error: function (xhr) {
                 form.find('button[type="submit"]')
                     .prop("disabled", false)
-                    .text("Update Supplier");
+                    .text("Update");
+
                 if (xhr.status === 422) {
                     let errors = xhr.responseJSON.errors;
                     displayValidationErrors(form, errors);
                 } else {
-                    showAlert(
-                        "Error updating supplier. Please try again.",
-                        "danger"
-                    );
+                    showAlert("Error updating data. Please try again.", "danger");
                     console.error("Update error:", xhr);
                 }
             },
         });
-//     =============== end of submit button ===================
     });
-
 }
+
+
 // ================== begin  handle  delete ===================
-function DeleteById(btnDelete  , base_url , Base_TableRow){
+function DeleteById(btnDelete, base_url, Base_TableRow) {
     let currentId;
+
     btnDelete.on("click", function () {
         currentId = $(this).data("id");
         console.log(currentId);
-        $('#deleteModal').modal("show");
+        $('#deletemodal').modal("show"); // Fixed: consistent lowercase modal ID
     });
+
     $('#confirmDeleteBtn').on("click", function () {
         if (currentId) {
             $.ajax({
@@ -111,29 +119,27 @@ function DeleteById(btnDelete  , base_url , Base_TableRow){
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    $('#deletemodal').modal("hide"); // Match the ID from blade file
+                    $('#deletemodal').modal("hide"); // Fixed: consistent lowercase modal ID
                     showAlert("Data deleted successfully!", "success");
                     $('#cancel').click();
-                    $(Base_TableRow + currentId).fadeOut(function() { // Use fadeOut instead of fadeIn
+                    $(Base_TableRow + currentId).fadeOut(function() {
                         $(this).remove();
+                        location.reload();
                     });
                 },
-
                 error: function (xhr) {
-                    $('#deleteModal').modal("hide");
-                    $(this).remove();
+                    $('#deletemodal').modal("hide"); // Fixed: consistent lowercase modal ID
+                    // Removed incorrect $(this).remove(); line
                     showAlert(
-                        "Error deleting supplier. Please try again.",
+                        "Error deleting data. Please try again.",
                         "danger"
                     );
-                    console.log(xhr)
-                    // console.error("Delete error:", xhr)
-                },
+                    console.log(xhr);
+                }
             });
         }
     });
 }
-
 // ================ end of handle delete ======================
 function updateTableRow(supplier) {
     let row = $("#supplier-row" + supplier.id);

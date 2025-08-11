@@ -1,12 +1,16 @@
 <?php
-
-use App\Http\Controllers\InventoryController;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\CreateModalController;
-use App\Http\Controllers\DistributorsController;
-use App\Http\Controllers\ConnectionSaleController;
+use App\Http\Controllers\{
+    InventoryController,
+    SupplierController,
+    GenreController,
+    CreateModalController,
+    ConnectionSaleController,
+    MoviesController
+};
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,5 +28,9 @@ Route::get('/', function () {return view('Backend.Dashboard.index');});
 Route::resource('/suppliers', SupplierController::class);
 Route::resource('/inventory',InventoryController::class );
 Route::resource('/sale'  , ConnectionSaleController::class);
+
 Route::get('/connection-sales/report', [ConnectionSaleController::class, 'generateReport'])->name('sale.report');
 Route::get('/connection-sales/best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');
+
+Route::resource('/genre' ,GenreController::class);
+Route::resource('/movies' , MoviesController::class);

@@ -75,26 +75,23 @@
                         <td>{{$inventory->stock}}</td>
                         {{-- ====== base image url i read from .end file ============ --}}
                         <td><img src="{{config('app.image_base_url')}}{{$inventory->image}}" alt="Avatar"
-                                class="rounded-circle img-fluid" style="width: 50px; height: 50px;"></td>
+                                class="rounded-circle img-fluid" style="width: 40px; height: 40px;"></td>
                         <td>{{$inventory->status}}</td>
                         <td>{{ $inventory->created_at->format("Y/m/d") }}</td>
                         <td>{{ $inventory->updated_at->format("Y/m/d") }}</td>
                         <td class="d-flex gap-1">
-                            <button type="button" class="btn btn-warning" data-id="{{$inventory->id}}" data-bs-toggle="modal"
-                                data-bs-target="#viewmodal">View
-                            </button>
-                            <x-update-modal>
-                                <button type="button" class="btn btn-primary btnEditInventory" data-id="{{$inventory->id}}"
-                                    data-bs-toggle="modal" data-bs-target="#updateModal">Eidt
+                            <x-update-modal dataTable="inventory" title="Edit Inventory">
+                                <button type="button" class="btn btn-success btnEditInventory" data-id="{{$inventory->id}}"
+                                    data-bs-toggle="modal" data-bs-target="#updateModal">UPDATE
                                 </button>
                             </x-update-modal>
-                            <x-delete-modal dataTable="supplier" title="Add New Supplier">
+
+                            <x-delete-modal dataTable="inventory" title="Delete Inventory">
                                 <button type="button" class="btn btn-danger btndeleteInventory" data-id="{{ $inventory->id}}"
                                     data-bs-toggle="modal" data-bs-target="#deletemodal">
                                     Delete
                                 </button>
                             </x-delete-modal>
-
 
                         </td>
                     </tr>
@@ -113,11 +110,14 @@
 
         {{-- ------------ add file ajax ---------------}}
 
-
         <script src="{{ asset('js/ajax.js')}}"></script>
+
         <script>
+            $(document).ready(function() {
+
             DeleteById($('.btndeleteInventory'), 'inventory', "#inventory")
             EditById($('.btnEditInventory'), 'inventory')
+            });
         </script>
 
 

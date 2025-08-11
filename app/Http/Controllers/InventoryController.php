@@ -85,6 +85,7 @@ class InventoryController extends Controller
             ]);
 
             return redirect()->route('inventory.index')->with('success', 'Inventory created successfully!');
+
         }catch (\Exception $exception){
             return redirect()->back()->with('error', $exception->getMessage());
         }

@@ -22,6 +22,9 @@
                     @case('sale')
                         @include('Backend.ConnectionSale.create',['inventories'=>$inventories])
                         @break
+                    @case('genre')
+                        @include("Backend.Genre.create")
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch

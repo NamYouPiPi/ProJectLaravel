@@ -64,12 +64,25 @@
                         </li>
                     </ul>
                 </li>
-                  <li class="nav-item  @yield('distributors ')">
-                    <a href="{{url('/distributors ')}}" class="nav-link">
-                     <i class="bi bi-building"></i>
-                        <p>distributors  </p>
+                <li class="nav-item @yield('menu-open')">
+                    <a href="#" class="nav-link ">
+                        <i class="nav-icon bi bi-speedometer"></i>
+                        <p>
+                            Movies
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item ">
+                            <a href="{{ route('genre.index')}}" class="nav-link @yield('genre')">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Genre</p>
+                            </a>
+                        </li>
+
+                    </ul>
                 </li>
+
             </ul>
             <!--end::Sidebar Menu-->
         </nav>

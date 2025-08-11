@@ -32,6 +32,7 @@
                 <option value="drinks" {{ (old('supplier_type', $supplier->supplier_type ?? '') == 'drinks') ? 'selected' : '' }}>Drinks</option>
                 <option value="foods" {{ (old('supplier_type', $supplier->supplier_type ?? '') == 'foods') ? 'selected' : '' }}>Foods</option>
                 <option value="snacks" {{ (old('supplier_type', $supplier->supplier_type ?? '') == 'snacks') ? 'selected' : '' }}>Snacks</option>
+                <option value="movies" {{ (old('supplier_type', $supplier->supplier_type ?? '') == 'movies') ? 'selected' : '' }}>Movies</option>
                 <option value="others" {{ (old('supplier_type', $supplier->supplier_type ?? '') == 'others') ? 'selected' : '' }}>Others</option>
             </select>
         </div>

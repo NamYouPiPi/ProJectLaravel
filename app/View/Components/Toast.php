@@ -4,21 +4,16 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class updateModal extends Component
+class Toast extends Component
 {
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public $dataTable;
-    public $title;
     public function __construct()
     {
         //
-        $this->dataTable = 'default';
-        $this->title = 'default';
-
     }
 
     /**
@@ -28,6 +23,6 @@ class updateModal extends Component
      */
     public function render()
     {
-        return view('Backend.components.update_modal');
+        return view('components.toast');
     }
 }

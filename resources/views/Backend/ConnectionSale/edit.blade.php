@@ -3,7 +3,7 @@
       method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
-    hello world
-{{--    @include('Backend.ConnectionSale.form')--}}
+
+    @include('Backend.ConnectionSale.form')
 
 </form>
