@@ -25,6 +25,9 @@
                     @case('genre')
                         @include("Backend.Genre.create")
                         @break
+                    @case('classification')
+                        @include("Backend.Classification.create")
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch

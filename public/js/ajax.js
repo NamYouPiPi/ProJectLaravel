@@ -101,7 +101,7 @@ function EditById(btnEdit, Base_url) {
 
 
 // ================== begin  handle  delete ===================
-function DeleteById(btnDelete, base_url, Base_TableRow) {
+function DeleteById(btnDelete, base_url) {
     let currentId;
 
     btnDelete.on("click", function () {
@@ -118,28 +118,25 @@ function DeleteById(btnDelete, base_url, Base_TableRow) {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+
                 success: function(response) {
-                    $('#deletemodal').modal("hide"); // Fixed: consistent lowercase modal ID
+                    $('#deletemodal').modal("hide"); // Close modal
                     showAlert("Data deleted successfully!", "success");
-                    $('#cancel').click();
-                    $(Base_TableRow + currentId).fadeOut(function() {
-                        $(this).remove();
-                        location.reload();
-                    });
+
+                    // Optional: delay before refresh to show toast
+                    setTimeout(function () {
+                        location.reload(); // Refresh page
+                    }, 1500); // 1.5 seconds delay
                 },
+
                 error: function (xhr) {
-                    $('#deletemodal').modal("hide"); // Fixed: consistent lowercase modal ID
-                    // Removed incorrect $(this).remove(); line
-                    showAlert(
-                        "Error deleting data. Please try again.",
-                        "danger"
-                    );
+                    $('#deletemodal').modal("hide");
+                    showAlert("Error deleting data. Please try again.", "danger");
                     console.log(xhr);
                 }
             });
         }
-    });
-}
+    });}
 // ================ end of handle delete ======================
 function updateTableRow(supplier) {
     let row = $("#supplier-row" + supplier.id);

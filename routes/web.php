@@ -7,7 +7,8 @@ use App\Http\Controllers\{
     GenreController,
     CreateModalController,
     ConnectionSaleController,
-    MoviesController
+    MoviesController,
+    ClassificationController
 };
 
 
@@ -34,3 +35,9 @@ Route::get('/connection-sales/best-sellers', [ConnectionSaleController::class, '
 
 Route::resource('/genre' ,GenreController::class);
 Route::resource('/movies' , MoviesController::class);
+Route::resource('/classification' , ClassificationController::class);
+
+
+
+
+

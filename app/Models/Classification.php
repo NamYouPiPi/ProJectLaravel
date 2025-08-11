@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class genre extends Model
+class Classification extends Model
 {
     use HasFactory;
-    protected $fillable= [
-        'main_genre',
-        'sub_genre',
+    protected  $fillable= [
+        'code',
+        'name',
+        'country',
+        'age_limit',
         'description',
         'status',
     ];

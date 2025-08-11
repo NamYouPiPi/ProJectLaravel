@@ -74,9 +74,23 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item ">
+                            <a href="{{ route('movies.index')}}" class="nav-link @yield('movies')">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Movies</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item ">
                             <a href="{{ route('genre.index')}}" class="nav-link @yield('genre')">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Genre</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a href="{{ route('classification.index')}}" class="nav-link @yield('genre')">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Classification</p>
                             </a>
                         </li>
 

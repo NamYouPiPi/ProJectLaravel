@@ -57,6 +57,9 @@
                     @case('genre')
                         @include("Backend.Genre.edit")
                         @break
+                    @case('classification')
+                        @include("Backend.Classification.edit")
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch
