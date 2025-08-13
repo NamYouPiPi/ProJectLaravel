@@ -52,18 +52,18 @@ class InventoryController extends Controller
 //        dd($request->all());
         try {
             $request->validate([
-                'item_name' => 'required|string|max:255',
-                'supplier_id' => 'required|integer',
-                'quantity' => 'required|integer',
-                'category' => 'required|string|max:255',
-                'unit'=>'required|string|max:255',
-                'stock'=>'required|in:in_stock,out_of_stock',
-                'stock_level'=>'required|integer',
-                'reorder_level'=>'required|integer',
-                'cost_price'=>'required|numeric',
-                'sale_price'=>'required|numeric',
-                'status'=>'required|in:active,inactive',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // <-- changed here
+                'item_name'     => 'required|string|max:255',
+                'supplier_id'   => 'required|integer',
+                'quantity'      => 'required|integer',
+                'category'      => 'required|string|max:255',
+                'unit'          =>'required|string|max:255',
+                'stock'         =>'required|in:in_stock,out_of_stock',
+                'stock_level'   =>'required|integer',
+                'reorder_level' =>'required|integer',
+                'cost_price'    =>'required|numeric',
+                'sale_price'    =>'required|numeric',
+                'status'        =>'required|in:active,inactive',
+                'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // <-- changed here
             ]);
             $imagePath = null;
             if ($request->hasFile('image')) {

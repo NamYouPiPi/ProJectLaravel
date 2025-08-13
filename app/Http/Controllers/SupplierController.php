@@ -26,28 +26,36 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:suppliers,email',
-            'phone' => 'nullable|string|max:20',
-            'contact_person' => 'nullable|string|max:255',
-            'supplier_type' => 'required|in:foods,drinks,snacks,others',
-            'status' => 'required|in:active,inactive',
-            'address' => 'nullable|string|max:500',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name'           => 'required|string|max:255',
+                'email'          => 'required|email|unique:suppliers,email',
+                'phone'          => 'nullable|string|max:20',
+                'contact_person' => 'nullable|string|max:255',
+                'supplier_type'  => 'required|in:foods,drinks,snacks,others',
+                'status'         => 'required|in:active,inactive',
+                'address'        => 'nullable|string|max:500',
+            ]);
 
-        $supplier = Supplier::create($validatedData);
+            $supplier = Supplier::create($validatedData);
 
-        if ($request->ajax()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success'  => true,
+                    'message'  => 'Supplier created successfully!',
+                    'supplier' => $supplier
+                ]);
+            }
+
+            return redirect()->route('suppliers.index')
+                ->with('success', 'Supplier created successfully!');
+        }catch (\Exception $e){
             return response()->json([
-                'success' => true,
-                'message' => 'Supplier created successfully!',
-                'supplier' => $supplier
+                'success' => false,
+                'message' => $e->getMessage()
+
             ]);
         }
-
-        return redirect()->route('suppliers.index')
-            ->with('success', 'Supplier created successfully!');
     }
 
     public function show(Supplier $supplier)

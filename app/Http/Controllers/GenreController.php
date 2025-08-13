@@ -15,7 +15,7 @@ class GenreController extends Controller
     public function index()
     {
         //
-        $genres = genre::all();
+        $genres = Genre::all();
         return view('Backend.Genre.index', compact('genres'));
     }
 
@@ -43,10 +43,10 @@ class GenreController extends Controller
         $data =$request->validate([
             'main_genre' => 'required|string|max:255',
             'sub_genre' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
             ]);
-        genre::create($data);
+        Genre::create($data);
 //        genre::create($request->all() + $data);
         return redirect()->route('genre.index')->with('success', 'Genre created successfully!');
     }

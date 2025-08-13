@@ -20,11 +20,11 @@ class Supplier extends Model
         'supplier_type',
         'status',
     ];
-    public function Inventory()
+    public function inventory()
     {
     return $this->hasMany(Inventory::class);
     }
-    public function Movies()
+    public function movies()
     {
         return $this->hasMany(Movies::class);
     }

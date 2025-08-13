@@ -2,6 +2,8 @@
 
 namespace App\View\Components;
 
+use App\Models\Classification;
+use App\Models\genre;
 use App\Models\Inventory;
 use App\Models\Supplier;
 use Illuminate\View\Component;
@@ -22,6 +24,9 @@ class CreateModal extends Component
         $this->title = $title;
         $this->suppliers = Supplier::all();
         $this->inventories = Inventory::all();
+        $this->genres = genre::all();
+        $this->classifications = classification::all();
+
 
     }
 

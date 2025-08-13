@@ -10,26 +10,29 @@ class Movies extends Model
     use HasFactory;
     protected  $fillable= [
         'title',
-        'duration_minnutes',
+        'duration_minutes',
+        'director',
         'description',
-        'author',
-        'rating',
         'language',
-        'poster_url',
-        'trailer_url',
+        'poster',
+        'trailer',
         'release_date',
         'status',
         'classification_id',
         'genre_id',
         'supplier_id'
     ];
-    public function Classification(){
+    
+     public function genre()
+    {
+        return $this->belongsTo(Genre::class);
+    }
+
+    public function classification()
+    {
         return $this->belongsTo(Classification::class);
     }
-    public function genre(){
-        return $this->belongsTo(genre::class);
-    }
-    public function Supplier(){
+    public function supplier(){
         return $this->belongsTo(Supplier::class);
     }
 }

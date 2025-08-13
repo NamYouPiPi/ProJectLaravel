@@ -6,6 +6,9 @@ Run Composer to install PHP dependencies:
 
 1 , composer install
 
+
+//
+
 Run npm to install frontend dependencies (if used):
 
 Copy .env.example to .env

@@ -28,6 +28,14 @@
                     @case('classification')
                         @include("Backend.Classification.create")
                         @break
+                    @case('movies')
+                        @include("Backend.Movies.create", [
+                               'genres' => $genres ?? collect(),
+                               'classifications' => $classifications ?? collect(),
+                               'suppliers' => $suppliers ?? collect()
+                           ])
+                        @break
+
                     @default
                         <div>No data available</div>
                 @endswitch

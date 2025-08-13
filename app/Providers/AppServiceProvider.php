@@ -29,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
-//        Paginator::useBootstrap(); // for Bootstrap 4/5
         \Blade::component('create_modal',CreateModal::class);
 
     }
