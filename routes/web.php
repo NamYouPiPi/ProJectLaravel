@@ -1,6 +1,17 @@
 <?php
-
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{
+    InventoryController,
+    SupplierController,
+    GenreController,
+    CreateModalController,
+    ConnectionSaleController,
+    MoviesController,
+    ClassificationController
+};
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +24,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//add route
+Route::get('/', function () {return view('Backend.Dashboard.index');});
+Route::resource('/suppliers', SupplierController::class);
+Route::resource('/inventory',InventoryController::class );
+Route::resource('/sale'  , ConnectionSaleController::class);
+
+Route::get('/connection-sales/report', [ConnectionSaleController::class, 'generateReport'])->name('sale.report');
+Route::get('/connection-sales/best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');
+
+Route::resource('/genre' ,GenreController::class);
+Route::resource('/movies' , MoviesController::class);
+Route::resource('/classification' , ClassificationController::class);
+
+
+
+
+

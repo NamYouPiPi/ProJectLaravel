@@ -29,6 +29,10 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    // add base image url herer 
+    'image_base_url' => env('IMAGE_BASE_URL', 'http://localhost/Khmer_cenima/storage/app/public/'),
+
+
 
     /*
     |--------------------------------------------------------------------------

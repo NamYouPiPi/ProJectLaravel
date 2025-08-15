@@ -51,6 +51,8 @@ phone VARCHAR(20),
 email VARCHAR(100),
 address VARCHAR(255),
 product_type VARCHAR(100),
+product_type ENUM('snacks', 'beverages', 'merchandise','drinks','popcorn'),
+,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
