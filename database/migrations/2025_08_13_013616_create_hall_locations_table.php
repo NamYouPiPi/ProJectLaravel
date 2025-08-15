@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('name')->comment('Name of the hall location');
             $table->string('address')->comment('Address of the hall location');
            $table->string('city')->comment('City of the hall location');
-           $table->string('state')->comment('State of the hall location');
-           $table->string('postal_code')->comment('Postal code of the hall location');
-           $table->string('country')->comment('Country of the hall location');
+           $table->string('state')->nullable()->comment('State of the hall location');
+           $table->string('postal_code')->nullable()->comment('Postal code of the hall location');
+           $table->string('country')->nullable()->comment('Country of the hall location');
            $table->string('phone')->nullable()->comment('Phone number of the hall location');
            $table->enum('status', ['active', 'inactive'])->default('active')->comment('Status of the hall location');
            $table->timestamps();

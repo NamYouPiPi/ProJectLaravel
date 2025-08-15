@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\genre;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
 class GenreController extends Controller
@@ -16,7 +16,7 @@ class GenreController extends Controller
     {
         //
         $genres = Genre::all();
-        return view('Backend.Genre.index', compact('genres'));
+        return view('Backend.genre.index', compact('genres'));
     }
 
     /**
@@ -27,7 +27,7 @@ class GenreController extends Controller
     public function create()
     {
         //
-        return  view('Backend.Genre.create');
+        return view('genre.create');
     }
 
     /**
@@ -39,25 +39,23 @@ class GenreController extends Controller
     public function store(Request $request)
     {
         //
-//        dd($request->all());
-        $data =$request->validate([
+        $data = $request->validate([
             'main_genre' => 'required|string|max:255',
             'sub_genre' => 'required|string|max:255',
-            'description' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'status' => 'required|in:active,inactive',
-            ]);
+        ]);
         Genre::create($data);
-//        genre::create($request->all() + $data);
-        return redirect()->route('genre.index')->with('success', 'Genre created successfully!');
+        return redirect()->route('genre.index')->with('success', 'Genre created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\genre  $gendre
+     * @param  \App\Models\Genre  $genre
      * @return \Illuminate\Http\Response
      */
-    public function show(genre $gendre)
+    public function show(Genre $genre)
     {
         //
     }
@@ -65,45 +63,44 @@ class GenreController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\genre  $genre
+     * @param  \App\Models\Genre  $genre
      * @return \Illuminate\Http\Response
      */
-    public function edit(genre $genre)
+    public function edit(Genre $genre)
     {
-        //
-        return  view('Backend.Genre.edit', compact('genre'));
+        return view('Backend.Genre.edit', compact('genre'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\genre  $genre
+     * @param  \App\Models\Genre  $genre
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, genre $genre)
+    public function update(Request $request, Genre $genre)
     {
         //
-        $data =$request->validate([
+        $data = $request->validate([
             'main_genre' => 'required|string|max:255',
             'sub_genre' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'status' => 'required|in:active,inactive',
-            ]);
+        ]);
         $genre->update($data);
-        return redirect()->route('genre.index')->with('success', 'Genre updated successfully!');
+        return redirect()->route('genre.index', compact('success','Genre updated successfully'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\genre  $genre
+     * @param  \App\Models\Genre  $genre
      * @return \Illuminate\Http\Response
      */
-    public function destroy(genre $genre)
+    public function destroy(Genre $genre)
     {
         //
         $genre->delete();
-        return redirect()->route('genre.index')->with('success', 'Genre deleted successfully!');
+        return redirect()->route('genre.index')->with('success', 'Genre deleted successfully');;
     }
 }

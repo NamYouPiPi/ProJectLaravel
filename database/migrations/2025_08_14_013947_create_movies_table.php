@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title')->unique();
             $table->integer('duration_minutes');
             $table->string('director');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->string('language');
             $table->text('poster')->nullable();
             $table->text('trailer')->nullable();
@@ -27,9 +27,9 @@ return new class extends Migration
             $table->bigInteger('classification_id')->unsigned();
             $table->bigInteger('genre_id')->unsigned();
             $table->bigInteger('supplier_id')->unsigned();
-            $table->foreign('classification_id')->references('id')->on('classifications')->onDelete('restrict')->onUpdate('restrict');;
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('restrict')->onUpdate('restrict');;
-            $table->foreign('genre_id')->references('id')->on('genres')->onDelete('restrict')->onUpdate('restrict');;
+            $table->foreign('classification_id')->references('id')->on('classifications')->onDelete('cascade');
+            $table->foreign('genre_id')->references('id')->on('genres')->onDelete('cascade');
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
             $table->timestamps();
         });
     }

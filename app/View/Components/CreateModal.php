@@ -4,6 +4,7 @@ namespace App\View\Components;
 
 use App\Models\Classification;
 use App\Models\genre;
+use App\Models\Hall_location;
 use App\Models\Inventory;
 use App\Models\Supplier;
 use Illuminate\View\Component;
@@ -17,17 +18,21 @@ class CreateModal extends Component
      */
     public $dataTable;
     public $title;
-
+    public $suppliers;
+    public $inventories;
+    public $genres;
+    public $classifications;
+    public $movies;
+    protected $hall_location;
     public function __construct($dataTable = 'default', $title = 'Add New Record')
     {
         $this->dataTable = $dataTable;
         $this->title = $title;
         $this->suppliers = Supplier::all();
         $this->inventories = Inventory::all();
-        $this->genres = genre::all();
-        $this->classifications = classification::all();
-
-
+        $this->genres = Genre::all();
+        $this->classifications = Classification::all();
+        $this->hall_location = Hall_location::all();
     }
 
     /**
@@ -40,6 +45,7 @@ class CreateModal extends Component
         return view('Backend.components.create_modal',[
             'suppliers' => $this->suppliers,
             'inventories' => $this->inventories,
+
         ]);
     }
 }

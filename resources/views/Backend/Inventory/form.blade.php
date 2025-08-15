@@ -101,7 +101,10 @@
         </div>
         <div class="col-md-6">
             <label for="image" class="form-label float-start">Image</label>
-            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            <input type="file" class="form-control" value="{{ old('image', $inventory->image ?? '') }}" id="image" name="image" accept="image/*">
+            @if(isset($inventory) && $inventory->image)
+                <img src="{{ asset('storage/' . $inventory->image) }}" alt="Product photo for inventory item in a well-lit" class="img-thumbnail mt-2" style="max-width: 150px;">
+            @endif
         </div>
     </div>
 </div>

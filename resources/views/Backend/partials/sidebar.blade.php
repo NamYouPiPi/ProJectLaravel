@@ -4,11 +4,8 @@
         <!--begin::Brand Link-->
         <a href="./index.html" class="brand-link">
             <!--begin::Brand Image-->
-            <img
-                src="{{asset('./assets/img/AdminLTELogo.png')}}"
-                alt="AdminLTE Logo"
-                class="brand-image opacity-75 shadow"
-            />
+            <img src="{{asset('./assets/img/AdminLTELogo.png')}}" alt="AdminLTE Logo"
+                class="brand-image opacity-75 shadow" />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
             <span class="brand-text fw-light">WebDevelopment </span>
@@ -21,14 +18,8 @@
     <div class="sidebar-wrapper">
         <nav class="mt-2">
             <!--begin::Sidebar Menu-->
-            <ul
-                class="nav sidebar-menu flex-column"
-                data-lte-toggle="treeview"
-                role="navigation"
-                aria-label="Main navigation"
-                data-accordion="false"
-                id="navigation"
-            >
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation"
+                aria-label="Main navigation" data-accordion="false" id="navigation">
                 <li class="nav-item  @yield('dashboard')">
                     <a href="{{url('/')}}" class="nav-link">
                         <i class="nav-icon bi bi-palette"></i>
@@ -96,7 +87,12 @@
 
                     </ul>
                 </li>
-
+                <li class="nav-item  @yield('hallLocation')">
+                    <a href="{{route('hall_locations.index')}}" class="nav-link">
+                        <i class="bi bi-geo-alt"></i>
+                        <p>Hall Location </p>
+                    </a>
+                </li>
             </ul>
             <!--end::Sidebar Menu-->
         </nav>

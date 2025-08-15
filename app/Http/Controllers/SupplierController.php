@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Inventory;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -8,16 +9,29 @@ use Illuminate\Http\JsonResponse;
 class SupplierController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->get('search');
+        {
+            $searchStatus = $request->input('status'); // Get status from the filter
+            $search = $request->input('search'); // If you have a search input
 
-        $suppliers = Supplier::when($search, function ($query, $search) {
-            return $query->where('name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%");
-        })->paginate(10);
+            $query = Supplier::query();
 
-        return view('Backend.supplier.index', compact('suppliers', 'search'));
-    }
+            // Filter by status if selected
+            if ($searchStatus) {
+                $query->where('status', $searchStatus);
+            }
+
+            // Optional: filter by search term
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('phone', 'like', "%$search%");
+                });
+            }
+            $suppliers = $query->paginate(10);
+
+            return view('Backend.supplier.index', compact('suppliers', 'searchStatus', 'search'));
+        }
 
     public function create()
     {
@@ -32,7 +46,7 @@ class SupplierController extends Controller
                 'email'          => 'required|email|unique:suppliers,email',
                 'phone'          => 'nullable|string|max:20',
                 'contact_person' => 'nullable|string|max:255',
-                'supplier_type'  => 'required|in:foods,drinks,snacks,others',
+                'supplier_type'  => 'required|in:foods,drinks,snacks,others,movies',
                 'status'         => 'required|in:active,inactive',
                 'address'        => 'nullable|string|max:500',
             ]);
@@ -76,15 +90,15 @@ class SupplierController extends Controller
     public function update(Request $request, Supplier $supplier)
     {
 
-//        dd($request->all());
+    //    dd($request->all());
             $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:suppliers,email,' . $supplier->id,
-                'phone' => 'nullable|string|max:20',
-                'contact_person' => 'nullable|string|max:255',
-                'supplier_type' => 'required|string|max:255',
-                'status' => 'required|in:active,inactive',
-                'address' => 'nullable|string|max:500',
+                'name'              => 'required|string|max:255',
+                'email'             => 'required|email|unique:suppliers,email,' . $supplier->id,
+                'phone'              => 'nullable|string|max:20',
+                'contact_person'     => 'nullable|string|max:255',
+                'supplier_type'      => 'required|string|max:255',
+                'status'             => 'required|in:active,inactive',
+                'address'            => 'nullable|string|max:500',
             ]);
             // $supplier->update($validatedData);
             $supplier->update($validatedData);
@@ -98,18 +112,19 @@ class SupplierController extends Controller
         return redirect()->route('suppliers.index')
             ->with('success', 'Supplier updated successfully!');
     }
-    public function destroy(Supplier $supplier)
-    {
-        $supplier->delete();
+public function destroy(Supplier $supplier)
+{
+    $supplier->status = 'inactive';
+    $supplier->save();
 
-        if (request()->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Supplier deleted successfully!'
-            ]);
-        }
-
-        return redirect()->route('suppliers.index')
-            ->with('success', 'Supplier deleted successfully!');
+    if (request()->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Supplier status set to inactive!'
+        ]);
     }
+
+    return redirect()->route('suppliers.index')
+        ->with('success', 'Supplier status set to inactive!');
+}
 }

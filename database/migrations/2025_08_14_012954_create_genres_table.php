@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('main_genre');
             $table->string('sub_genre');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('gendres');
+        Schema::dropIfExists('genres');
     }
 };

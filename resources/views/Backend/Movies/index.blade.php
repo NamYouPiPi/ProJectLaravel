@@ -5,15 +5,8 @@
 @section('menu-open', 'menu-open')
 
     {{-- ================== check message add and update if succeed =======================--}}
-    @if(session('success'))
-        <div class="alert alert-success" id="success-alert">
-            {{ session('success') }}
-        </div>
-    @elseif(session('error'))
-        <div class="alert alert-danger" id="alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
+    @include('Backend.components.Toast')
+
     {{-- ======================= end of check message ========================= --}}
 
     <div class="m-4 d-flex justify-content-between">
@@ -23,6 +16,10 @@
                 Add New Movie
             </button>
         </x-create_modal>
+
+        <input type="text" name="search" id="search" placeholder="Search Movies...">
+
+
         {{--================================= end of button add new ==========================--}}
     </div>
 
@@ -113,12 +110,14 @@
     {{-- ---------- end of paginate ------------}}
 
     {{-- ------------ add file ajax ---------------}}
+
     <script src="{{ asset('js/ajax.js')}}"></script>
 
     <script>
         $(document).ready(function () {
-            // DeleteById($('.btnDeleteMovie'), 'movies', "#movie")
-            // EditById($('.btnEditMovie'), 'movies')
+            DeleteById($('.btnDeleteMovie'), 'movies')
+            EditById($('.btnEditMovie'), 'movies')
+
         });
     </script>
 

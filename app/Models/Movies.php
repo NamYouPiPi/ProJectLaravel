@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Movies extends Model
 {
     use HasFactory;
-    protected  $fillable= [
-        'title',
+
+    protected $fillable = [
+          'title',
         'duration_minutes',
         'director',
         'description',
@@ -22,8 +23,9 @@ class Movies extends Model
         'genre_id',
         'supplier_id'
     ];
-    
-     public function genre()
+
+
+        public function genre()
     {
         return $this->belongsTo(Genre::class);
     }

@@ -70,18 +70,18 @@ class InventoryController extends Controller
                 $imagePath = $request->file('image')->store('Inventory', 'public');
             }
             Inventory::create([
-                'item_name' => $request->item_name,
-                'supplier_id' => $request->supplier_id,
-                'quantity' => $request->quantity,
-                'category' => $request->category,
-                'unit'=>$request->unit,
-                'stock'=>$request->stock,
-                'stock_level'=>$request->stock_level,
-                'reorder_level'=>$request->reorder_level,
-                'cost_price'=>$request->cost_price,
-                'sale_price'=>$request->sale_price,
-                'status'=>$request->status,
-                'image' => $imagePath,
+                'item_name'         => $request->item_name,
+                'supplier_id'       => $request->supplier_id,
+                'quantity'          => $request->quantity,
+                'category'          => $request->category,
+                'unit'              => $request->unit,
+                'stock'             => $request->stock,
+                'stock_level'       => $request->stock_level,
+                'reorder_level'     => $request->reorder_level,
+                'cost_price'        => $request->cost_price,
+                'sale_price'        => $request->sale_price,
+                'status'            => $request->status,
+                'image'             => $imagePath,
             ]);
 
             return redirect()->route('inventory.index')->with('success', 'Inventory created successfully!');
@@ -100,8 +100,8 @@ class InventoryController extends Controller
     public function show(Inventory $inventory)
     {
         //
-         Inventory::all();
-        return view('inventory.show' , compact('inventory'));
+        //  Inventory::all();
+        // return view('inventory.show' , compact('inventory'));
     }
 
     /**
@@ -128,43 +128,45 @@ class InventoryController extends Controller
      */
     public function update(Request $request, Inventory $inventory)
     {
+        dd($request->all());
         try {
-
             $request->validate([
-                'item_name' => 'required|string|max:255',
-                'supplier_id' => 'required|integer',
-                'quantity' => 'required|integer',
-                'category' => 'required|string|max:255',
-                'unit'=>'required|string|max:255',
-                'stock'=>'required|in:in_stock,out_of_stock',
-                'stock_level'=>'required|integer',
-                'reorder_level'=>'required|integer',
-                'cost_price'=>'required|numeric',
-                'sale_price'=>'required|numeric',
-                'status'=>'required|in:active,inactive',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // <-- changed here
+                'item_name'     => 'required|string|max:255',
+                'supplier_id'   => 'required|integer',
+                'quantity'      => 'required|integer',
+                'category'      => 'required|string|max:255',
+                'unit'          =>'required|string|max:255',
+                'stock'         =>'required|in:in_stock,out_of_stock',
+                'stock_level'   =>'required|integer',
+                'reorder_level' =>'required|integer',
+                'cost_price'    =>'required|numeric',
+                'sale_price'    =>'required|numeric',
+                'status'        =>'required|in:active,inactive',
+                'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // <-- changed here
             ]);
-//        $imagePath = null;
-            if ($request->hasFile('image')){
-                if ($inventory->image && Storage::disk('public')->exists($inventory->image)){
+             $imagePath = null;
+
+            if($request->hasFile('image')){
+                if($inventory->image){
                     Storage::disk('public')->delete($inventory->image);
                 }
-                $inventory->image = $request->file('image')->store('Inventory', 'public');
+                $imagePath = $request->file('image')->store('Inventory', 'public');
+                $inventory->image = $imagePath; // Update the image path in the inventory model
             }
+
             $inventory->update([
-                'item_name' => $request->item_name,
-                'supplier_id' => $request->supplier_id,
-                'quantity' => $request->quantity,
-                'category' => $request->category,
-                'unit'=>$request->unit,
-                'stock'=>$request->stock,
-                'stock_level'=>$request->stock_level,
-                'reorder_level'=>$request->reorder_level,
-                'cost_price'=>$request->cost_price,
-                'sale_price'=>$request->sale_price,
-                'status'=>$request->status,
-                'image'=>$inventory->image
-            ]);
+                'item_name'     => $request->item_name,
+                'supplier_id'   => $request->supplier_id,
+                'quantity'      => $request->quantity,
+                'category'      => $request->category,
+                'unit'          =>$request->unit,
+                'stock'         =>$request->stock,
+                'stock_level'   =>$request->stock_level,
+                'reorder_level' =>$request->reorder_level,
+                'cost_price'    =>$request->cost_price,
+                'sale_price'    =>$request->sale_price,
+                'status'        =>$request->status,
+                'image'         => $imagePath ?? $inventory->image            ]);
             return redirect()->route('inventory.index')
                 ->with('success', 'Supplier deleted successfully!');        }catch (\Exception $exception){
             return redirect()->back()->with('error', $exception->getMessage());
@@ -185,7 +187,8 @@ class InventoryController extends Controller
             Storage::disk('public')->delete($inventory->image);
         }
 
-        return response()->json(['message' => 'Inventory deleted successfully!']);
+            return redirect()->route('inventory.index')
+                ->with('success', 'Inventory deleted successfully!');
     }
 
     public  function  restock(Request $request, $id)

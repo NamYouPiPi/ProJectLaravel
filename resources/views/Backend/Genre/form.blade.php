@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <label for="validationCustom01" class="form-label float-start">Description</label>
             <input type="text"
-                   value="{{ old('description',$genre->description ?? '') }}" "
+                   value="{{ old('description',$genre->description ?? '') }}"
                    class="form-control" name="description"  required>
 
         </div>
@@ -47,7 +47,7 @@
 
 {{---------------- start cart footer ----------------------}}
 <div class="card-footer mt-2">
-    <button class="btn btn-info float-start" type="submit">{{ isset($inventory) ? 'Update' : 'Save' }}</button>
+    <button class="btn btn-info float-start" type="submit">{{ isset($genre) ? 'Update' : 'Save' }}</button>
     <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Cancel</button>
 </div>
 

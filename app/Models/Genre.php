@@ -4,17 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Movies;
 
 class Genre extends Model
 {
     use HasFactory;
-    protected $fillable= [
+protected $fillable = [
         'main_genre',
         'sub_genre',
         'description',
-        'status',
+        'status'
     ];
-    public function movies(){
+
+    public function movies()
+    {
         return $this->hasMany(Movies::class);
     }
 }

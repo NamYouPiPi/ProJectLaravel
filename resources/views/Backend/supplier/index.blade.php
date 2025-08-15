@@ -11,36 +11,58 @@
     <div id="alert-container"></div>
 
     {{-- ================== check message add and update if succeed =======================--}}
-    @if(session('success'))
-        <div class="alert alert-success" id="success-alert">
-            {{ session('success') }}
-        </div>
-    @endif
-    {{-- ======================= end of check messange ========================= --}}
+    @include('Backend.components.Toast')
 
-    {{-- ============ input search ========================== --}}
-    <form method="GET" action="{{ route('suppliers.index') }}" class="mb-3 m-3">
-        <div class="float-start d-flex gap-3 ">
-            <input type="text " name="search" class="form-control" id="exampleFormControlInput1" placeholder="Search here "
-                value="{{ $search }}">
-            <button type="submit" class="btn btn-primary">Search</button>
-            <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">Reset</a>
-        </div>
 
-        {{-- ======== button modal for create a suppliers ======================= --}}
 
-    </form>
-    {{--=============== end of search ===========================--}}
+{{-- ================ end of button add new ===================== --}}
+<div class="d-flex justify-content-between  align-content-center mt-3 mb-3 p-3">
 
-{{--============= click button add new =============--}}
-<x-create_modal dataTable="supplier" title="Add New Supplier" class="float-end">
+ <form method="GET" action="{{ route('suppliers.index') }}" class="d-flex " id="searchForm">
+    <div class="float-start d-flex gap-3 ">
+        <input type="text" name="search" class="form-control" id="searchInput" placeholder="Search here"
+            value="{{ $search }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+
+<script>
+    // Auto-submit the form when typing in the search box (with debounce)
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('keyup', function () {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function () {
+            document.getElementById('searchForm').submit();
+        }, 100); // Adjust delay as needed
+    });
+</script>
+{{-- start filter by status  --}}
+<form method="GET" action="{{ route('suppliers.index') }}" class=" " id="filterForm">
+<div class="d-flex align-items-center gap-2">
+    <label for="status" class="mb-0">Filter By Status</label>
+    <select name="status" id="status" class="form-select" style="width: auto; min-width: 150px;">
+        <option value="">All</option>
+        <option value="active" {{ $searchStatus === 'active' ? 'selected' : '' }}>Active</option>
+        <option value="inactive" {{ $searchStatus === 'inactive' ? 'selected' : '' }}>Inactive</option>
+    </select>
+</div>
+</form>
+
+    <x-create_modal dataTable="supplier" title="Add New Supplier" class="">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
         Add New Supplier
     </button>
 </x-create_modal>
 
-{{-- ================ end of button add new ===================== --}}
 
+<script>
+    document.getElementById('status').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+</script>
+
+</div>
 
 
     {{-- ================ Table for Suppliers detail all ===================== --}}
@@ -103,8 +125,29 @@
     <Script src="{{ asset('js/ajax.js')}}"></Script>
     <script>
         $(document).ready(function () {
-            DeleteById($('.btnSupplier'), 'suppliers', '#supplier-row');
+            DeleteById($('.btnSupplier'), 'suppliers');
             EditById($('.editSupplierBtn') , 'suppliers');
+            function updateTableRow(supplier) {
+    let row = $("#supplier-row" + supplier.id);
+    if (row.length) {
+        row.find(".supplier-name").text(supplier.name);
+        row.find(".supplier-email").text(supplier.email);
+        row.find(".supplier-phone").text(supplier.phone);
+        row.find(".supplier-contact").text(supplier.contact_person);
+        row.find(".supplier-type").text(supplier.supplier_type);
+        row.find(".supplier-status").text(supplier.status);
+        row.find(".supplier-address").text(supplier.address);
+        row.find(".supplier-updated").text(
+            new Date().toLocaleDateString("en-CA")
+        );
+        // Add a highlight effect
+        row.addClass("table-success");
+        setTimeout(() => {
+            row.removeClass("table-success");
+        }, 2000);
+    }
+    updateTableRow(supplier)
+}
         });
     </script>
 @endsection

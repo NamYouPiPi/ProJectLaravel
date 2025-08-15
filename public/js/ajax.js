@@ -1,6 +1,3 @@
-
-
-
 // Show alert function
 function showAlert(message, type = "success") {
     const alertHtml = `
@@ -18,7 +15,9 @@ function showAlert(message, type = "success") {
 }
 
 // ================ Button Edit ========================
-let currentSupplierId   = null;
+let currentSupplierId = null;
+
+
 function EditById(btnEdit, Base_url) {
     btnEdit.on("click", function () {
         let id = $(this).data("id");
@@ -56,60 +55,62 @@ function EditById(btnEdit, Base_url) {
             },
         });
     });
+$(document).on("submit", "#updateForm", function (e) {
+    e.preventDefault();
+    let form = $(this);
+    let id = form.find('[name="id"]').val() || currentSupplierId;
 
-    // Handle form submission
-    $(document).on("submit", "#updateForm", function (e) {
-        e.preventDefault();
-        let form = $(this);
-        let id = form.find('[name="id"]').val() || currentSupplierId;
+    form.find('button[type="submit"]')
+        .prop("disabled", true)
+        .text("Updating...");
 
-        form.find('button[type="submit"]')
-            .prop("disabled", true)
-            .text("Updating...");
+    // Use FormData for file uploads
+    let formData = new FormData(this);
+    formData.append('_method', 'PUT');
 
-        $.ajax({
-            url: `/${Base_url}/` + id,
-            type: "POST",
-            data: form.serialize() + "&_method=PUT",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                console.log("Update response:", response);
-                $("#updateModal").modal("hide");
-                showAlert("Data updated successfully!", "success");
+    $.ajax({
+        url: `/${Base_url}/` + id,
+        type: "POST",
+        data: formData,
+        processData: false,      // Important for FormData
+        contentType: false,      // Important for FormData
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+            console.log("Update response:", response);
+            $("#updateModal").modal("hide");
+            showAlert("Data updated successfully!", "success");
+            setTimeout(() => location.reload(), 1000);
+        },
+        error: function (xhr) {
+            form.find('button[type="submit"]')
+                .prop("disabled", false)
+                .text("Update");
 
-                // Reload page or update table row
-                setTimeout(() => location.reload(), 1000);
-            },
-            error: function (xhr) {
-                form.find('button[type="submit"]')
-                    .prop("disabled", false)
-                    .text("Update");
-
-                if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    displayValidationErrors(form, errors);
-                } else {
-                    showAlert("Error updating data. Please try again.", "danger");
-                    console.error("Update error:", xhr);
-                }
-            },
-        });
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+                displayValidationErrors(form, errors);
+            } else {
+                showAlert("Error updating data. Please try again.", "danger");
+                console.error("Update error:", xhr);
+            }
+        },
     });
+});
+
 }
 
+// // ================== begin  handle  delete ===================
 
-// ================== begin  handle  delete ===================
 function DeleteById(btnDelete, base_url) {
     let currentId;
 
     btnDelete.on("click", function () {
         currentId = $(this).data("id");
         console.log(currentId);
-        $('#deletemodal').modal("show"); // Fixed: consistent lowercase modal ID
+        $('#deletemodal').modal("show");
     });
-
     $('#confirmDeleteBtn').on("click", function () {
         if (currentId) {
             $.ajax({
@@ -121,7 +122,8 @@ function DeleteById(btnDelete, base_url) {
 
                 success: function(response) {
                     $('#deletemodal').modal("hide"); // Close modal
-                    showAlert("Data deleted successfully!", "success");
+                    showAlert("Data was change status to inacitve  successfully!", "success");
+
 
                     // Optional: delay before refresh to show toast
                     setTimeout(function () {
@@ -138,26 +140,7 @@ function DeleteById(btnDelete, base_url) {
         }
     });}
 // ================ end of handle delete ======================
-function updateTableRow(supplier) {
-    let row = $("#supplier-row" + supplier.id);
-    if (row.length) {
-        row.find(".supplier-name").text(supplier.name);
-        row.find(".supplier-email").text(supplier.email);
-        row.find(".supplier-phone").text(supplier.phone);
-        row.find(".supplier-contact").text(supplier.contact_person);
-        row.find(".supplier-type").text(supplier.supplier_type);
-        row.find(".supplier-status").text(supplier.status);
-        row.find(".supplier-address").text(supplier.address);
-        row.find(".supplier-updated").text(
-            new Date().toLocaleDateString("en-CA")
-        );
-        // Add a highlight effect
-        row.addClass("table-success");
-        setTimeout(() => {
-            row.removeClass("table-success");
-        }, 2000);
-    }
-}
+
 // Function to display validation errors
 function displayValidationErrors(form, errors) {
     // Clear previous errors

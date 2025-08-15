@@ -15,6 +15,8 @@ class HallLocationController extends Controller
     public function index()
     {
         //
+        $hallocation = Hall_location::all();
+        return view("Backend.Hall_Location.index" , compact('hallocation'));
     }
 
     /**
@@ -25,6 +27,8 @@ class HallLocationController extends Controller
     public function create()
     {
         //
+
+        return view('Backend.Hall_Location.create');
     }
 
     /**
@@ -36,6 +40,19 @@ class HallLocationController extends Controller
     public function store(Request $request)
     {
         //
+        $data = $request->validate([
+            'name'       => 'required|string|max:255',
+            'address'    => 'required|string|max:255',
+            'phone'      => 'required|string|max:255',
+            'city'       => 'required|string|max:255',
+            'country'    => 'nullable|string|max:255',
+            'status'     => 'required|in:active,inactive',
+            'postal_code'=> 'nullable|string|max:255',
+            'state'      => 'nullable|string|max:255',
+        ]);
+        Hall_location::create($data);
+
+        return redirect()->route('hall_locations.index')->with('success', 'Hall_location created successfully!');
     }
 
     /**
@@ -58,6 +75,7 @@ class HallLocationController extends Controller
     public function edit(Hall_location $hall_location)
     {
         //
+        return  view('Backend.Hall_Location.edit', compact('hall_location'));
     }
 
     /**
@@ -70,6 +88,18 @@ class HallLocationController extends Controller
     public function update(Request $request, Hall_location $hall_location)
     {
         //
+        $data = $request->validate([
+            'name'       => 'required|string|max:255',
+            'address'    => 'required|string|max:255',
+            'phone'      => 'required|string|max:255',
+            'city'       => 'required|string|max:255',
+            'country'    => 'nullable|string|max:255',
+            'status'     => 'required|in:active,inactive',
+            'postal_code'=> 'nullable|string|max:255',
+            'state'      => 'nullable|string|max:255',
+        ]);
+        Hall_location::update($data);
+        return redirect()->route('hall_locations.index')->with('success', 'Hall_location updated successfully!');
     }
 
     /**
@@ -81,5 +111,7 @@ class HallLocationController extends Controller
     public function destroy(Hall_location $hall_location)
     {
         //
+        $hall_location->delete();
+        return redirect()->route('hall_locations.index')->with('success', 'Hall_location deleted successfully!');
     }
 }

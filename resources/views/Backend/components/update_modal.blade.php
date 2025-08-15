@@ -60,6 +60,12 @@
                     @case('classification')
                         @include("Backend.Classification.edit")
                         @break
+                    @case('movies')
+                        @include("Backend.Movies.edit")
+                        @break
+                    @case('hall_location')
+                        @include("Backend.Hall_Location.edit")
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch

@@ -1,15 +1,17 @@
 @extends('Backend.layouts.app')
 @section('content')
-    @section('title', 'sale ')
-    @section('sale ', 'active')
-     @section('menu-open', 'menu-open')
+@section('title', 'sale ')
+@section('sale ', 'active')
+@section('menu-open', 'menu-open')
 
 
+    {{-- add message toast --}}
+    @include('Backend.components.Toast')
 
+    {{-- end message toast --}}
 
-
-{{------------modal for generator a report for sale history ------------------}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    {{------------modal for generator a report for sale history ------------------}}
+    <div class="d-flex justify-content-between align-items-center mb-3 m-2">
         <div>
             <!-- Generate Report Button -->
             <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#reportModal">
@@ -19,10 +21,15 @@
             <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#bestSellersModal">
                 <i class="fas fa-trophy"></i> Best Sellers
             </button>
-
         </div>
+
+        <x-create_modal dataTable="sale" title="Add New Sale">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                Add New
+            </button>
+        </x-create_modal>
     </div>
-{{--best seller --}}
+    {{--best seller --}}
     <div class="modal fade" id="bestSellersModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -66,7 +73,7 @@
         </div>
     </div>
 
-    {{--    end best sellr--}}
+    {{-- end best sellr--}}
 
 
 
@@ -115,60 +122,57 @@
             </div>
         </div>
     </div>
-{{-------------------- end of generator a report -------------------------}}
+    {{-------------------- end of generator a report -------------------------}}
 
 
 
 
 
 
-{{----------------- add test sale ------------------------------}}
+    {{----------------- add test sale ------------------------------}}
 
-    <x-create_modal dataTable="sale" title="Add New Sale">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-            Add New
-        </button>
-    </x-create_modal>
+
 
     <table class="table table-hover">
         <thead>
-        <tr>
+            <tr>
 
-        <th>Id</th>
-        <th>Item_Name</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total Price</th>
-        <th>Create_at</th>
-        <th>Update_at</th>
-        <th>Action</th>
-        </tr>
+                <th>Id</th>
+                <th>Item_Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total Price</th>
+                <th>Create_at</th>
+                <th>Update_at</th>
+                <th>Action</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach($sales as $sale )
+            @foreach($sales as $sale)
 
-        <tr class="sale-row{{$sale->id}}">
-            <td>{{$sale->id}}</td>
-            <td>{{$sale->item_name}}</td>
-            <td>{{$sale->quantity}}</td>
-            <td>{{$sale->price}} $</td>
-            <td>{{$sale->total_price}} $</td>
-            <td>{{ $sale->created_at->format("Y/m/d") }}</td>
-            <td>{{ $sale->updated_at->format("Y/m/d") }}</td>
-         <td class="d-flex gap-3">
-             <x-update-modal dataTable="sale" title="update sale ">
-                 <button type="button" class="btn btn-primary btn_edit_sale" data-id="{{$sale->id}}"
-                         data-bs-toggle="modal" data-bs-target="#updateModal">Eidt
-                 </button>
-             </x-update-modal>
-             <x-delete-modal dataTable="Sale" title="Delete Sale">
-                 <button type="button" class="btn btn-danger btn_delete_sale" data-id="{{ $sale->id}}"
-                         data-bs-toggle="modal" data-bs-target="#deletemodal">
-                     Delete
-                 </button>
-             </x-delete-modal></td>
-        </tr>
-        @endforeach
+                <tr class="sale-row{{$sale->id}}">
+                    <td>{{$sale->id}}</td>
+                    <td>{{$sale->item_name}}</td>
+                    <td>{{$sale->quantity}}</td>
+                    <td>{{$sale->price}} $</td>
+                    <td>{{$sale->total_price}} $</td>
+                    <td>{{ $sale->created_at->format("Y/m/d") }}</td>
+                    <td>{{ $sale->updated_at->format("Y/m/d") }}</td>
+                    <td class="d-flex gap-3">
+                        <x-update-modal dataTable="sale" title="update sale ">
+                            <button type="button" class="btn btn-primary btn_edit_sale" data-id="{{$sale->id}}"
+                                data-bs-toggle="modal" data-bs-target="#updateModal">Eidt
+                            </button>
+                        </x-update-modal>
+                        <x-delete-modal dataTable="Sale" title="Delete Sale">
+                            <button type="button" class="btn btn-danger btn_delete_sale" data-id="{{ $sale->id}}"
+                                data-bs-toggle="modal" data-bs-target="#deletemodal">
+                                Delete
+                            </button>
+                        </x-delete-modal>
+                    </td>
+                </tr>
+            @endforeach
 
 
         </tbody>
@@ -180,7 +184,7 @@
     <script>
         $(document).ready(function () {
             EditById($('.btn_edit_sale'), 'sale');
-            DeleteById($('.btn_delete_sale'), 'sale', '.sale-row')
+            DeleteById($('.btn_delete_sale'), 'sale', '')
         });
     </script>
 @endsection
