@@ -1,6 +1,7 @@
 
   <div class="card-body">
         {{-- Title --}}
+        {{-- <input type="hidden" name="id" value="{{ $movies->id ?? '' }}"> --}}
         <div class="row g-3">
             <div class="col-md-6">
                 <label for="title" class="form-label">Title <span class="text-danger">*</span></label>

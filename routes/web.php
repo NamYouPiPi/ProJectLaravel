@@ -28,26 +28,26 @@ use App\Http\Controllers\{
 
 //add route
 Route::get('/', function () {return view('Backend.Dashboard.index');});
-Route::resource('/suppliers', SupplierController::class);
-Route::resource('/inventory',InventoryController::class );
-Route::resource('/sale'  , ConnectionSaleController::class);
+Route::resource('suppliers', SupplierController::class);
+Route::resource('inventory',InventoryController::class );
+Route::resource('sale'  , ConnectionSaleController::class);
 
-Route::resource('/hall_locations', HallLocationController::class);
-Route::resource('/hall_cinema', HallCinemaController::class);
+Route::resource('hall_locations', HallLocationController::class);
+Route::resource('hallCinema', HallCinemaController::class);
 
 
 Route::get('/connection-sales/report', [ConnectionSaleController::class, 'generateReport'])->name('sale.report');
 Route::get('/connection-sales/best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');
 
-Route::resource('/genre' ,GenreController::class);
+Route::resource('genre' ,GenreController::class);
 
-Route::resource('/movies' , MoviesController::class);
+Route::resource('movies' , MoviesController::class);
 Route::get('/movies/search', [MoviesController::class, 'search'])->name('movies.search');
 
 
 
 
-Route::resource('/classification' , ClassificationController::class);
+Route::resource('classification' , ClassificationController::class);
 
 
 

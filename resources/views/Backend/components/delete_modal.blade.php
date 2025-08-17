@@ -14,7 +14,7 @@
                 <p>Are you sure you want to delete this record?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"  id=cancel" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary"  id="cancel" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
             </div>
         </div>

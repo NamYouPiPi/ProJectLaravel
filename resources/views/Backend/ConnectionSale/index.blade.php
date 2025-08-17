@@ -137,7 +137,7 @@
         <thead>
             <tr>
 
-                <th>Id</th>
+{{--                <th>Id</th>--}}
                 <th>Item_Name</th>
                 <th>Quantity</th>
                 <th>Price</th>
@@ -151,7 +151,7 @@
             @foreach($sales as $sale)
 
                 <tr class="sale-row{{$sale->id}}">
-                    <td>{{$sale->id}}</td>
+{{--                    <td>{{$sale->id}}</td>--}}
                     <td>{{$sale->item_name}}</td>
                     <td>{{$sale->quantity}}</td>
                     <td>{{$sale->price}} $</td>

@@ -180,9 +180,16 @@ class ConnectionSaleController extends Controller
      * @param  \App\Models\connection_sale  $connection_sale
      * @return \Illuminate\Http\Response
      */
-    public function edit(connection_sale $connection_sale)
+    public function edit(connection_sale $sale)
     {
-        //
+        $connection_sale = $sale; // Keep compatibility with existing form
+        $inventories = Inventory::all();
+        
+        if (request()->ajax()) {
+            return view('Backend.ConnectionSale.edit', compact('connection_sale', 'inventories'))->render();
+        }
+        
+        return view('Backend.ConnectionSale.edit', compact('connection_sale', 'inventories'));
     }
 
     /**
@@ -192,9 +199,29 @@ class ConnectionSaleController extends Controller
      * @param  \App\Models\connection_sale  $connection_sale
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, connection_sale $connection_sale)
+    public function update(Request $request, connection_sale $sale)
     {
-        //
+        $connection_sale = $sale; // Keep compatibility
+        
+        $request->validate([
+            'quantity.*' => 'required|integer|min:1',
+            'price.*' => 'required|numeric|min:0',
+            'inventory_id.*' => 'required|exists:inventories,id',
+        ]);
+
+        // For single sale update (since your form shows single item)
+        $connection_sale->update([
+            'quantity' => $request->quantity[0],
+            'price' => $request->price[0],
+            'inventory_id' => $request->inventory_id[0],
+            'total_price' => $request->price[0] * $request->quantity[0],
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Sale updated successfully!']);
+        }
+
+        return redirect()->route('sale.index')->with('success', 'Sale updated successfully!');
     }
 
     /**
@@ -203,8 +230,11 @@ class ConnectionSaleController extends Controller
      * @param  \App\Models\connection_sale  $connection_sale
      * @return \Illuminate\Http\Response
      */
-    public function destroy(connection_sale $connection_sale)
+    public function destroy(connection_sale $sale)
     {
-        //
+        $connection_sale = $sale; // Keep compatibility
+        $connection_sale->delete();
+        
+        return redirect()->route('sale.index')->with('success', 'Sale deleted successfully!');
     }
 }

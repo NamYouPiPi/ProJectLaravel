@@ -1,4 +1,4 @@
-@props(['dataTable' => 'default', 'title' => 'Add New Record'])
+@props(['dataTable' => 'default', 'title' => 'Add New Record', 'hall_location' => null])
 
 <div {{ $attributes }}>
     {{ $slot }}
@@ -33,6 +33,9 @@
                         @break
                     @case('hall_location')
                         @include("Backend.Hall_Location.create"  )
+                        @break
+                    @case('hallcinema')
+                        @include("Backend.HallCinema.create", ['hall_location' => $hall_location ?? []])
                         @break
                     @default
                         <div>No data available</div>

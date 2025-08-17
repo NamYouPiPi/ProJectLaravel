@@ -24,7 +24,7 @@
     <table id="example" class="display table table-responsive table-hover  " style="width:100%">
         <thead>
             <tr class="text-center ">
-                <th>Id</th>
+                {{-- <th>Id</th>--}}
                 <th>Name</th>
                 <th>Hall Location</th>
                 <th>Address</th>
@@ -41,7 +41,7 @@
             @foreach($hallocation as $hall)
 
                 <tr class="text-center genre-row{{$hall->id}}">
-                    <td>{{ $hall->id}}</td>
+                    {{-- <td>{{ $hall->id}}</td>--}}
                     <td>{{$hall->name}}</td>
                     <td>{{$hall->address}}</td>
                     <td>{{$hall->city}}</td>

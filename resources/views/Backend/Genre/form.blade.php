@@ -26,7 +26,7 @@
             <label for="validationCustom01" class="form-label float-start">Description</label>
             <input type="text"
                    value="{{ old('description',$genre->description ?? '') }}"
-                   class="form-control" name="description"  required>
+                   class="form-control" name="description"  >
 
         </div>
         <div class="col-md-6">

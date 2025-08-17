@@ -70,7 +70,7 @@
         <table class="table table-hover " id="suppliersTable">
             <thead>
                 <tr>
-                    <th>ID</th>
+{{--                    <th>ID</th>--}}
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -86,7 +86,7 @@
             <tbody>
                 @foreach($suppliers as $supplier)
                     <tr id="supplier-row{{ $supplier->id }}">
-                        <td>{{ $supplier->id }}</td>
+{{--                        <td>{{ $supplier->id }}</td>--}}
                         <td class="supplier-name">{{ $supplier->name }}</td>
                         <td class="supplier-email">{{ $supplier->email }}</td>
                         <td class="supplier-phone">{{ $supplier->phone }}</td>

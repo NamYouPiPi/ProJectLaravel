@@ -16,4 +16,7 @@ class Hall_cinema extends Model
         'hall_type'
 
     ];
+    public function Hall_location(){
+        return $this->belongsTo(Hall_location::class);
+    }
 }

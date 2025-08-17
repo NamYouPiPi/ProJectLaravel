@@ -27,7 +27,7 @@
     <table id="example" class="display table table-responsive table-hover" style="width:100%">
         <thead>
             <tr class="text-center">
-                <th>Id</th>
+                {{-- <th>Id</th> --}}
                 <th>Title</th>
                 <th>Duration(min)</th>
                 <th>Director</th>
@@ -49,9 +49,9 @@
         <tbody>
             @foreach($movies as $movie)
                 <tr class="text-center" id="movie{{$movie->id}}">
-                    <td>{{$movie->id}}</td>
+                    {{-- <td>{{$movie->id}}</td> --}}
                     <td>{{$movie->title}}</td>
-                    <td>{{$movie->duration_minutes}}</td>
+                    <td>{{$movie->duration_minutes}}(mn)</td>
                     <td>{{$movie->director}}</td>
                     <td>{{Str::limit($movie->description, 50)}}</td>
                     <td>{{$movie->language}}</td>
@@ -84,7 +84,7 @@
                     <td>{{ $movie->created_at->format("Y/m/d") }}</td>
                     <td>{{ $movie->updated_at->format("Y/m/d") }}</td>
                     <td class="d-flex gap-1">
-                        <x-update-modal dataTable="movies" title="Edit Movie">
+                        <x-update-modal dataTable="movies" title="Update movies">
                             <button type="button" class="btn btn-success btnEditMovie" data-id="{{$movie->id}}"
                                 data-bs-toggle="modal" data-bs-target="#updateModal">UPDATE
                             </button>
@@ -105,7 +105,7 @@
 
     {{-- ========== paginate ----------------}}
     <div class="flex justify-center mt-1">
-        {{-- {{ $movies->links() }} --}}
+        {{ $movies->links() }}
     </div>
     {{-- ---------- end of paginate ------------}}
 
@@ -116,8 +116,8 @@
     <script>
         $(document).ready(function () {
             DeleteById($('.btnDeleteMovie'), 'movies')
-            EditById($('.btnEditMovie'), 'movies')
-
+            // EditById($('.btnEditMovie'), 'movies')
+            EditById($('.btnEditMovie'), 'movies');
         });
     </script>
 

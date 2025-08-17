@@ -112,10 +112,11 @@ class SupplierController extends Controller
         return redirect()->route('suppliers.index')
             ->with('success', 'Supplier updated successfully!');
     }
-public function destroy(Supplier $supplier)
-{
-    $supplier->status = 'inactive';
-    $supplier->save();
+
+    public function destroy(Supplier $supplier)
+    {
+        $supplier->status = 'inactive';
+        $supplier->save();
 
     if (request()->ajax()) {
         return response()->json([
@@ -124,7 +125,7 @@ public function destroy(Supplier $supplier)
         ]);
     }
 
-    return redirect()->route('suppliers.index')
-        ->with('success', 'Supplier status set to inactive!');
-}
+        return redirect()->route('suppliers.index')
+            ->with('success', 'Supplier status set to inactive!');
+    }
 }

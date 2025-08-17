@@ -128,7 +128,6 @@ class InventoryController extends Controller
      */
     public function update(Request $request, Inventory $inventory)
     {
-        dd($request->all());
         try {
             $request->validate([
                 'item_name'     => 'required|string|max:255',
@@ -144,14 +143,13 @@ class InventoryController extends Controller
                 'status'        =>'required|in:active,inactive',
                 'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // <-- changed here
             ]);
-             $imagePath = null;
+             $imagePath = $inventory->image;
 
             if($request->hasFile('image')){
                 if($inventory->image){
                     Storage::disk('public')->delete($inventory->image);
                 }
                 $imagePath = $request->file('image')->store('Inventory', 'public');
-                $inventory->image = $imagePath; // Update the image path in the inventory model
             }
 
             $inventory->update([
@@ -166,9 +164,12 @@ class InventoryController extends Controller
                 'cost_price'    =>$request->cost_price,
                 'sale_price'    =>$request->sale_price,
                 'status'        =>$request->status,
-                'image'         => $imagePath ?? $inventory->image            ]);
+                'image'         => $imagePath
+            ]);
             return redirect()->route('inventory.index')
-                ->with('success', 'Supplier deleted successfully!');        }catch (\Exception $exception){
+                ->with('success', 'Inventory updated successfully!');
+
+            }catch (\Exception $exception){
             return redirect()->back()->with('error', $exception->getMessage());
         }
     }

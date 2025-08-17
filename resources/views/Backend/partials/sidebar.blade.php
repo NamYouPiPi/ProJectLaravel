@@ -93,6 +93,12 @@
                         <p>Hall Location </p>
                     </a>
                 </li>
+                <li class="nav-item  @yield('hallCinema')">
+                    <a href="{{route('hallCinema.index')}}" class="nav-link">
+                        <i class="bi bi-geo-alt"></i>
+                        <p>HallCinema </p>
+                    </a>
+                </li>
             </ul>
             <!--end::Sidebar Menu-->
         </nav>

@@ -1,4 +1,6 @@
 <div class="card-body">
+    <!-- Hidden ID field for updates -->
+    <input type="hidden" name="id" value="{{ $connection_sale->id ?? '' }}">
 
     <div class="row g-3">
         <div class="col-md-6">
@@ -10,7 +12,7 @@
                 name="quantity[]"
                 min="1"
                 step="1"
-                value="{{ old('quantity.0', $sale->quantity ?? '') }}"
+                value="{{ old('quantity.0', $connection_sale->quantity ?? '') }}"
                 required
             />
         </div>
@@ -24,7 +26,7 @@
                 name="price[]"
                 min="0"
                 step="0.01"
-                value="{{ old('price.0', $sale->price ?? '') }}"
+                value="{{ old('price.0', $connection_sale->price ?? '') }}"
                 required
             />
         </div>
@@ -56,14 +58,14 @@
                 name="total_price[]"
                 min="0"
                 step="0.01"
-                value="{{ old('total_price.0', $sale->total_price ?? '') }}"
+                value="{{ old('total_price.0', $connection_sale->total_price ?? '') }}"
                 readonly
             />
         </div>
     </div>
 
     <div class="card-footer mt-3">
-        <button class="btn btn-info float-start" type="submit">Save</button>
+        <button class="btn btn-info float-start" type="submit">{{ isset($connection_sale) ? 'Update' : 'Save' }}</button>
         <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Cancel</button>
     </div>
 </div>

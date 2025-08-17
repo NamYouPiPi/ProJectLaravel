@@ -36,7 +36,7 @@
     <table id="example" class="display table table-responsive table-hover  " style="width:100%">
         <thead>
             <tr class="text-center ">
-                <th>Id</th>
+{{--                <th>Id</th>--}}
                 <th>Supplier Name</th>
                 <th>Item Name</th>
                 <th>Category</th>
@@ -57,7 +57,7 @@
         <tbody>
             @foreach($inventories as $inventory)
                 <tr class="text-center" id="inventory{{$inventory->id}}">
-                    <td>{{$inventory->id}}</td>
+{{--                    <td>{{$inventory->id}}</td>--}}
                     <td>{{$inventory->supplier_name}}</td>
                     <td>{{$inventory->item_name}}</td>
                     <td>{{$inventory->category}}</td>

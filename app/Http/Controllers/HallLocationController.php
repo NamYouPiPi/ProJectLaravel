@@ -76,6 +76,7 @@ class HallLocationController extends Controller
     {
         //
         return  view('Backend.Hall_Location.edit', compact('hall_location'));
+//        return  view('Backend.Hall_Location.edit', compact('hall_location'));
     }
 
     /**
@@ -88,7 +89,8 @@ class HallLocationController extends Controller
     public function update(Request $request, Hall_location $hall_location)
     {
         //
-        $data = $request->validate([
+        // dd($request->all());
+         $request->validate([
             'name'       => 'required|string|max:255',
             'address'    => 'required|string|max:255',
             'phone'      => 'required|string|max:255',
@@ -98,7 +100,16 @@ class HallLocationController extends Controller
             'postal_code'=> 'nullable|string|max:255',
             'state'      => 'nullable|string|max:255',
         ]);
-        Hall_location::update($data);
+        Hall_location::update([
+            'name' => $request->name,
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'city' => $request->city,
+            'country' => $request->country,
+            'status' => $request->status,
+            'postal_code' => $request->postal_code,
+            'state' => $request->state,
+        ]);
         return redirect()->route('hall_locations.index')->with('success', 'Hall_location updated successfully!');
     }
 

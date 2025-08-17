@@ -30,7 +30,7 @@
             <table id="example" class="display table table-responsive table-hover  " style="width:100%">
                 <thead>
                 <tr class="text-center ">
-                    <th>Id</th>
+{{--                    <th>Id</th>--}}
                    <th>Main Genre</th>
                     <th>Sub Genre</th>
                     <th>Description</th>
@@ -44,7 +44,7 @@
                 @foreach($genres as $genre)
 
                     <tr class="text-center genre-row{{$genre->id}}">
-                        <td>{{$genre->id}}</td>
+{{--                        <td>{{$genre->id}}</td>--}}
                         <td>{{$genre->main_genre}}</td>
                         <td>{{$genre->sub_genre}}</td>
                         <td>{{$genre->description}}</td>

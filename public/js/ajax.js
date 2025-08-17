@@ -17,7 +17,6 @@ function showAlert(message, type = "success") {
 // ================ Button Edit ========================
 let currentSupplierId = null;
 
-
 function EditById(btnEdit, Base_url) {
     btnEdit.on("click", function () {
         let id = $(this).data("id");
@@ -25,7 +24,8 @@ function EditById(btnEdit, Base_url) {
         console.log(currentSupplierId);
 
         // Update modal title based on the data type
-        let modalTitle = "Edit " + Base_url.charAt(0).toUpperCase() + Base_url.slice(1);
+        let modalTitle =
+            "Edit " + Base_url.charAt(0).toUpperCase() + Base_url.slice(1);
         $("#updateModalLabel").text(modalTitle);
 
         // Show loading spinner
@@ -55,90 +55,132 @@ function EditById(btnEdit, Base_url) {
             },
         });
     });
-$(document).on("submit", "#updateForm", function (e) {
-    e.preventDefault();
-    let form = $(this);
-    let id = form.find('[name="id"]').val() || currentSupplierId;
+    $(document).on("submit", "#updateForm", function (e) {
+        e.preventDefault();
+        let form = $(this);
+        let id = form.find('[name="id"]').val() || currentSupplierId;
+        console.log(id);
+        form.find('button[type="submit"]')
+            .prop("disabled", true)
+            .text("Updating...");
 
-    form.find('button[type="submit"]')
-        .prop("disabled", true)
-        .text("Updating...");
+        // Use FormData for file uploads
+        let formData = new FormData(this);
+        formData.append("_method", "PUT");
 
-    // Use FormData for file uploads
-    let formData = new FormData(this);
-    formData.append('_method', 'PUT');
+        $.ajax({
+            url: `/${Base_url}/` + id,
+            type: "POST",
+            data: formData,
+            processData: false, // Important for FormData
+            contentType: false, // Important for FormData
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response) {
+                console.log("Update response:", response);
+                $("#updateModal").modal("hide");
+                showAlert("Data updated successfully!", "success");
+                setTimeout(() => location.reload(), 1000);
+            },
+            error: function (xhr) {
+                form.find('button[type="submit"]')
+                    .prop("disabled", false)
+                    .text("Update");
 
-    $.ajax({
-        url: `/${Base_url}/` + id,
-        type: "POST",
-        data: formData,
-        processData: false,      // Important for FormData
-        contentType: false,      // Important for FormData
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function (response) {
-            console.log("Update response:", response);
-            $("#updateModal").modal("hide");
-            showAlert("Data updated successfully!", "success");
-            setTimeout(() => location.reload(), 1000);
-        },
-        error: function (xhr) {
-            form.find('button[type="submit"]')
-                .prop("disabled", false)
-                .text("Update");
-
-            if (xhr.status === 422) {
-                let errors = xhr.responseJSON.errors;
-                displayValidationErrors(form, errors);
-            } else {
-                showAlert("Error updating data. Please try again.", "danger");
-                console.error("Update error:", xhr);
-            }
-        },
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    displayValidationErrors(form, errors);
+                } else {
+                    showAlert(
+                        "Error updating data. Please try again.",
+                        "danger"
+                    );
+                    console.error("Update error:", xhr);
+                }
+            },
+        });
     });
-});
-
 }
 
 // // ================== begin  handle  delete ===================
-
 function DeleteById(btnDelete, base_url) {
     let currentId;
 
     btnDelete.on("click", function () {
         currentId = $(this).data("id");
         console.log(currentId);
-        $('#deletemodal').modal("show");
+        $("#deletemodal").modal("show");
     });
-    $('#confirmDeleteBtn').on("click", function () {
+
+    $("#confirmDeleteBtn").on("click", function () {
         if (currentId) {
+            // Close modal immediately
+            $("#deletemodal").modal("hide");
+
             $.ajax({
                 url: `/${base_url}/` + currentId,
                 type: "DELETE",
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content"
+                    ),
                 },
-
-                success: function(response) {
-                    $('#deletemodal').modal("hide"); // Close modal
-                    showAlert("Data was change status to inacitve  successfully!", "success");
-
-
-                    // Optional: delay before refresh to show toast
+                success: function (response) {
+                    showAlert(
+                        "Data was change status to inactive successfully!",
+                        "success"
+                    );
                     setTimeout(function () {
-                        location.reload(); // Refresh page
-                    }, 1500); // 1.5 seconds delay
+                        location.reload();
+                    }, 1500);
                 },
-
                 error: function (xhr) {
-                    $('#deletemodal').modal("hide");
-                    showAlert("Error deleting data. Please try again.", "danger");
+                    showAlert(
+                        "Error deleting data. Please try again.",
+                        "danger"
+                    );
                     console.log(xhr);
-                }
+                },
             });
         }
-    });}
+    });
+}
+// function DeleteById(btnDelete, base_url) {
+//     let currentId;
+
+//     btnDelete.on("click", function () {
+//         currentId = $(this).data("id");
+//         console.log(currentId);
+//         $('#deletemodal').modal("show");
+//     });
+//     $('#confirmDeleteBtn').on("click", function () {
+//         if (currentId) {
+//             $.ajax({
+//                 url: `/${base_url}/` + currentId,
+//                 type: "DELETE",
+//                 headers: {
+//                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//                 },
+
+//                 success: function(response) {
+//                     $('#deletemodal').modal("hide"); // Close modal
+//                     showAlert("Data was change status to inacitve  successfully!", "success");
+
+//                     // Optional: delay before refresh to show toast
+//                     setTimeout(function () {
+//                         location.reload(); // Refresh page
+//                     }, 1500); // 1.5 seconds delay
+//                 },
+
+//                 error: function (xhr) {
+//                     $('#deletemodal').modal("hide");
+//                     showAlert("Error deleting data. Please try again.", "danger");
+//                     console.log(xhr);
+//                 }
+//             });
+//         }
+//     });}
 // ================ end of handle delete ======================
 
 // Function to display validation errors

@@ -18,4 +18,7 @@ class Hall_location extends Model
         'phone',
         'status',
     ];
+    public function Hall_cinema(){
+        return $this->hasMany(Hall_cinema::class);
+    }
 }
