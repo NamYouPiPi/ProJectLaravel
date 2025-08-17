@@ -1,4 +1,11 @@
-@props(['dataTable' => 'default', 'title' => 'Add New Record', 'hall_location' => null])
+@props([
+    'dataTable' => 'default', 
+    'title' => 'Add New Record', 
+    'hall_location' => null,
+    'genres' => null,
+    'classifications' => null,
+    'suppliers' => null
+])
 
 <div {{ $attributes }}>
     {{ $slot }}

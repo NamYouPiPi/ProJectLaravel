@@ -1,11 +1,12 @@
 @extends('Backend.layouts.app')
-@section('content')
 {{-- ============ add title and active =======================--}}
 @section('title', 'supplier')
 @section('supplier', 'active')
 @section('menu-open', 'menu-open')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+@section('content')
+
     {{--================= end of add title and active ==============--}}
+
 
     {{-- Alert Container for AJAX responses --}}
     <div id="alert-container"></div>
@@ -13,47 +14,91 @@
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
 
+    <div class="m-4">
+        {{-- Stats Cards --}}
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card supplier-card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Suppliers</h5>
+                        <h2 class="mb-0">{{ $suppliers->total() }}</h2>
+                        <small>Registered suppliers</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card supplier-card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Suppliers</h5>
+                        <h2 class="mb-0">{{ $suppliers->where('status', 'active')->count() }}</h2>
+                        <small>Currently active</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card supplier-card bg-danger text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Inactive Suppliers</h5>
+                        <h2 class="mb-0">{{ $suppliers->where('status', 'inactive')->count() }}</h2>
+                        <small>Currently inactive</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card supplier-card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Supplier Types</h5>
+                        <h2 class="mb-0">{{ $suppliers->unique('supplier_type')->count() }}</h2>
+                        <small>Different categories</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Filters Section --}}
+        <div class="card mb-4">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <x-create_modal dataTable="supplier" title="Add New Supplier">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                                <i class="fas fa-plus"></i> Add Supplier
+                            </button>
+                        </x-create_modal>
+                    </div>
+                <form method="GET" action="{{ route('suppliers.index') }}" class="d-flex align-items-center gap-3 float-end" id="filterForm">
+                    {{-- Add New Button --}}
 
 
-{{-- ================ end of button add new ===================== --}}
-<div class="d-flex justify-content-between  align-content-center mt-3 mb-3 p-3">
+                    {{-- Search Box --}}
+                    <div class="flex-grow-1">
+                        <input type="text" name="search" class="form-control search-box" id="searchInput"
+                            placeholder="Search by name, email, or phone..." value="{{ $search }}">
+                    </div>
 
- <form method="GET" action="{{ route('suppliers.index') }}" class="d-flex " id="searchForm">
-    <div class="float-start d-flex gap-3 ">
-        <input type="text" name="search" class="form-control" id="searchInput" placeholder="Search here"
-            value="{{ $search }}">
-        <button type="submit" class="btn btn-primary">Search</button>
-        <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">Reset</a>
-    </div>
-</form>
+                    {{-- Status Filter --}}
+                    <div style="width: 150px;">
+                        <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Status</option>
+                            <option value="active" {{ $searchStatus === 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ $searchStatus === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                    </div>
 
-<script>
-    // Auto-submit the form when typing in the search box (with debounce)
-    let searchTimeout;
-    document.getElementById('searchInput').addEventListener('keyup', function () {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(function () {
-            document.getElementById('searchForm').submit();
-        }, 100); // Adjust delay as needed
-    });
-</script>
-{{-- start filter by status  --}}
-<form method="GET" action="{{ route('suppliers.index') }}" class=" " id="filterForm">
-<div class="d-flex align-items-center gap-2">
-    <label for="status" class="mb-0">Filter By Status</label>
-    <select name="status" id="status" class="form-select" style="width: auto; min-width: 150px;">
-        <option value="">All</option>
-        <option value="active" {{ $searchStatus === 'active' ? 'selected' : '' }}>Active</option>
-        <option value="inactive" {{ $searchStatus === 'inactive' ? 'selected' : '' }}>Inactive</option>
-    </select>
-</div>
-</form>
-
+                    {{-- Clear Filters --}}
+                    <div>
+                        <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Clear
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+{{--
     <x-create_modal dataTable="supplier" title="Add New Supplier" class="">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
         Add New Supplier
     </button>
-</x-create_modal>
+</x-create_modal> --}}
 
 
 <script>
@@ -118,7 +163,15 @@
 
     {{--================== pagination ====================--}}
     <div class="flex justify-center mt-1">
-        {{ $suppliers->links() }}
+   
+        {{-- Pagination --}}
+        <div class="d-flex justify-content-center mt-4">
+            {{ $suppliers->links() }}
+        </div>
+    </div>
+
+    <script src="{{ asset('js/supplier-filter.js') }}"></script>
+
     </div>
     {{-- ================ end of pagination ================--}}
 

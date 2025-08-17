@@ -13,6 +13,10 @@
     {{------------modal for generator a report for sale history ------------------}}
     <div class="d-flex justify-content-between align-items-center mb-3 m-2">
         <div>
+            <!-- Analytics Dashboard Button -->
+            <a href="{{ route('sale.analytics') }}" class="btn btn-info me-2">
+                <i class="fas fa-chart-bar"></i> Analytics Dashboard
+            </a>
             <!-- Generate Report Button -->
             <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#reportModal">
                 <i class="fas fa-file-pdf"></i> Generate Report

@@ -16,15 +16,55 @@ class InventoryController extends Controller
      */
 
 
-    public function index()
+    public function index(Request $request)
     {
-        //
-//        $Inventories = Inventory::paginate(10);
-            $inventories = Inventory::select('inventories.*', 'suppliers.name as supplier_name')
-                ->join('suppliers', 'suppliers.id', '=', 'inventories.supplier_id')->paginate(10);
-        $Suppliers = Supplier::all(); // Get all suppliers for the dropdown
-        $category = Inventory::select('category')->distinct()->get();
-        return view('Backend.inventory.index', compact('inventories' ,'Suppliers'));
+        $query = Inventory::query()
+            ->select('inventories.*', 'suppliers.name as supplier_name')
+            ->join('suppliers', 'suppliers.id', '=', 'inventories.supplier_id');
+
+        // Filter by status (stock level)
+        if ($request->filled('stock_status')) {
+            switch($request->stock_status) {
+                case 'low':
+                    $query->whereRaw('quantity <= reorder_level');
+                    break;
+                case 'out':
+                    $query->where('quantity', '<=', 0);
+                    break;
+                case 'in':
+                    $query->whereRaw('quantity > reorder_level');
+                    break;
+            }
+        }
+
+        // Filter by category
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // Filter by reorder alert
+        if ($request->filled('reorder_alert') && $request->reorder_alert === 'true') {
+            $query->whereRaw('quantity <= reorder_level');
+        }
+
+        // Search by item name
+        if ($request->filled('search')) {
+            $query->where('item_name', 'LIKE', "%{$request->search}%");
+        }
+
+        // Get statistics for the dashboard
+        $stats = [
+            'total_items' => Inventory::count(),
+            'low_stock' => Inventory::whereRaw('quantity <= reorder_level')->count(),
+            'out_of_stock' => Inventory::where('quantity', '<=', 0)->count(),
+            'categories' => Inventory::select('category')->distinct()->count(),
+        ];
+
+        $inventories = $query->paginate(10)->withQueryString();
+        $suppliers = Supplier::all();
+        $categories = Inventory::select('category')->distinct()->get();
+        
+        return view('Backend.inventory.index', compact('inventories', 'suppliers', 'categories', 'stats'));
 
     }
 

@@ -4,24 +4,100 @@
 @section('movies', 'active')
 @section('menu-open', 'menu-open')
 
+<style>
+    .card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-control, .form-select {
+        border-radius: 6px;
+    }
+    .btn {
+        border-radius: 6px;
+    }
+    .gap-3 {
+        gap: 1rem !important;
+    }
+</style>
+
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
 
     {{-- ======================= end of check message ========================= --}}
 
-    <div class="m-4 d-flex justify-content-between">
-        {{-- ==================== begin button add new ========================--}}
-        <x-create_modal dataTable="movies" title="Add New Movie">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                Add New Movie
-            </button>
-        </x-create_modal>
+    <div class="m-4">
+        <div class="card">
+            <div class="card-body">
+                    <div class="d-flex ">
+                        {{-- Add New Movie Button --}}
+                            <div class="">
+                                <x-create_modal dataTable="movies" title="Add New Movie">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                                        <i class="fas fa-plus"></i> Add New Movie
+                                    </button>
+                                </x-create_modal>
+                            </div>
 
-        <input type="text" name="search" id="search" placeholder="Search Movies...">
+                            {{-- Filters Section --}}
+                            <form action="{{ route('movies.index') }}" method="GET" id="filterForm"
+                            class="d-flex align-items-center gap-3 "
+                            >
+                                {{-- Search --}}
+                                <div class="flex-grow-1">
+                                    <input type="text" name="search" class="form-control" placeholder="Search by title..."
+                                        value="{{ request('search') }}">
+                                </div>
+
+                                {{-- Status Filter --}}
+                                <div style="width: 150px;">
+                                    <select name="status" class="form-select" onchange="document.getElementById('filterForm').submit()">
+                                        <option value="">All Status</option>
+                                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                    </select>
+                                </div>
+
+                                {{-- Genre Filter --}}
+                                <div style="width: 150px;">
+                                    <select name="genre_id" class="form-select" onchange="document.getElementById('filterForm').submit()">
+                                        <option value="">All Genres</option>
+                                        @foreach($genres as $genre)
+                                            <option value="{{ $genre->id }}" {{ request('genre_id') == $genre->id ? 'selected' : '' }}>
+                                                {{ $genre->main_genre }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- Supplier Filter --}}
+                                <div style="width: 150px;">
+                                    <select name="supplier_id" class="form-select" onchange="document.getElementById('filterForm').submit()">
+                                        <option value="">All Suppliers</option>
+                                        @foreach($suppliers as $supplier)
+                                            <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                                {{ $supplier->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
 
-        {{--================================= end of button add new ==========================--}}
-    </div>
+
+                                {{-- Clear Filters --}}
+                                <div>
+                                    <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('movies.index') }}'">
+                                        <i class="fas fa-times"></i> Clear
+                                    </button>
+                                </div>
+                            </form>
+                    </div>
+              </div>
+            </div>
+        </div>
+
+
+
 
     {{-- ===================== display data on table ===========================--}}
     <table id="example" class="display table table-responsive table-hover" style="width:100%">
@@ -120,5 +196,5 @@
             EditById($('.btnEditMovie'), 'movies');
         });
     </script>
-
+    </div>
 @endsection

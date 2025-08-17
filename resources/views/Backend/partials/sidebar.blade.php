@@ -4,11 +4,11 @@
         <!--begin::Brand Link-->
         <a href="./index.html" class="brand-link">
             <!--begin::Brand Image-->
-            <img src="{{asset('./assets/img/AdminLTELogo.png')}}" alt="AdminLTE Logo"
+            <img src="{{ asset('assets/image/logo.png') }}" alt="AdminLTE Logo"
                 class="brand-image opacity-75 shadow" />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-light">WebDevelopment </span>
+            <span class="brand-text fw-light">Aurora Cinemas </span>
             <!--end::Brand Text-->
         </a>
         <!--end::Brand Link-->

@@ -27,19 +27,15 @@
             </div>
 
             <div class="col-md-6">
-                <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                <textarea class="form-control" name="description" id="description" rows="3"
-                    required>{{ old('description', $movies->description ?? '') }}</textarea>
-            </div>
-        </div>
-
-        {{-- Language & Status --}}
-        <div class="row g-3 mt-2">
-            <div class="col-md-6">
                 <label for="language" class="form-label">Language <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" name="language" id="language"
                     value="{{ old('language', $movies->language ?? '') }}" required>
             </div>
+
+        </div>
+
+        {{-- Language & Status --}}
+         <div class="row g-3 mt-2">
 
             <div class="col-md-6">
                 <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
@@ -51,30 +47,20 @@
                         Inactive</option>
                 </select>
             </div>
+        <div class="col-md-6">
+                    <label for="genre_id">Genre</label>
+                    <select class="form-select" name="genre_id" id="genre_id" required>
+                        <option value="">Select Genre</option>
+                        @foreach($genres as $genre)
+                            <option value="{{ $genre->id }}" {{ old('genre_id', $movies->genre_id ?? '') == $genre->id ? 'selected' : '' }}>
+                                {{ $genre->main_genre }} {{-- or $genre->main_genre if that's your column --}}
+                            </option>
+                        @endforeach
+                    </select>
+
+                </div>
         </div>
 
-        {{-- Release Date & Genre --}}
-        <div class="row g-3 mt-2">
-            <div class="col-md-6">
-                <label for="release_date" class="form-label">Release Date <span class="text-danger">*</span></label>
-                <input type="date" class="form-control" name="release_date" id="release_date"
-                    value="{{ old('release_date', isset($movies->release_date) ? ($movies->release_date)->format('Y-m-d') : '') }}"
-                    required>
-            </div>
-
-            <div class="col-md-6">
-                <label for="genre_id">Genre</label>
-                <select class="form-select" name="genre_id" id="genre_id" required>
-                    <option value="">Select Genre</option>
-                    @foreach($genres as $genre)
-                        <option value="{{ $genre->id }}" {{ old('genre_id', $movies->genre_id ?? '') == $genre->id ? 'selected' : '' }}>
-                            {{ $genre->main_genre }} {{-- or $genre->main_genre if that's your column --}}
-                        </option>
-                    @endforeach
-                </select>
-
-            </div>
-        </div>
 
         {{-- Supplier & Classification --}}
         <div class="row g-3 mt-2">
@@ -126,6 +112,20 @@
                 @endif
             </div>
         </div>
+        <div class="row g-3 mt-2">
+               <div class="col-md-6">
+                <label for="release_date" class="form-label">Release Date <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" name="release_date" id="release_date"
+                    value="{{ old('release_date', isset($movies->release_date) ? ($movies->release_date)->format('Y-m-d') : '') }}"
+                    required>
+            </div>
+            <div class="col-md-12">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" name="description" id="description" rows="2">{{ old('description', $movies->description ?? '') }}</textarea>
+            </div>
+
+
+
     </div>
 
     {{-- Form Buttons --}}

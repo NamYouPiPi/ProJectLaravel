@@ -12,11 +12,50 @@ class GenreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $genres = Genre::all();
-        return view('Backend.genre.index', compact('genres'));
+        $query = Genre::query();
+
+        // Search by name (main_genre or sub_genre)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('main_genre', 'LIKE', "%{$search}%")
+                  ->orWhere('sub_genre', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by main genre category
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->where('main_genre', $request->category);
+        }
+
+        // Get all distinct main genres for filter dropdown
+        $categories = Genre::select('main_genre')
+            ->distinct()
+            ->orderBy('main_genre')
+            ->pluck('main_genre');
+
+        // Order by created_at desc and paginate
+        $genres = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Statistics for dashboard
+        $totalGenres = Genre::count();
+        $activeGenres = Genre::where('status', 'active')->count();
+        $inactiveGenres = Genre::where('status', 'inactive')->count();
+
+        return view('Backend.Genre.index', compact(
+            'genres', 
+            'categories', 
+            'totalGenres', 
+            'activeGenres', 
+            'inactiveGenres'
+        ));
     }
 
     /**

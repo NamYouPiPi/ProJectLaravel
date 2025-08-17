@@ -13,14 +13,68 @@ class HallCinemaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Hall_cinema::with('hall_location');
 
+        // Search by cinema name or location name
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('cinema_name', 'LIKE', "%{$search}%")
+                  ->orWhere('hall_type', 'LIKE', "%{$search}%")
+                  ->orWhereHas('hall_location', function($subQ) use ($search) {
+                      $subQ->where('name', 'LIKE', "%{$search}%")
+                           ->orWhere('address', 'LIKE', "%{$search}%")
+                           ->orWhere('city', 'LIKE', "%{$search}%");
+                  });
+            });
+        }
 
-       $hall_cinema = Hall_cinema::where('status', 'active')->paginate(10);
-       $hall_location = Hall_location::all();
-    return  view('Backend.HallCinema.index' , compact('hall_cinema', 'hall_location'));
+        // Filter by status
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        } else {
+            // Default to show active if no specific status filter
+            if (!$request->filled('status')) {
+                $query->where('status', 'active');
+            }
+        }
+
+        // Filter by hall type
+        if ($request->filled('hall_type') && $request->hall_type !== 'all') {
+            $query->where('hall_type', $request->hall_type);
+        }
+
+        // Filter by location
+        if ($request->filled('location') && $request->location !== 'all') {
+            $query->where('hall_location_id', $request->location);
+        }
+
+        // Get distinct hall types for filter
+        $hallTypes = Hall_cinema::select('hall_type')->distinct()->orderBy('hall_type')->pluck('hall_type');
+        
+        // Get all locations for filter
+        $hall_location = Hall_location::where('status', 'active')->orderBy('name')->get();
+
+        // Order by created_at desc and paginate
+        $hall_cinema = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Statistics for dashboard
+        $totalHalls = Hall_cinema::count();
+        $activeHalls = Hall_cinema::where('status', 'active')->count();
+        $inactiveHalls = Hall_cinema::where('status', 'inactive')->count();
+        $totalSeats = Hall_cinema::where('status', 'active')->sum('total_seats');
+
+        return view('Backend.HallCinema.index', compact(
+            'hall_cinema', 
+            'hall_location', 
+            'hallTypes',
+            'totalHalls',
+            'activeHalls', 
+            'inactiveHalls',
+            'totalSeats'
+        ));
     }
 
     /**
@@ -135,5 +189,77 @@ class HallCinemaController extends Controller
         $hallcinema->status = 'inactive';
         $hallcinema->save();
         return redirect()->route('hallCinema.index')->with('success', 'Hall deleted successfully.');
+    }
+
+    /**
+     * Search hall cinemas via AJAX
+     */
+    public function search(Request $request)
+    {
+        $query = Hall_cinema::with('hall_location');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('cinema_name', 'LIKE', "%{$search}%")
+                  ->orWhere('hall_type', 'LIKE', "%{$search}%")
+                  ->orWhereHas('hall_location', function($subQ) use ($search) {
+                      $subQ->where('name', 'LIKE', "%{$search}%")
+                           ->orWhere('address', 'LIKE', "%{$search}%")
+                           ->orWhere('city', 'LIKE', "%{$search}%");
+                  });
+            });
+        }
+
+        $halls = $query->orderBy('created_at', 'desc')->limit(10)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $halls->map(function($hall) {
+                return [
+                    'id' => $hall->id,
+                    'cinema_name' => $hall->cinema_name,
+                    'hall_type' => $hall->hall_type,
+                    'total_seats' => $hall->total_seats,
+                    'status' => $hall->status,
+                    'location_name' => $hall->hall_location->name ?? 'N/A'
+                ];
+            })
+        ]);
+    }
+
+    /**
+     * Get analytics data for hall cinema
+     */
+    public function analytics()
+    {
+        $totalHalls = Hall_cinema::count();
+        $activeHalls = Hall_cinema::where('status', 'active')->count();
+        $inactiveHalls = Hall_cinema::where('status', 'inactive')->count();
+        $totalSeats = Hall_cinema::where('status', 'active')->sum('total_seats');
+
+        // Hall types distribution
+        $hallTypeStats = Hall_cinema::where('status', 'active')
+            ->selectRaw('hall_type, COUNT(*) as count, SUM(total_seats) as total_seats')
+            ->groupBy('hall_type')
+            ->orderBy('count', 'desc')
+            ->get();
+
+        // Location wise distribution
+        $locationStats = Hall_cinema::with('hall_location')
+            ->where('status', 'active')
+            ->selectRaw('hall_location_id, COUNT(*) as halls_count, SUM(total_seats) as total_seats')
+            ->groupBy('hall_location_id')
+            ->orderBy('halls_count', 'desc')
+            ->get();
+
+        return response()->json([
+            'total_halls' => $totalHalls,
+            'active_halls' => $activeHalls,
+            'inactive_halls' => $inactiveHalls,
+            'total_seats' => $totalSeats,
+            'hall_type_stats' => $hallTypeStats,
+            'location_stats' => $locationStats
+        ]);
     }
 }

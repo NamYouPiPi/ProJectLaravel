@@ -4,7 +4,9 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Khmer Cinema @yield('title')</title>
+    <title>Aurora Cinemas @yield('title')</title>
+    {{-- <link rel="icon" href="{{assets('assets/image/logo.png')}}"> --}}
+    <link rel="icon" href="{{ asset('assets/image/logo.png') }}">
     <!--begin::Accessibility Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <meta name="color-scheme" content="light dark" />

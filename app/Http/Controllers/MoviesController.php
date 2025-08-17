@@ -16,24 +16,64 @@ class MoviesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $movies = Movies::paginate(10);
+        // Dashboard Statistics
+        $stats = [
+            'total_movies' => Movies::count(),
+            'active_movies' => Movies::where('status', 'active')->count(),
+            'inactive_movies' => Movies::where('status', 'inactive')->count(),
+            'by_genre' => Genre::withCount('movies')->get(),
+
+        ];
+
+        $query = Movies::query();
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by genre
+        if ($request->filled('genre_id')) {
+            $query->where('genre_id', $request->genre_id);
+        }
+
+        // Filter by supplier
+        if ($request->filled('supplier_id')) {
+            $query->where('supplier_id', $request->supplier_id);
+        }
+
+    
+
+        // Search by name/title
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('title', 'LIKE', "%{$search}%");
+        }
+
+        // Get the data with pagination
+        $movies = $query->paginate(10);
+        $genres = Genre::all();
         $classifications = Classification::all();
         $suppliers = Supplier::all();
-        return view('Backend.Movies.index', compact('movies', 'classifications', 'suppliers'));
-        //              ^^^^^^ Changed to uppercase
+
+        // Pass stats to view
+        return view('Backend.Movies.index', compact('movies', 'genres', 'classifications', 'suppliers', 'stats'));
     }
 
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
      */
     public function create()
     {
-    return view('backend.movies.create');
+        $genres = Genre::all();
+        $classifications = Classification::all();
+        $suppliers = Supplier::all();
+        return view('Backend.Movies.create', compact('genres', 'classifications', 'suppliers'));
     }
     /**
      * Store a newly created resource in storage.
@@ -106,7 +146,11 @@ class MoviesController extends Controller
      */
 public function edit(Movies $movies)
 {
-    return view('Backend.Movies.edit', compact('movies'));
+    $genres = Genre::all();
+    $suppliers = Supplier::all();
+    $classifications = Classification::all();
+    
+    return view('Backend.Movies.edit', compact('movies', 'genres', 'suppliers', 'classifications'));
 }
     /**
      * Update the specified resource in storage.

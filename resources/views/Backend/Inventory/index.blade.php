@@ -1,8 +1,8 @@
 @extends('Backend.layouts.app')
-@section('content')
 @section('title', 'inventory')
 @section('inventory', 'active')
 @section('menu-open', 'menu-open')
+@section('content')
 
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
@@ -10,30 +10,122 @@
     {{-- ======================= end of check messange ========================= --}}
 
 
-    <div class="m-4 d-flex justify-content-between">
-        {{-- <label for="">Category </label>--}}
-        <select class="form-select float-end" style="width: 80px" aria-label="Default select example">
-            <option selected>Sort</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-        </select>
-        {{-- ==================== begin button add new ========================--}}
-        <x-create_modal dataTable="inventory" title="Add New Inentory">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                Add New Inventroy
-            </button>
-        </x-create_modal>
-        {{--================================= end of button add new ==========================--}}
+    <div class="m-4">
+        {{-- Dashboard Statistics --}}
+        <div class="row mb-4">
+            {{-- Total Items --}}
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Items</h5>
+                        <h2 class="mb-0">{{ $stats['total_items'] }}</h2>
+                        <small>Items in inventory</small>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Low Stock Alert --}}
+            <div class="col-md-3">
+                <div class="card {{ $stats['low_stock'] > 0 ? 'bg-warning' : 'bg-success' }} text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Low Stock Alert</h5>
+                        <h2 class="mb-0">{{ $stats['low_stock'] }}</h2>
+                        <small>Items need reordering</small>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Out of Stock --}}
+            <div class="col-md-3">
+                <div class="card {{ $stats['out_of_stock'] > 0 ? 'bg-danger' : 'bg-success' }} text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Out of Stock</h5>
+                        <h2 class="mb-0">{{ $stats['out_of_stock'] }}</h2>
+                        <small>Items at zero quantity</small>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Categories --}}
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Categories</h5>
+                        <h2 class="mb-0">{{ $stats['categories'] }}</h2>
+                        <small>Different item categories</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Filters Section --}}
+        <div class="card mb-4">
+            <div class="card-body d-flex  align-items-center gap-4">
+                  <div class="d-inline">
+                        <x-create_modal dataTable="inventory" title="Add New Inventory">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                                <i class="fas fa-plus"></i> Add New
+                            </button>
+                        </x-create_modal>
+                    </div>
+                <form action="{{ route('inventory.index') }}" method="GET" id="filterForm" class="d-flex align-items-center gap-3">
+                    {{-- Add New Button --}}
 
 
+                    {{-- Search --}}
+                    <div class="flex-grow-1">
+                        <input type="text" name="search" class="form-control" placeholder="Search by item name..."
+                            value="{{ request('search') }}">
+                    </div>
 
-        {{-- ===================== display data on table ===========================--}}
+                    {{-- Category Filter --}}
+                    <div style="width: 150px;">
+                        <select name="category" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Categories</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->category }}" {{ request('category') == $cat->category ? 'selected' : '' }}>
+                                    {{ $cat->category }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
+                    {{-- Stock Status Filter --}}
+                    <div style="width: 150px;">
+                        <select name="stock_status" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Stock Status</option>
+                            <option value="in" {{ request('stock_status') == 'in' ? 'selected' : '' }}>In Stock</option>
+                            <option value="low" {{ request('stock_status') == 'low' ? 'selected' : '' }}>Low Stock</option>
+                            <option value="out" {{ request('stock_status') == 'out' ? 'selected' : '' }}>Out of Stock</option>
+                        </select>
+                    </div>
 
-    </div>
+                    {{-- Reorder Alert Filter --}}
+                    <div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="reorder_alert" value="true"
+                                id="reorderAlert" {{ request('reorder_alert') == 'true' ? 'checked' : '' }}
+                                onchange="this.form.submit()">
+                            <label class="form-check-label" for="reorderAlert">
+                                Show Reorder Alerts
+                            </label>
+                        </div>
+                    </div>
 
-    <table id="example" class="display table table-responsive table-hover  " style="width:100%">
+                    {{-- Clear Filters --}}
+                    <div>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('inventory.index') }}'">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- Table Section --}}
+        <div class="card">
+            <div class="card-body">
+                <table id="example" class="display table table-responsive table-hover" style="width:100%">
         <thead>
             <tr class="text-center ">
 {{--                <th>Id</th>--}}
@@ -93,27 +185,24 @@
             @endforeach
         </tbody>
 
-    </table>
-    {{-- --------------- end of display data --------------------------}}
+                    </table>
+                </div>
+            </div>
+        </div>
 
-
-    {{-- ========== paginate ----------------}}
-    <div class="flex justify-center mt-1">
-        {{ $inventories->links() }}
+        {{-- Pagination --}}
+        <div class="d-flex justify-content-center mt-4">
+            {{ $inventories->links() }}
+        </div>
     </div>
-    {{-- ---------- end of paginate ------------}}
 
-    {{-- ------------ add file ajax ---------------}}
-
+    {{-- Scripts --}}
     <script src="{{ asset('js/ajax.js')}}"></script>
-
+    <script src="{{ asset('js/inventory-filter.js')}}"></script>
     <script>
         $(document).ready(function () {
-
             DeleteById($('.btndeleteInventory'), 'inventory')
             EditById($('.btnEditInventory'), 'inventory')
         });
     </script>
-
-
 @endsection
