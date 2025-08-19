@@ -19,4 +19,9 @@ class Hall_cinema extends Model
     public function Hall_location(){
         return $this->belongsTo(Hall_location::class);
     }
+
+   public function showtimes()
+    {
+        return $this->hasMany(Showtimes::class, 'hall_id');
+    }
 }

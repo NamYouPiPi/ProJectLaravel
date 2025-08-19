@@ -4,23 +4,6 @@
 @section('movies', 'active')
 @section('menu-open', 'menu-open')
 
-<style>
-    .card {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .form-control, .form-select {
-        border-radius: 6px;
-    }
-    .btn {
-        border-radius: 6px;
-    }
-    .gap-3 {
-        gap: 1rem !important;
-    }
-</style>
-
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
 
@@ -160,9 +143,9 @@
                     <td>{{ $movie->created_at->format("Y/m/d") }}</td>
                     <td>{{ $movie->updated_at->format("Y/m/d") }}</td>
                     <td class="d-flex gap-1">
-                        <x-update-modal dataTable="movies" title="Update movies">
+                        <x-update-modal dataTable="MOVIES" title="UPDATE MOVIES">
                             <button type="button" class="btn btn-success btnEditMovie" data-id="{{$movie->id}}"
-                                data-bs-toggle="modal" data-bs-target="#updateModal">UPDATE
+                                data-modal-title="UPDATE MOVIES" data-bs-toggle="modal" data-bs-target="#updateModal">UPDATE
                             </button>
                         </x-update-modal>
 
@@ -192,7 +175,6 @@
     <script>
         $(document).ready(function () {
             DeleteById($('.btnDeleteMovie'), 'movies')
-            // EditById($('.btnEditMovie'), 'movies')
             EditById($('.btnEditMovie'), 'movies');
         });
     </script>

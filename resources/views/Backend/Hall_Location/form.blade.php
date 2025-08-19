@@ -1,3 +1,6 @@
+@php
+    $hall_location = (isset($hall_location) && is_object($hall_location) && !($hall_location instanceof \Illuminate\Support\Collection)) ? $hall_location : new \stdClass();
+@endphp
 <!--begin::Body-->
 <div class="card-body">
     <!--begin::Row-->

@@ -51,11 +51,11 @@ class HallCinemaController extends Controller
             $query->where('hall_location_id', $request->location);
         }
 
-        // Get distinct hall types for filter
-        $hallTypes = Hall_cinema::select('hall_type')->distinct()->orderBy('hall_type')->pluck('hall_type');
-        
+//         Get distinct hall types for filter
+//        $hallTypes = Hall_cinema::select('hall_type')->distinct()->orderBy('hall_type')->pluck('hall_type');
+
         // Get all locations for filter
-        $hall_location = Hall_location::where('status', 'active')->orderBy('name')->get();
+        $hall_location = Hall_location::where('status', 'active')->orderBy('name');
 
         // Order by created_at desc and paginate
         $hall_cinema = $query->orderBy('created_at', 'desc')->paginate(10);
@@ -67,11 +67,11 @@ class HallCinemaController extends Controller
         $totalSeats = Hall_cinema::where('status', 'active')->sum('total_seats');
 
         return view('Backend.HallCinema.index', compact(
-            'hall_cinema', 
-            'hall_location', 
-            'hallTypes',
+            'hall_cinema',
+            'hall_location',
+//            'hallTypes',
             'totalHalls',
-            'activeHalls', 
+            'activeHalls',
             'inactiveHalls',
             'totalSeats'
         ));
@@ -87,7 +87,7 @@ class HallCinemaController extends Controller
         //
         $hall_cinema = Hall_cinema::all();
         $hall_location = Hall_location::all();
-        return view('Backend.HallCinema.create' , compact('hall_cinema','hall_location'));
+        return view('Backend.HallCinema.index' , compact('hall_cinema','hall_location'));
 
     }
 
@@ -142,16 +142,15 @@ class HallCinemaController extends Controller
      * @param  \App\Models\Hall_cinema
      * @return \Illuminate\Http\Response
      */
-    public function edit(Hall_cinema $hallcinema)
+    public function edit(Hall_cinema $hallCinema)
     {
-        Hall_cinema::all();
         $hall_location = Hall_location::all();
 
-//        if (request()->ajax()) {
-//            return view('Backend.HallCinema.edit', compact('hallcinema', 'hall_location'))->render();
-//        }
+       if (request()->ajax()) {
+           return view('Backend.HallCinema.edit', compact('hallCinema', 'hall_location'))->render();
+       }
 
-        return view('Backend.HallCinema.edit', compact('hallcinema', 'hall_location'));
+        return view('Backend.HallCinema.edit', compact('hallCinema', 'hall_location'));
     }
 
     /**
@@ -161,7 +160,7 @@ class HallCinemaController extends Controller
      * @param  \App\Models\Hall_cinema  $hall_cinema
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Hall_cinema $hallcinema)
+    public function update(Request $request, Hall_cinema $hallCinema)
     {
         //
        $data =  $request->validate([
@@ -172,8 +171,18 @@ class HallCinemaController extends Controller
             'hall_location_id' => 'required|exists:hall_locations,id',
 
         ]);
-       $hallcinema->update($data);
-       return redirect()->route('hallCinema.index')->with('success', 'Hall updated successfully.');
+       $hallCinema->update($data);
+
+       // Return JSON response for AJAX requests
+    //    if ($request->expectsJson()) {
+    //        return response()->json([
+    //            'success' => true,
+    //            'message' => 'Hall cinema updated successfully!',
+    //            'data' => $hallCinema
+    //        ]);
+    //    }
+
+        return redirect()->route('hallCinema.index')->with('success', 'Hall Update successfully.');
 
     }
 
@@ -183,11 +192,11 @@ class HallCinemaController extends Controller
      * @param  \App\Models\Hall_cinema  $hall_cinema
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Hall_cinema $hallcinema)
+    public function destroy(Hall_cinema $hallCinema)
     {
         //
-        $hallcinema->status = 'inactive';
-        $hallcinema->save();
+        $hallCinema->status = 'inactive';
+        $hallCinema->save();
         return redirect()->route('hallCinema.index')->with('success', 'Hall deleted successfully.');
     }
 

@@ -163,7 +163,7 @@
 
     {{--================== pagination ====================--}}
     <div class="flex justify-center mt-1">
-   
+
         {{-- Pagination --}}
         <div class="d-flex justify-content-center mt-4">
             {{ $suppliers->links() }}
@@ -180,9 +180,10 @@
         $(document).ready(function () {
             DeleteById($('.btnSupplier'), 'suppliers');
             EditById($('.editSupplierBtn') , 'suppliers');
-            function updateTableRow(supplier) {
-    let row = $("#supplier-row" + supplier.id);
-    if (row.length) {
+
+        function updateTableRow(supplier) {
+        let row = $("#supplier-row" + supplier.id);
+        if (row.length) {
         row.find(".supplier-name").text(supplier.name);
         row.find(".supplier-email").text(supplier.email);
         row.find(".supplier-phone").text(supplier.phone);
@@ -197,7 +198,7 @@
         row.addClass("table-success");
         setTimeout(() => {
             row.removeClass("table-success");
-        }, 2000);
+        }, 500);
     }
     updateTableRow(supplier)
 }

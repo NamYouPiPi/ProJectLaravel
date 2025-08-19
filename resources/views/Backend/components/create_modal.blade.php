@@ -1,10 +1,10 @@
 @props([
-    'dataTable' => 'default', 
-    'title' => 'Add New Record', 
-    'hall_location' => null,
-    'genres' => null,
-    'classifications' => null,
-    'suppliers' => null
+    'dataTable' => 'default',
+    'title' => 'Add New Record',
+    'hall_location' => null, // <-- add this line
+    'hallCinema' => null, // <-- add this line
+    'movies' => null
+
 ])
 
 <div {{ $attributes }}>
@@ -41,8 +41,11 @@
                     @case('hall_location')
                         @include("Backend.Hall_Location.create"  )
                         @break
-                    @case('hallcinema')
-                        @include("Backend.HallCinema.create", ['hall_location' => $hall_location ?? []])
+                    @case('hall_cinema')
+                        @include("Backend.HallCinema.create", ['hall_location' => $hall_location])
+                        @break
+                    @case('showTimes')
+                        @include("Backend.Showtime.create", ['hallCinema' => $hallCinema , 'movies' => $movies])
                         @break
                     @default
                         <div>No data available</div>

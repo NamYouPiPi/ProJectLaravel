@@ -44,7 +44,7 @@ class MoviesController extends Controller
             $query->where('supplier_id', $request->supplier_id);
         }
 
-    
+
 
         // Search by name/title
         if ($request->filled('search')) {
@@ -73,7 +73,11 @@ class MoviesController extends Controller
         $genres = Genre::all();
         $classifications = Classification::all();
         $suppliers = Supplier::all();
-        return view('Backend.Movies.create', compact('genres', 'classifications', 'suppliers'));
+        return view('Backend.Movies.create', [
+            'genres' => $genres,
+            'classifications' => $classifications,
+            'suppliers' => $suppliers
+        ]);
     }
     /**
      * Store a newly created resource in storage.
@@ -144,13 +148,18 @@ class MoviesController extends Controller
      * @param  \App\Models\Movies  $movies
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|string
      */
-public function edit(Movies $movies)
+public function edit(Movies $movie)
 {
     $genres = Genre::all();
     $suppliers = Supplier::all();
     $classifications = Classification::all();
-    
-    return view('Backend.Movies.edit', compact('movies', 'genres', 'suppliers', 'classifications'));
+
+    // For AJAX requests, return just the form HTML
+    if (request()->ajax()) {
+        return view('Backend.Movies.edit', compact('movie', 'genres', 'suppliers', 'classifications'))->render();
+    }
+
+    return view('Backend.Movies.edit', compact('movie', 'genres', 'suppliers', 'classifications'));
 }
     /**
      * Update the specified resource in storage.
@@ -163,26 +172,26 @@ public function update(Request $request, Movies $movie): \Illuminate\Http\Respon
 {
     try {
         \Illuminate\Support\Facades\Log::info('Movie Update Request', [
-            'movie_id' => $movie->id,
-            'request_data' => $request->except(['poster', 'trailer']),
-            'has_poster' => $request->hasFile('poster'),
-            'has_trailer' => $request->hasFile('trailer')
+            'movie_id'      => $movie->id,
+            'request_data'  => $request->except(['poster', 'trailer']),
+            'has_poster'    => $request->hasFile('poster'),
+            'has_trailer'   => $request->hasFile('trailer')
         ]);
 
         $movies = $movie; // Keep $movies for compatibility with existing code
     $request->validate([
-        'title' => 'required|string|max:255',
-        'duration_minutes' => 'required|integer',
-        'director' => 'required|string|max:255',
-        'description' => 'required|string',
-        'language' => 'required|string|max:255',
-        'status' => 'required|in:active,inactive',
-        'release_date' => 'required|date',
-        'genre_id' => 'required|exists:genres,id',
-        'classification_id' => 'required|exists:classifications,id',
-        'supplier_id' => 'required|exists:suppliers,id',
-        'poster' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'trailer' => 'nullable|file|mimes:mp4,mov,avi|max:51200',
+        'title'                 => 'required|string|max:255',
+        'duration_minutes'      => 'required|integer',
+        'director'              => 'required|string|max:255',
+        'description'           => 'required|string',
+        'language'              => 'required|string|max:255',
+        'status'                => 'required|in:active,inactive',
+        'release_date'          => 'required|date',
+        'genre_id'              => 'required|exists:genres,id',
+        'classification_id'     => 'required|exists:classifications,id',
+        'supplier_id'           => 'required|exists:suppliers,id',
+        'poster'                => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'trailer'               => 'nullable|file|mimes:mp4,mov,avi|max:51200',
     ]);
 
     // Handle poster
@@ -206,18 +215,18 @@ public function update(Request $request, Movies $movie): \Illuminate\Http\Respon
     }
 
     $movies->update([
-        'title' => $request->title,
-        'duration_minutes' => $request->duration_minutes,
-        'director' => $request->director,
-        'description' => $request->description,
-        'language' => $request->language,
-        'status' => $request->status,
-        'release_date' => $request->release_date,
-        'genre_id' => $request->genre_id,
+        'title'             => $request->title,
+        'duration_minutes'  => $request->duration_minutes,
+        'director'          => $request->director,
+        'description'       => $request->description,
+        'language'          => $request->language,
+        'status'            => $request->status,
+        'release_date'      => $request->release_date,
+        'genre_id'          => $request->genre_id,
         'classification_id' => $request->classification_id,
-        'supplier_id' => $request->supplier_id,
-        'poster' => $PosterPath,
-        'trailer' => $trailerPath,
+        'supplier_id'       => $request->supplier_id,
+        'poster'            => $PosterPath,
+        'trailer'           => $trailerPath,
     ]);
 
     // Add AJAX response support

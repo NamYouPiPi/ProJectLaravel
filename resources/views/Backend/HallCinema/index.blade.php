@@ -118,7 +118,7 @@
         <div class="row g-3">
             <div class="col-md-3">
                 <label for="search" class="form-label">Search by Name/Location</label>
-                <input type="text" class="form-control" id="search" name="search" 
+                <input type="text" class="form-control" id="search" name="search"
                        value="{{ request('search') }}" placeholder="Search cinema or location...">
             </div>
             <div class="col-md-2">
@@ -129,17 +129,17 @@
                     <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
-            <div class="col-md-2">
-                <label for="hall_type" class="form-label">Hall Type</label>
-                <select class="form-select" name="hall_type" id="hall_type">
-                    <option value="all" {{ request('hall_type') == 'all' ? 'selected' : '' }}>All Types</option>
-                    @foreach($hallTypes as $type)
-                        <option value="{{ $type }}" {{ request('hall_type') == $type ? 'selected' : '' }}>
-                            {{ ucfirst(str_replace('_', ' ', $type)) }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+{{--            <div class="col-md-2">--}}
+{{--                <label for="hall_type" class="form-label">Hall Type</label>--}}
+{{--                <select class="form-select" name="hall_type" id="hall_type">--}}
+{{--                    <option value="all" {{ request('hall_type') == 'all' ? 'selected' : '' }}>All Types</option>--}}
+{{--                    @foreach($hallTypes as $type)--}}
+{{--                        <option value="{{ $type }}" {{ request('hall_type') == $type ? 'selected' : '' }}>--}}
+{{--                            {{ ucfirst(str_replace('_', ' ', $type)) }}--}}
+{{--                        </option>--}}
+{{--                    @endforeach--}}
+{{--                </select>--}}
+{{--            </div>--}}
             <div class="col-md-3">
                 <label for="location" class="form-label">Location</label>
                 <select class="form-select" name="location" id="location">
@@ -153,10 +153,8 @@
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <div class="d-grid gap-2 w-100">
-                    <button type="submit" class="btn btn-light">
-                        🔍 Filter
-                    </button>
-                    <a href="{{ route('hallCinema.index') }}" class="btn btn-outline-light">
+
+                    <a href="{{ route('hallCinema.index') }}" class="btn btn-dark">
                         🔄 Reset
                     </a>
                 </div>
@@ -167,7 +165,7 @@
 
     <div class="m-4 d-flex justify-content-between">
         {{-- ==================== begin button add new ========================--}}
-        <x-create_modal dataTable="hallcinema" title="Add New Hall Cinema" :hall_location="$hall_location">
+        <x-create_modal dataTable="hall_cinema" title="Add New Hall Cinema" :hall_location="$hall_location">
             <button type="button" class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#createModal">
                 🎬 Add New Cinema Hall
             </button>

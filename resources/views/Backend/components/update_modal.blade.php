@@ -13,9 +13,9 @@
             </div>
             <div class="modal-body">
                 @switch($dataTable)
-                    @case('movies')
-                         @include('Backend.Movies.edit' , ['movies' => $movies, 'genres' => $genres, 'suppliers' => $suppliers, 'classifications' => $classifications])
-                         @break
+                    @case('MOVIES')
+                        @include('Backend.Movies.edit')
+                        @break
                     @case("supplier")
                         @include('Backend.supplier.edit')
                         @break
@@ -34,10 +34,10 @@
                     @case('hall_location')
                         @include("Backend.Hall_Location.edit")
                         @break
-                    @case('hallCinema')
-                        @include('Backend.HallCinema.edit')
-                        @break
                     @default
+                    @case('Showtime')
+                        @include('Backend.Showtime.edit' )
+                        @break
                         <div>No data available</div>
                 @endswitch
                 <div class="text-center">

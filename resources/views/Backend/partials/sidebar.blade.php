@@ -4,8 +4,7 @@
         <!--begin::Brand Link-->
         <a href="./index.html" class="brand-link">
             <!--begin::Brand Image-->
-            <img src="{{ asset('assets/image/logo.png') }}" alt="AdminLTE Logo"
-                class="brand-image opacity-75 shadow" />
+            <img src="{{ asset('assets/image/logo.png') }}" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
             <span class="brand-text fw-light">Aurora Cinemas </span>
@@ -97,6 +96,12 @@
                     <a href="{{route('hallCinema.index')}}" class="nav-link">
                         <i class="bi bi-geo-alt"></i>
                         <p>HallCinema </p>
+                    </a>
+                </li>
+                <li class="nav-item  @yield('ShowTimes')">
+                    <a href="{{route('Showtime.index')}}" class="nav-link">
+                        <i class="bi bi-geo-alt"></i>
+                        <p>ShowTimes </p>
                     </a>
                 </li>
             </ul>

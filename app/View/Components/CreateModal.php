@@ -2,11 +2,17 @@
 
 namespace App\View\Components;
 
-use App\Models\Classification;
-use App\Models\genre;
-use App\Models\Hall_location;
-use App\Models\Inventory;
-use App\Models\Supplier;
+
+use App\Models\{
+Showtimes ,
+Supplier ,
+Classification ,
+Hall_location,
+Genre ,
+Movies ,
+Inventory ,
+Hall_cinema
+};
 use Illuminate\View\Component;
 
 class CreateModal extends Component
@@ -16,14 +22,15 @@ class CreateModal extends Component
      *
      * @return void
      */
-    public $dataTable;
-    public $title;
-    public $suppliers;
-    public $inventories;
-    public $genres;
-    public $classifications;
+    public mixed $dataTable;
+    public mixed $title;
+    public array|\Illuminate\Database\Eloquent\Collection|\LaravelIdea\Helper\App\Models\_IH_Supplier_C $suppliers;
+    public \Illuminate\Database\Eloquent\Collection $inventories;
+    public \Illuminate\Database\Eloquent\Collection $genres;
+    public \Illuminate\Database\Eloquent\Collection $classifications;
     public $movies;
-    protected $hall_location;
+    protected \Illuminate\Database\Eloquent\Collection $hall_location;
+    protected \Illuminate\Database\Eloquent\Collection $hallCinema;
     public function __construct($dataTable = 'default', $title = 'Add New Record')
     {
         $this->dataTable = $dataTable;
@@ -33,6 +40,8 @@ class CreateModal extends Component
         $this->genres = Genre::all();
         $this->classifications = Classification::all();
         $this->hall_location = Hall_location::all();
+        $this->hallCinema = Hall_cinema::all();
+        $this->movies = Movies::where('status', 'active')->get();
     }
 
     /**
@@ -45,6 +54,11 @@ class CreateModal extends Component
         return view('Backend.components.create_modal',[
             'suppliers' => $this->suppliers,
             'inventories' => $this->inventories,
+            'genres' => $this->genres,
+            'hall_location' => $this->hall_location,
+            'hallCinema' => $this->hallCinema,
+            'movies' => $this->movies,
+            'classifications' => $this->classifications
 
         ]);
     }

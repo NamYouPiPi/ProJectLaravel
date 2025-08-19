@@ -13,13 +13,12 @@ class deleteModal extends Component
      * @return void
      */
     public $dataTable;
-    public $titlt;
+    public $title;
     public function __construct($dataTable = 'default', $title = 'Delete Record')
     {
         //
         $this->dataTable = $dataTable;
         $this->title = $title;
-        $this->inventory = Inventory::all();
 
     }
 
@@ -30,7 +29,6 @@ class deleteModal extends Component
      */
     public function render()
     {
-        return view('Backend.components.delete_modal',
-            ['inventory' => $this->inventory]);
+        return view('Backend.components.delete_modal');
     }
 }

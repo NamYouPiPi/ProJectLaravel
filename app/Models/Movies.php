@@ -25,7 +25,9 @@ class Movies extends Model
     ];
 
 
-        public function genre()
+
+
+    public function genre()
     {
         return $this->belongsTo(Genre::class);
     }
@@ -37,4 +39,10 @@ class Movies extends Model
     public function supplier(){
         return $this->belongsTo(Supplier::class);
     }
+    public function showtimes()
+    {
+        return $this->hasMany(Showtimes::class, 'movie_id');
+    }
+
+
 }

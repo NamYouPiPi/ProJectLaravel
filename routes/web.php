@@ -11,6 +11,7 @@ use App\Http\Controllers\{
     ClassificationController,
     HallLocationController
     ,HallCinemaController
+    ,ShowtimesController
 };
 
 
@@ -34,6 +35,7 @@ Route::resource('sale'  , ConnectionSaleController::class);
 Route::resource('hall_locations', HallLocationController::class);
 Route::resource('hallCinema', HallCinemaController::class);
 Route::resource('movies' , MoviesController::class);
+Route::resource('Showtime', ShowtimesController::class);
 
 
 
@@ -68,6 +70,7 @@ Route::prefix('api/locations')->group(function () {
 
 
 Route::resource('classification' , ClassificationController::class);
+
 
 
 

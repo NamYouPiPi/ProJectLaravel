@@ -45,7 +45,7 @@ class MovieController extends Controller
 {
     public function index(Request $request)
     {
-        $movies = Movie::with('showtimes.theater')
+        $movies = Movie::with('Showtime.theater')
             ->when($request->search, function ($query, $search) {
                 return $query->where('title', 'like', "%{$search}%")
                            ->orWhere('genre', 'like', "%{$search}%");
@@ -81,7 +81,7 @@ class MovieController extends Controller
 
     public function show(Movie $movie)
     {
-        return response()->json($movie->load('showtimes.theater'));
+        return response()->json($movie->load('Showtime.theater'));
     }
 
     public function update(Request $request, Movie $movie)
@@ -120,7 +120,7 @@ class BookingController extends Controller
     {
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
-            'showtime_id' => 'required|exists:showtimes,id',
+            'showtime_id' => 'required|exists:Showtime,id',
             'seats' => 'required|array|min:1',
             'seats.*' => 'exists:seats,id',
             'payment_method' => 'required|in:Cash,Credit Card,Debit Card,Online,Mobile Payment',
@@ -132,20 +132,20 @@ class BookingController extends Controller
 
             $showtime = Showtime::with('theater', 'movie')->findOrFail($validated['showtime_id']);
             $seats = Seat::whereIn('id', $validated['seats'])->get();
-            
+
             // Check availability
             if ($showtime->available_seats < count($validated['seats'])) {
                 throw new Exception('Not enough seats available');
             }
-            
+
             // Calculate total
             $subtotal = $seats->sum(function ($seat) use ($showtime) {
                 return $showtime->ticket_price * $seat->price_multiplier;
             });
-            
+
             $taxAmount = $subtotal * 0.1;
             $totalAmount = $subtotal + $taxAmount;
-            
+
             // Create booking
             $booking = Booking::create([
                 'customer_id' => $validated['customer_id'],
@@ -161,7 +161,7 @@ class BookingController extends Controller
                 'booking_source' => 'Counter',
                 'special_requests' => $validated['special_requests']
             ]);
-            
+
             // Create booking seats
             foreach ($seats as $seat) {
                 BookingSeat::create([
@@ -170,7 +170,7 @@ class BookingController extends Controller
                     'seat_price' => $showtime->ticket_price * $seat->price_multiplier
                 ]);
             }
-            
+
             // Update available seats
             $showtime->decrement('available_seats', count($validated['seats']));
 
@@ -205,7 +205,7 @@ class BookingController extends Controller
                 'booking_status' => 'Cancelled',
                 'payment_status' => 'Refunded'
             ]);
-            
+
             $booking->showtime->increment('available_seats', $booking->total_seats);
         });
 
@@ -229,43 +229,43 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'movies.read', 'category' => 'Movies'],
             ['name' => 'movies.update', 'category' => 'Movies'],
             ['name' => 'movies.delete', 'category' => 'Movies'],
-            
+
             // Theaters
             ['name' => 'theaters.create', 'category' => 'Theaters'],
             ['name' => 'theaters.read', 'category' => 'Theaters'],
             ['name' => 'theaters.update', 'category' => 'Theaters'],
             ['name' => 'theaters.delete', 'category' => 'Theaters'],
-            
+
             // Showtimes
-            ['name' => 'showtimes.create', 'category' => 'Showtimes'],
-            ['name' => 'showtimes.read', 'category' => 'Showtimes'],
-            ['name' => 'showtimes.update', 'category' => 'Showtimes'],
-            ['name' => 'showtimes.delete', 'category' => 'Showtimes'],
-            
+            ['name' => 'Showtime.create', 'category' => 'Showtimes'],
+            ['name' => 'Showtime.read', 'category' => 'Showtimes'],
+            ['name' => 'Showtime.update', 'category' => 'Showtimes'],
+            ['name' => 'Showtime.delete', 'category' => 'Showtimes'],
+
             // Bookings
             ['name' => 'bookings.create', 'category' => 'Bookings'],
             ['name' => 'bookings.read', 'category' => 'Bookings'],
             ['name' => 'bookings.update', 'category' => 'Bookings'],
             ['name' => 'bookings.cancel', 'category' => 'Bookings'],
             ['name' => 'bookings.refund', 'category' => 'Bookings'],
-            
+
             // Customers
             ['name' => 'customers.create', 'category' => 'Customers'],
             ['name' => 'customers.read', 'category' => 'Customers'],
             ['name' => 'customers.update', 'category' => 'Customers'],
             ['name' => 'customers.delete', 'category' => 'Customers'],
-            
+
             // Staff
             ['name' => 'staff.create', 'category' => 'Staff'],
             ['name' => 'staff.read', 'category' => 'Staff'],
             ['name' => 'staff.update', 'category' => 'Staff'],
             ['name' => 'staff.delete', 'category' => 'Staff'],
-            
+
             // Reports
             ['name' => 'reports.sales', 'category' => 'Reports'],
             ['name' => 'reports.financial', 'category' => 'Reports'],
             ['name' => 'reports.customer', 'category' => 'Reports'],
-            
+
             // System
             ['name' => 'system.backup', 'category' => 'System'],
             ['name' => 'system.settings', 'category' => 'System'],
@@ -297,7 +297,7 @@ class RolePermissionSeeder extends Seeder
         $managerPermissions = Permission::whereIn('name', [
             'movies.create', 'movies.read', 'movies.update',
             'theaters.read', 'theaters.update',
-            'showtimes.create', 'showtimes.read', 'showtimes.update', 'showtimes.delete',
+            'Showtime.create', 'Showtime.read', 'Showtime.update', 'Showtime.delete',
             'bookings.read', 'bookings.update', 'bookings.cancel', 'bookings.refund',
             'customers.read', 'customers.update',
             'staff.read', 'staff.update',
@@ -307,7 +307,7 @@ class RolePermissionSeeder extends Seeder
 
         $cashier = Role::where('name', 'Cashier')->first();
         $cashierPermissions = Permission::whereIn('name', [
-            'movies.read', 'theaters.read', 'showtimes.read',
+            'movies.read', 'theaters.read', 'Showtime.read',
             'bookings.create', 'bookings.read', 'bookings.update', 'bookings.cancel',
             'customers.create', 'customers.read', 'customers.update'
         ])->get();
@@ -337,7 +337,7 @@ class CinemaSeeder extends Seeder
         foreach ($theaters as $theater) {
             $rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
             $seatsPerRow = $theater->capacity / count($rows);
-            
+
             foreach ($rows as $row) {
                 for ($i = 1; $i <= $seatsPerRow; $i++) {
                     Seat::create([
@@ -475,57 +475,57 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-    
+
     // Movies API
     Route::middleware('permission:movies.read')->group(function () {
         Route::get('/movies', [Api\MovieController::class, 'index']);
         Route::get('/movies/{movie}', [Api\MovieController::class, 'show']);
     });
-    
+
     Route::middleware('permission:movies.create')->group(function () {
         Route::post('/movies', [Api\MovieController::class, 'store']);
     });
-    
+
     Route::middleware('permission:movies.update')->group(function () {
         Route::put('/movies/{movie}', [Api\MovieController::class, 'update']);
     });
-    
+
     Route::middleware('permission:movies.delete')->group(function () {
         Route::delete('/movies/{movie}', [Api\MovieController::class, 'destroy']);
     });
-    
+
     // Theaters API
     Route::middleware('permission:theaters.read')->group(function () {
         Route::get('/theaters', [Api\TheaterController::class, 'index']);
         Route::get('/theaters/{theater}', [Api\TheaterController::class, 'show']);
     });
-    
+
     // Showtimes API
-    Route::middleware('permission:showtimes.read')->group(function () {
-        Route::get('/showtimes', [Api\ShowtimeController::class, 'index']);
-        Route::get('/showtimes/{showtime}', [Api\ShowtimeController::class, 'show']);
+    Route::middleware('permission:Showtime.read')->group(function () {
+        Route::get('/Showtime', [Api\ShowtimeController::class, 'index']);
+        Route::get('/Showtime/{showtime}', [Api\ShowtimeController::class, 'show']);
     });
-    
+
     // Bookings API
     Route::middleware('permission:bookings.create')->group(function () {
         Route::post('/bookings', [Api\BookingController::class, 'store']);
     });
-    
+
     Route::middleware('permission:bookings.read')->group(function () {
         Route::get('/bookings', [Api\BookingController::class, 'index']);
         Route::get('/bookings/{booking}', [Api\BookingController::class, 'show']);
     });
-    
+
     Route::middleware('permission:bookings.cancel')->group(function () {
         Route::post('/bookings/{booking}/cancel', [Api\BookingController::class, 'cancel']);
     });
-    
+
     // Customers API
     Route::middleware('permission:customers.read')->group(function () {
         Route::get('/customers', [Api\CustomerController::class, 'index']);
         Route::get('/customers/{customer}', [Api\CustomerController::class, 'show']);
     });
-    
+
     Route::middleware('permission:customers.create')->group(function () {
         Route::post('/customers', [Api\CustomerController::class, 'store']);
     });

@@ -15,29 +15,13 @@ function showAlert(message, type = "success") {
 }
 
 // ================ Button Edit ========================
-let currentSupplierId = null;
+let currentId = null;
 
 function EditById(btnEdit, Base_url) {
     btnEdit.on("click", function () {
         let id = $(this).data("id");
-        currentSupplierId = id;
-        console.log(currentSupplierId);
-
-        // Update modal title based on the data type
-        let modalTitle =
-            "Edit " + Base_url.charAt(0).toUpperCase() + Base_url.slice(1);
-        $("#updateModalLabel").text(modalTitle);
-
-        // Show loading spinner
-        $("#updateModal .modal-body").html(`
-            <div class="text-center">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        `);
-
-        // Show modal first
+        currentId = id;
+        console.log(currentId);
         $("#updateModal").modal("show");
 
         // Load edit form via AJAX
@@ -58,7 +42,7 @@ function EditById(btnEdit, Base_url) {
     $(document).on("submit", "#updateForm", function (e) {
         e.preventDefault();
         let form = $(this);
-        let id = form.find('[name="id"]').val() || currentSupplierId;
+        let id = form.find('[name="id"]').val() || currentId;
         console.log(id);
         form.find('button[type="submit"]')
             .prop("disabled", true)
@@ -77,6 +61,7 @@ function EditById(btnEdit, Base_url) {
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
+
             success: function (response) {
                 console.log("Update response:", response);
                 $("#updateModal").modal("hide");
@@ -104,7 +89,8 @@ function EditById(btnEdit, Base_url) {
 }
 
 // // ================== begin  handle  delete ===================
-function DeleteById(btnDelete, base_url) {
+
+function DeleteById(btnDelete, base_url ,callback) {
     let currentId;
 
     btnDelete.on("click", function () {
@@ -115,37 +101,77 @@ function DeleteById(btnDelete, base_url) {
 
     $("#confirmDeleteBtn").on("click", function () {
         if (currentId) {
-            // Close modal immediately
+            // Close modal immediately using jQuery (works for both Bootstrap 4 & 5)
             $("#deletemodal").modal("hide");
 
-            $.ajax({
-                url: `/${base_url}/` + currentId,
-                type: "DELETE",
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content"
-                    ),
-                },
-                success: function (response) {
-                    showAlert(
-                        "Data was change status to inactive successfully!",
-                        "success"
-                    );
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1500);
-                },
-                error: function (xhr) {
-                    showAlert(
-                        "Error deleting data. Please try again.",
-                        "danger"
-                    );
-                    console.log(xhr);
-                },
-            });
+            // Add a small delay to ensure modal is fully closed
+            setTimeout(() => {
+                $.ajax({
+                    url: `/${base_url}/` + currentId,
+                    type: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    success: function (response) {
+                        if (callback) callback();
+                    },
+                    error: function (xhr) {
+                        showAlert(
+                            "Error deleting data. Please try again.",
+                            "danger"
+                        );
+                        console.log(xhr);
+                    },
+                });
+            }, 300); // Small delay to ensure modal closes properly
         }
     });
 }
+
+//     function DeleteById(btnDelete, base_url) {
+//         let currentId;
+
+//         btnDelete.on("click", function () {
+//         currentId = $(this).data("id");
+//         console.log(currentId);
+//         $("#deletemodal").modal("show");
+//     });
+
+//     $("#confirmDeleteBtn").on("click", function () {
+//         if (currentId) {
+//             // Close modal immediately
+//             $("#deletemodal").modal("hide");
+
+//             $.ajax({
+//                 url: `/${base_url}/` + currentId,
+//                 type: "DELETE",
+//                 headers: {
+//                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+//                         "content"
+//                     ),
+//                 },
+//                 success: function (response) {
+//                     showAlert(
+//                         "Data was change status to inactive successfully!",
+//                         "success"
+//                     );
+//                     setTimeout(function () {
+//                         location.reload();
+//                     }, 1500);
+//                 },
+//                 error: function (xhr) {
+//                     showAlert(
+//                         "Error deleting data. Please try again.",
+//                         "danger"
+//                     );
+//                     console.log(xhr);
+//                 },
+//             });
+//         }
+//     });
+// }
 // function DeleteById(btnDelete, base_url) {
 //     let currentId;
 
