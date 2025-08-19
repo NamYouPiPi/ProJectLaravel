@@ -149,12 +149,10 @@
                             </button>
                         </x-update-modal>
 
-                        <x-delete-modal dataTable="movies" title="Delete Movie">
-                            <button type="button" class="btn btn-danger btnDeleteMovie" data-id="{{ $movie->id}}"
-                                data-bs-toggle="modal" data-bs-target="#deletemodal">
-                                Delete
-                            </button>
-                        </x-delete-modal>
+                       <button type="button" class="btn btn-outline-danger"
+                                    onclick="confirmDelete({{ $movie->id }}, 'movies')">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
                     </td>
                 </tr>
             @endforeach

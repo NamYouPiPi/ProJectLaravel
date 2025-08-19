@@ -66,12 +66,10 @@
                             </button>
                         </x-update-modal>
 
-                        <x-delete-modal dataTable="classification" title="Delete classification">
-                            <button type="button" class="btn btn-danger btn_delete_clss" data-id="{{ $classification->id}}"
-                                data-bs-toggle="modal" data-bs-target="#deletemodal">
-                                Delete
-                            </button>
-                        </x-delete-modal>
+                        <button type="button" class="btn btn-outline-danger"
+                                    onclick="confirmDelete({{ $classification->id }}, 'classification')">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
 
                     </td>
                 </tr>
@@ -92,35 +90,9 @@
     <script src="{{ asset('js/ajax.js')}}"></script>
 
     <script>
-        function updateClassificationRow(classification) {
-            let row = $("#classification-row" + classification.id);
-            if (row.length) {
-                row.find(".classification-code").text(classification.code);
-                row.find(".classification-name").text(classification.name);
-                row.find(".classification-age-limit").text(classification.age_limit);
-                row.find(".classification-country").text(classification.country);
-                row.find(".classification-status").text(classification.status);
-                row.find(".classification-description").text(classification.description);
-                row.find(".classification-updated").text(
-                    new Date().toLocaleDateString("en-CA")
-                );
-                // Add a highlight effect
-                row.addClass("table-success");
-                setTimeout(() => {
-                    row.removeClass("table-success");
-                }, 500);
-            }
-        }
-        // $(document).ready(function () {
-        //     //
-        //     DeleteById($('.btn_delete_clss'), 'classification')
-        //     EditById($('.btn_edit_clss'), 'classification')
-        //     RedirectToIndex();
-        // });
+
         $(document).ready(function () {
-            DeleteById($('.btn_delete_clss'), 'classification', function () {
-                location.reload();
-            });
+
             EditById($('.btn_edit_clss'), 'classification');
             // RedirectToIndex();
         });

@@ -141,7 +141,7 @@
         <thead>
             <tr>
 
-{{--                <th>Id</th>--}}
+                {{-- <th>Id</th>--}}
                 <th>Item_Name</th>
                 <th>Quantity</th>
                 <th>Price</th>
@@ -155,7 +155,7 @@
             @foreach($sales as $sale)
 
                 <tr class="sale-row{{$sale->id}}">
-{{--                    <td>{{$sale->id}}</td>--}}
+                    {{-- <td>{{$sale->id}}</td>--}}
                     <td>{{$sale->item_name}}</td>
                     <td>{{$sale->quantity}}</td>
                     <td>{{$sale->price}} $</td>
@@ -168,12 +168,9 @@
                                 data-bs-toggle="modal" data-bs-target="#updateModal">Eidt
                             </button>
                         </x-update-modal>
-                        <x-delete-modal dataTable="Sale" title="Delete Sale">
-                            <button type="button" class="btn btn-danger btn_delete_sale" data-id="{{ $sale->id}}"
-                                data-bs-toggle="modal" data-bs-target="#deletemodal">
-                                Delete
-                            </button>
-                        </x-delete-modal>
+                        <button type="button" class="btn btn-outline-danger" onclick="confirmDelete({{ $sale->id }}, 'sale')">
+                            <i class="bi bi-trash3"></i>
+                        </button>
                     </td>
                 </tr>
             @endforeach
@@ -188,7 +185,7 @@
     <script>
         $(document).ready(function () {
             EditById($('.btn_edit_sale'), 'sale');
-            DeleteById($('.btn_delete_sale'), 'sale', '')
+            // DeleteById($('.btn_delete_sale'), 'sale', '')
         });
     </script>
 @endsection

@@ -226,14 +226,11 @@
                                         data-bs-toggle="modal" data-bs-target="#updateModal">
                                         ✏️ Edit
                                     </button>
-                                </x-update-modal>
-
-                                <x-delete-modal dataTable="hallCinema" title="Delete Cinema Hall">
-                                    <button type="button" class="btn btn-sm btn-danger btn_del_cinema" data-id="{{ $hall_cinemas->id}}"
-                                        data-bs-toggle="modal" data-bs-target="#deletemodal">
-                                        🗑️ Delete
+                                    </x-update-modal>
+                                    <button type="button" class="btn btn-outline-danger"
+                                        onclick="confirmDelete({{ $hall_cinemas->id }}, 'hallCinema')">
+                                        <i class="bi bi-trash3"></i>
                                     </button>
-                                </x-delete-modal>
                             </td>
                         </tr>
                     @empty

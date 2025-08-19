@@ -76,12 +76,10 @@
                                 </button>
                             </x-update-modal>
 
-                            <x-delete-modal dataTable="showtimes" title="Delete showtime">
-                                <button type="button" class="btn btn-outline-danger btnDelShowtime" data-id="{{ $showtime->id}}"
-                                    data-bs-toggle="modal" data-bs-target="#deletemodal">
+                           <button type="button" class="btn btn-outline-danger"
+                                    onclick="confirmDelete({{ $showtime->id }}, 'Showtime')">
                                     <i class="bi bi-trash3"></i>
                                 </button>
-                            </x-delete-modal>
 
                         </td>
 
@@ -109,7 +107,7 @@
     <Script src="{{ asset('js/ajax.js')}}"></Script>
     <script>
         $(document).ready(function () {
-            DeleteById($('.btnDelShowtime'), 'Showtime');
+            // DeleteById($('.btnDelShowtime'), 'Showtime');
             EditById($('.btn_edit_showtime'), 'Showtime');
         });
     </script>

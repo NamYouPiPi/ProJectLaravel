@@ -180,12 +180,10 @@
                                         </button>
                                     </x-update-modal>
 
-                                    <x-delete-modal dataTable="genre" title="Delete Genre">
-                                        <button type="button" class="btn btn-sm btn-danger btn_delete_genre" data-id="{{ $genre->id}}"
-                                                data-bs-toggle="modal" data-bs-target="#deletemodal">
-                                            🗑️ Delete
-                                        </button>
-                                    </x-delete-modal>
+                                   <button type="button" class="btn btn-outline-danger"
+                                    onclick="confirmDelete({{ $genre->id }}, 'genre')">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
                                 </td>
                             </tr>
                         @empty

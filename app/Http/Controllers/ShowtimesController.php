@@ -130,6 +130,7 @@ class ShowtimesController extends Controller
             'end_time' => 'required|date|after:start_time',
             'base_price' => 'required|numeric|min:0',
             'status' => 'required|in:upcoming,ongoing,ended',
+            'is_active' => 'active',
         ]);
 
         $showtime->update($data);
@@ -140,14 +141,15 @@ class ShowtimesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\showtimes  $showtimes
+     * @param  \App\Models\showtimes  $showtime
      * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function destroy(showtimes $showtimes)
+    public function destroy(showtimes $showtime)
     {
         //
-      $showtimes -> is_active = 'inactive';
-      $showtimes -> save();
+        $showtime->delete();
+    //   $showtimes -> is_active = 'inactive';
+    //   $showtimes -> save();
       return view('Backend.Showtime.index' )->with('success','Status was changed to inactive');
     }
 }

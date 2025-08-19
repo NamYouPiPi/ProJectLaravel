@@ -148,12 +148,10 @@
                                 </button>
                             </x-update-modal>
 
-                            <x-delete-modal dataTable="supplier" title="Add New Supplier">
-                                <button type="button" class="btn btn-danger btnSupplier"
-                                    data-id="{{ $supplier->id}}" data-bs-toggle="modal" data-bs-target="#deletemodal">
-                                    Delete
+                             <button type="button" class="btn btn-outline-danger"
+                                    onclick="confirmDelete({{ $supplier->id }}, 'suppliers')">
+                                    <i class="bi bi-trash3"></i>
                                 </button>
-                            </x-delete-modal>
                         </td>
                     </tr>
                 @endforeach
