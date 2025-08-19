@@ -1,4 +1,5 @@
-@props(['dataTable' => 'default', 'title' => 'default'])
+@props([  'dataTable' => 'default',
+    'title' => 'update New Record',])
 
 <div {{ $attributes }}>
     {{ $slot }}
@@ -8,7 +9,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="updateModalLabel">{{$title}}</h1>
+                <h1 class="modal-title fs-5" id="updateModalLabel">{{ $title}}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -37,6 +38,12 @@
                     @default
                     @case('Showtime')
                         @include('Backend.Showtime.edit' )
+                        @break
+                    @case('SeatsType')
+                        @include('Backend.SeatsType.edit')
+                        @break
+                    @case('seats')
+                        @include('Backend.Seats.edit')
                         @break
                         <div>No data available</div>
                 @endswitch

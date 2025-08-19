@@ -3,3 +3,4 @@
 
     @include("Backend.HallCinema.form", ['hall_location' => $hall_location])
 </form>
+

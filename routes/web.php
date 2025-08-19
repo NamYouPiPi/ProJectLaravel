@@ -1,18 +1,17 @@
 <?php
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{
-    InventoryController,
+use App\Http\Controllers\{InventoryController,
+    SeatsController,
+    SeatTypeController,
     SupplierController,
     GenreController,
-
     ConnectionSaleController,
     MoviesController,
     ClassificationController,
-    HallLocationController
-    ,HallCinemaController
-    ,ShowtimesController
-};
+    HallLocationController,
+    HallCinemaController,
+    ShowtimesController};
 
 
 
@@ -36,17 +35,19 @@ Route::resource('hall_locations', HallLocationController::class);
 Route::resource('hallCinema', HallCinemaController::class);
 Route::resource('movies' , MoviesController::class);
 Route::resource('Showtime', ShowtimesController::class);
+Route::resource('genre' ,GenreController::class);
+Route::resource('seatTypes', SeatTypeController::class);
+Route::resource('seats', SeatsController::class);
 
 
-
+//route for connection sales
 Route::get('/connection-sales/report', [ConnectionSaleController::class, 'generateReport'])->name('sale.report');
 Route::get('/connection-sales/best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');
 Route::get('/connection-sales/analytics', [ConnectionSaleController::class, 'analytics'])->name('sale.analytics');
 Route::get('/connection-sales/monthly-report', [ConnectionSaleController::class, 'monthlyReport'])->name('sale.monthly-report');
 Route::get('/connection-sales/chart-data', [ConnectionSaleController::class, 'chartData'])->name('sale.chart-data');
 
-Route::resource('genre' ,GenreController::class);
-
+// route for search movies
 Route::get('/movies/search', [MoviesController::class, 'search'])->name('movies.search');
 
 // Hall Cinema search and filter routes

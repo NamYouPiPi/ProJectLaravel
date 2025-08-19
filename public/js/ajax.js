@@ -1,4 +1,58 @@
 // Show alert function
+function confirmDelete(id, base_url) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This will permanently delete the seat type.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, delete it",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Get the CSRF token from meta tag
+            let csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            // Create a form with the correct action and method
+            let form = document.createElement("form");
+            form.action = `/${base_url}/${id}`;
+            form.method = "POST";
+            form.style.display = "none"; // Hide the form
+
+            // Add CSRF token
+            let tokenInput = document.createElement("input");
+            tokenInput.type = "hidden";
+            tokenInput.name = "_token";
+            tokenInput.value = csrfToken;
+            form.appendChild(tokenInput);
+
+            // Add method spoofing for DELETE
+            let methodInput = document.createElement("input");
+            methodInput.type = "hidden";
+            methodInput.name = "_method";
+            methodInput.value = "DELETE";
+            form.appendChild(methodInput);
+
+            // Add form to body and submit
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+
+
+
+
+
+
+// -------- alert =------------
+
+
+
+
+
 function showAlert(message, type = "success") {
     const alertHtml = `
               <div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -90,7 +144,7 @@ function EditById(btnEdit, Base_url) {
 
 // // ================== begin  handle  delete ===================
 
-function DeleteById(btnDelete, base_url ,callback) {
+function DeleteById(btnDelete, base_url) {
     let currentId;
 
     btnDelete.on("click", function () {
@@ -115,7 +169,12 @@ function DeleteById(btnDelete, base_url ,callback) {
                         ),
                     },
                     success: function (response) {
-                        if (callback) callback();
+                        // if (callback) callback();
+                        showAlert(
+                            "Data was changed status to inactive successfully!",
+                            "success"
+                        );
+                        location.reload();
                     },
                     error: function (xhr) {
                         showAlert(

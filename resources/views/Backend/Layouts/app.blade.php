@@ -1,7 +1,8 @@
- @include ("Backend.partials.header")
- <meta name="csrf-token" content="{{ csrf_token() }}">
-  </head>
-  <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
+@include ("Backend.partials.header")
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <!--begin::Header-->

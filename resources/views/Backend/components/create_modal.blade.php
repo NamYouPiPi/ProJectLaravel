@@ -47,6 +47,12 @@
                     @case('showTimes')
                         @include("Backend.Showtime.create", ['hallCinema' => $hallCinema , 'movies' => $movies])
                         @break
+                    @case('seatsType')
+                        @include("Backend.SeatsType.create")
+                        @break
+                     @case('seats')
+                        @include("Backend.Seats.create", ['hallCinema' => $hallCinema, 'seatsType' => $seatsType])
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch

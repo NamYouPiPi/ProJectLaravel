@@ -24,4 +24,8 @@ class Hall_cinema extends Model
     {
         return $this->hasMany(Showtimes::class, 'hall_id');
     }
+    public function seats()
+    {
+        return $this->hasMany(Seats::class, 'hall_id');
+    }
 }

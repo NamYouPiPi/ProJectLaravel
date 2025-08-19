@@ -104,6 +104,18 @@
                         <p>ShowTimes </p>
                     </a>
                 </li>
+                <li class="nav-item  @yield('seatsTypes')">
+                    <a href="{{route('seatTypes.index')}}" class="nav-link">
+                        <i class="bi bi-geo-alt"></i>
+                        <p>Seats Type </p>
+                    </a>
+                </li>
+                <li class="nav-item  @yield('seats')">
+                    <a href="{{route('seats.index')}}" class="nav-link">
+                        <i class="bi bi-geo-alt"></i>
+                        <p>Seats </p>
+                    </a>
+                </li>
             </ul>
             <!--end::Sidebar Menu-->
         </nav>
