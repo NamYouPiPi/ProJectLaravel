@@ -49,8 +49,8 @@
 
     {{-- Table Section --}}
     <div class="card">
-        <div class="card-body">
-            <table id="example" class="display table table-responsive table-hover" style="width:100%">
+        <div class="card-body m-2">
+            <table id="example" class="display table table-responsive table-hover" style="width:100% ">
                 <thead>
                     <tr class="text-center ">
                         {{-- <th>Id</th>--}}
@@ -68,7 +68,7 @@
                 </thead>
                 <tbody>
                     @foreach($Seats as $seat)
-                        <tr>
+                        <tr class="text-center">
                             <td>{{$seat->hall->cinema_name}}</td>
                             <td>{{$seat->seatType->name}}</td>
                             <td>{{$seat->seatType->price}}$</td>
@@ -114,8 +114,6 @@
     @include('Backend.components.alert')
     {{-- Scripts --}}
     <script src="{{ asset('js/ajax.js')}}"></script>
-    {{--
-    <script src="{{ asset('js/inventory-filter.js')}}"></script>--}}
     <script>
         // Run SweetAlert notifications after page loads
 
@@ -164,5 +162,6 @@
                 });
             });
         }
+        EditById($(".btnupdateseat"), "seats");
     </script>
 @endsection

@@ -4,6 +4,143 @@
 @section('supplier', 'active')
 @section('menu-open', 'menu-open')
 @section('content')
+    <style>
+        /* Stats Cards */
+        .supplier-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 10px;
+            border: none;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .supplier-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .supplier-card .card-body {
+            padding: 1.5rem;
+        }
+        
+        .supplier-card h5 {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .supplier-card h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        #suppliersTable {
+            margin-bottom: 0;
+        }
+        
+        #suppliersTable thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        #suppliersTable tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        #suppliersTable tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+        
+        /* Highlight effect animation */
+        .table-success {
+            animation: highlight-fade 2s ease-in-out;
+        }
+        
+        @keyframes highlight-fade {
+            0% { background-color: rgba(40, 167, 69, 0.2); }
+            100% { background-color: transparent; }
+        }
+        
+        /* Buttons and actions */
+        .btn-outline-primary, .btn-outline-danger {
+            border-radius: 5px;
+            padding: 0.375rem 0.75rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+            box-shadow: 0 2px 5px rgba(13, 110, 253, 0.3);
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+            box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
+        }
+        
+        /* Filter form */
+        #filterForm {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .search-box {
+            min-width: 250px;
+            border-radius: 6px;
+        }
+        
+        /* Pagination */
+        .pagination {
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .page-link {
+            color: #0d6efd;
+            border-radius: 5px;
+            margin: 0 3px;
+        }
+        
+        /* Status badges */
+        .supplier-status {
+            position: relative;
+        }
+        
+        .supplier-status:before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .supplier-status:contains("active"):before {
+            background-color: #28a745;
+        }
+        
+        .supplier-status:contains("inactive"):before {
+            background-color: #dc3545;
+        }
+    </style>
 
     {{--================= end of add title and active ==============--}}
 
@@ -58,14 +195,15 @@
         {{-- Filters Section --}}
         <div class="card mb-4">
             <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <x-create_modal dataTable="supplier" title="Add New Supplier">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                                <i class="fas fa-plus"></i> Add Supplier
-                            </button>
-                        </x-create_modal>
-                    </div>
-                <form method="GET" action="{{ route('suppliers.index') }}" class="d-flex align-items-center gap-3 float-end" id="filterForm">
+                <div>
+                    <x-create_modal dataTable="supplier" title="Add New Supplier">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                            <i class="fas fa-plus"></i> Add Supplier
+                        </button>
+                    </x-create_modal>
+                </div>
+                <form method="GET" action="{{ route('suppliers.index') }}" class="d-flex align-items-center gap-3 float-end"
+                    id="filterForm">
                     {{-- Add New Button --}}
 
 
@@ -93,21 +231,21 @@
                 </form>
             </div>
         </div>
-{{--
-    <x-create_modal dataTable="supplier" title="Add New Supplier" class="">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-        Add New Supplier
-    </button>
-</x-create_modal> --}}
+        {{--
+        <x-create_modal dataTable="supplier" title="Add New Supplier" class="">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                Add New Supplier
+            </button>
+        </x-create_modal> --}}
 
 
-<script>
-    document.getElementById('status').addEventListener('change', function() {
-        document.getElementById('filterForm').submit();
-    });
-</script>
+        <script>
+            document.getElementById('status').addEventListener('change', function () {
+                document.getElementById('filterForm').submit();
+            });
+        </script>
 
-</div>
+    </div>
 
 
     {{-- ================ Table for Suppliers detail all ===================== --}}
@@ -115,7 +253,7 @@
         <table class="table table-hover " id="suppliersTable">
             <thead>
                 <tr>
-{{--                    <th>ID</th>--}}
+                    {{-- <th>ID</th>--}}
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -131,7 +269,7 @@
             <tbody>
                 @foreach($suppliers as $supplier)
                     <tr id="supplier-row{{ $supplier->id }}">
-{{--                        <td>{{ $supplier->id }}</td>--}}
+                        {{-- <td>{{ $supplier->id }}</td>--}}
                         <td class="supplier-name">{{ $supplier->name }}</td>
                         <td class="supplier-email">{{ $supplier->email }}</td>
                         <td class="supplier-phone">{{ $supplier->phone }}</td>
@@ -143,15 +281,16 @@
                         <td class="supplier-updated">{{ $supplier->updated_at->format("Y/m/d") }}</td>
                         <td class="d-flex gap-2">
                             <x-update-modal dataTable="supplier" title="update Supplier">
-                                <button type="button" class="btn btn-warning  editSupplierBtn" data-id="{{ $supplier->id }}">
-                                    Update
-                                </button>
+                                <button type="button" class="btn btn-outline-primary editSupplierBtn"
+                                    data-id="{{ $supplier->id }}">
+                                    <i class="bi bi-pencil"></i>
+                                 </button>
                             </x-update-modal>
 
-                             <button type="button" class="btn btn-outline-danger"
-                                    onclick="confirmDelete({{ $supplier->id }}, 'suppliers')">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
+                            <button type="button" class="btn btn-outline-danger"
+                                onclick="confirmDelete({{ $supplier->id }}, 'suppliers')">
+                                <i class="bi bi-trash3"></i>
+                            </button>
                         </td>
                     </tr>
                 @endforeach
@@ -176,30 +315,29 @@
     <Script src="{{ asset('js/ajax.js')}}"></Script>
     <script>
         $(document).ready(function () {
-            DeleteById($('.btnSupplier'), 'suppliers');
-            EditById($('.editSupplierBtn') , 'suppliers');
+            EditById($('.editSupplierBtn'), 'suppliers');
 
-        function updateTableRow(supplier) {
-        let row = $("#supplier-row" + supplier.id);
-        if (row.length) {
-        row.find(".supplier-name").text(supplier.name);
-        row.find(".supplier-email").text(supplier.email);
-        row.find(".supplier-phone").text(supplier.phone);
-        row.find(".supplier-contact").text(supplier.contact_person);
-        row.find(".supplier-type").text(supplier.supplier_type);
-        row.find(".supplier-status").text(supplier.status);
-        row.find(".supplier-address").text(supplier.address);
-        row.find(".supplier-updated").text(
-            new Date().toLocaleDateString("en-CA")
-        );
-        // Add a highlight effect
-        row.addClass("table-success");
-        setTimeout(() => {
-            row.removeClass("table-success");
-        }, 500);
-    }
-    updateTableRow(supplier)
-}
+            function updateTableRow(supplier) {
+                let row = $("#supplier-row" + supplier.id);
+                if (row.length) {
+                    row.find(".supplier-name").text(supplier.name);
+                    row.find(".supplier-email").text(supplier.email);
+                    row.find(".supplier-phone").text(supplier.phone);
+                    row.find(".supplier-contact").text(supplier.contact_person);
+                    row.find(".supplier-type").text(supplier.supplier_type);
+                    row.find(".supplier-status").text(supplier.status);
+                    row.find(".supplier-address").text(supplier.address);
+                    row.find(".supplier-updated").text(
+                        new Date().toLocaleDateString("en-CA")
+                    );
+                    // Add a highlight effect
+                    row.addClass("table-success");
+                    setTimeout(() => {
+                        row.removeClass("table-success");
+                    }, 500);
+                }
+                updateTableRow(supplier)
+            }
         });
     </script>
 @endsection

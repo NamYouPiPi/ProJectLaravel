@@ -199,7 +199,6 @@
     <script src="{{ asset('js/inventory-filter.js')}}"></script>
     <script>
         $(document).ready(function () {
-            DeleteById($('.btndeleteInventory'), 'inventory')
             EditById($('.btnEditInventory'), 'inventory')
         });
     </script>

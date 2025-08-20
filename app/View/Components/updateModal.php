@@ -31,7 +31,7 @@ class updateModal extends Component
         $this->genres= Genre::all();
         $this->suppliers= Supplier::all();
         $this->classifications = Classification::all();
-        
+
 
     }
 

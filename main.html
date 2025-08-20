@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Modal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            padding: 50px 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Custom Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-dialog {
+            max-width: 400px;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #ff6b6b, #ffa726, #66bb6a);
+            color: white;
+            padding: 40px 30px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%),
+            linear-gradient(-45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%);
+            background-size: 30px 30px;
+        }
+
+        .login-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .login-body {
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .google-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            color: #757575;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .google-btn:hover {
+            border-color: #4285f4;
+            box-shadow: 0 2px 10px rgba(66, 133, 244, 0.2);
+            color: #4285f4;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 0 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-control {
+            border: none;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px 20px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+            border-color: transparent;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 3;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(90, 103, 216, 0.3);
+        }
+
+        .text-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .text-link:hover {
+            color: #4a90e2;
+            text-decoration: underline;
+        }
+
+        .text-center a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .text-center a:hover {
+            text-decoration: underline;
+        }
+
+        /* Demo button styles */
+        .demo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .open-modal-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .open-modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Modal Animation */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+            transform: scale(0.8) translateY(-50px);
+        }
+
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+        }
+    </style>
+</head>
+<body>
+<!-- Demo Button to Open Modal -->
+<div class="demo-container">
+    <button type="button" class="open-modal-btn" data-bs-toggle="modal" data-bs-target="#loginModal">
+        <i class="fas fa-sign-in-alt me-2"></i>
+        Open Login Modal
+    </button>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="login-header">
+                <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2 id="loginModalLabel">Login Here</h2>
+            </div>
+
+            <div class="login-body">
+                <form action="{{ route('login') ?? '#' }}" method="POST">
+                    @csrf
+
+                    <!-- Google Sign In Button -->
+                    <a href="{{ route('google.login') ?? '#' }}" class="google-btn mb-3">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KPHBhdGggZD0iTTIzLjY0IDEyLjIwNDVjMC0uODE2NC0uMDczNS0xLjYwMTgtLjIwOTEtMi4zNTY4SDEydjQuNDU5Mmg2LjU1MDljLS4yOTEgMS4yNzMxLS45ODI3IDIuMzUwNC0yLjA5MDkgMy4wNzA5djIuNTQwOWg0LjAzNjNjMS45ODE4LTEuODIyNyAzLjEyMjctNC41MDQ1IDMuMTIyNy03LjY4MTh6IiBmaWxsPSIjNDI4NUY0Ii8+CjxwYXRoIGQ9Ik0xMiAyNGM0LjI1NDUgMCA3LjgxODItMS40NjM2IDEwLjQzNjQtMy45OTI3bC00LjAzNjMtMi41NDA5Yy0xLjEyNzMuNzYzNi0yLjU2MzYgMS4yMTgyLTYuNCAxLjIxODItNC45MDkxIDAtOS4wNTQ1LTMuMzE2NC0xMC41NDU1LTcuNzk5MWwtNC4xODM2IDMuMjM2NGMzLjU2MzYgNy4wMzY0IDEwLjg3MjcgMTEuODc4MSAxOC43MjkxIDExLjg3ODF6IiBmaWxsPSIjMzRBODUzIi8+CjxwYXRoIGQ9Ik0xLjQ1NDUgNi4yMjczQzEuMDE4MiA3LjIzNjQuNzcyNyA4LjM0NTUuNzcyNyA5LjVzLjI0NTUgMi4yNjM2LjY4MTggMy4yNzI3bDQuMTgzNi0zLjIzNjRDNS4yIDguNjU0NSA1LjIgOC4zNDU1IDUuMiA4czAtLjY1NDUuNDM2NC0xLjI3MjdMMi40NTQ1IDMuNDkwOXpNMTIgNC43NzI3YzIuOTQ1NSAwIDQuNzY0IDEuMjkwOSA1Ljg3ODEgMi4zMjE4bDQuMzA5MS00LjMwOTFDMTkuNzI3MiAxLjA5MDkgMTYuMTQ1NSAwIDEyIDAgNy4yNzI3IDAgMS4zNjM2IDMuNTI3My4wOTgxIDguNTQ1NWw0LjE3NDUtMy4yNTQ1QzYuNTQ1NSA4LjEgOS4zMjczIDQuNzcyNyAxMiA0Ljc3Mjd6IiBmaWxsPSIjRkJCQzA1Ii8+CjxwYXRoIGQ9Ik0xMiAyNGM0LjI1NDUgMCA3LjgxODItMS40NjM2IDEwLjQzNjQtMy45OTI3bC00LjAzNjMtMi41NDA5Yy0xLjEyNzMuNzYzNi0yLjU2MzYgMS4yMTgyLTYuNCAxLjIxODItNC45MDkxIDAtOS4wNTQ1LTMuMzE2NC0xMC41NDU1LTcuNzk5MWwtNC4xODM2IDMuMjM2NGMzLjU2MzYgNy4wMzY0IDEwLjg3MjcgMTEuODc4MSAxOC43MjkxIDExLjg3ODF6IiBmaWxsPSIjRUE0MzM1Ii8+CjwvZz4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KPC9zdHlsZT4KPHN2Zz4KPGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KPHBhdGggZD0iTTIzLjY0IDEyLjIwNDVjMC0uODE2NC0uMDczNS0xLjYwMTgtLjIwOTEtMi4zNTY4SDEydjQuNDU5Mmg2LjU1MDljLS4yOTEgMS4yNzMxLS45ODI3IDIuMzUwNC0yLjA5MDkgMy4wNzA5djIuNTQwOWg0LjAzNjNjMS45ODE4LTEuODIyNyAzLjEyMjctNC41MDQ1IDMuMTIyNy03LjY4MTh6IiBmaWxsPSIjNDI4NUY0Ii8+CjxwYXRoIGQ9Ik0xMiAyNGM0LjI1NDUgMCA3LjgxODItMS40NjM2IDEwLjQzNjQtMy45OTI3bC00LjAzNjMtMi41NDA5Yy0xLjEyNzMuNzYzNi0yLjU2MzYgMS4yMTgyLTYuNCAxLjIxODItNC45MDkxIDAtOS4wNTQ1LTMuMzE2NC0xMC41NDU1LTcuNzk5MWwtNC4xODM2IDMuMjM2NGMzLjU2MzYgNy4wMzY0IDEwLjg3MjcgMTEuODc4MSAxOC43MjkxIDExLjg3ODF6IiBmaWxsPSIjMzRBODUzIi8+CjxwYXRoIGQ9Ik0xLjQ1NDUgNi4yMjczQzEuMDE4MiA3LjIzNjQuNzcyNyA4LjM0NTUuNzcyNyA5LjVzLjI0NTUgMi4yNjM2LjY4MTggMy4yNzI3bDQuMTgzNi0zLjIzNjRDNS4yIDguNjU0NSA1LjIgOC4zNDU1IDUuMiA4czAtLjY1NDUuNDM2NC0xLjI3MjdMMi40NTQ1IDMuNDkwOXpNMTIgNC43NzI3YzIuOTQ1NSAwIDQuNzY0IDEuMjkwOSA1Ljg3ODEgMi4zMjE4bDQuMzA5MS00LjMwOTFDMTkuNzI3MiAxLjA5MDkgMTYuMTQ1NSAwIDEyIDAgNy4yNzI3IDAgMS4zNjM2IDMuNTI3My4wOTgxIDguNTQ1NWw0LjE3NDUtMy4yNTQ1QzYuNTQ1NSA4LjEgOS4zMjczIDQuNzcyNyAxMiA0Ljc3Mjd6IiBmaWxsPSIjRkJCQzA1Ii8+CjxwYXRoIGQ9Ik0xMiAyNGM0LjI1NDUgMCA3LjgxODItMS40NjM2IDEwLjQzNjQtMy45OTI3bC00LjAzNjMtMi41NDA5Yy0xLjEyNzMuNzYzNi0yLjU2MzYgMS4yMTgyLTYuNCAxLjIxODItNC45MDkxIDAtOS4wNTQ1LTMuMzE2NC0xMC41NDU1LTcuNzk5MWwtNC4xODM2IDMuMjM2NGMzLjU2MzYgNy4wMzY0IDEwLjg3MjcgMTEuODc4MSAxOC43MjkxIDExLjg3ODF6IiBmaWxsPSIjRUE0MzM1Ii8+CjwvZz4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KPC9zdHlsZT4KPC9zdmc+Cg==" alt="Google" class="google-icon">
+                        Sign in with Google
+                    </a>
+
+                    <!-- Divider -->
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+
+                    <!-- Email Input -->
+                    <div class="mb-3">
+                        <input type="email" class="form-control" name="email" placeholder="Email" required value="{{ old('email') }}">
+                        @error('email')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="password-container mb-3">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="passwordIcon"></i>
+                        </button>
+                        @error('password')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary">
+                        Create account
+                    </button>
+                </form>
+
+                <!-- Additional Links -->
+                <div class="text-center">
+                    <a href="{{ route('password.request') ?? '#' }}" class="text-link">Request a New Password</a>
+                </div>
+
+                <div class="text-center mt-3">
+                    <span class="text-muted">New here? </span>
+                    <a href="{{ route('register') ?? '#' }}">Create an account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Password toggle functionality
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.getElementById('passwordIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.classList.remove('fa-eye');
+            passwordIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.classList.remove('fa-eye-slash');
+            passwordIcon.classList.add('fa-eye');
+        }
+    }
+
+    // Auto-open modal if there are validation errors
+    @if($errors->any())
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        });
+    @endif
+</script>
+</body>
+</html>
