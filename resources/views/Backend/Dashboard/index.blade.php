@@ -1,3 +1,4 @@
+@include('Backend.partials.sidebar')
 @extends('Backend.Layouts.app')
 @section('content')
     @section('title' , 'dashboard')

@@ -107,5 +107,59 @@ return [
     */
 
     'password_timeout' => 10800,
+// config/auth.php
+
+'defaults' => [
+    'guard' => 'web',
+    'passwords' => 'users',
+],
+
+'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+
+    // staff/admin/etc (Spatie roles live here)
+    'user' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+
+    // customers
+    'customer' => [
+        'driver' => 'session',
+        'provider' => 'customers',
+    ],
+],
+
+'providers' => [
+    // staff/admin/etc
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+
+    // customers table/model
+    'customers' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Customer::class,
+    ],
+],
+
+'passwords' => [
+    'users' => [
+        'provider' => 'users',
+        'table' => 'password_resets',
+        'expire' => 60,
+        'throttle' => 60,
+    ],
+    'customers' => [
+        'provider' => 'customers',
+        'table' => 'password_resets',
+        'expire' => 60,
+        'throttle' => 60,
+    ],
+],
 
 ];
