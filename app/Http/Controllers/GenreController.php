@@ -50,10 +50,10 @@ class GenreController extends Controller
         $inactiveGenres = Genre::where('status', 'inactive')->count();
 
         return view('Backend.Genre.index', compact(
-            'genres', 
-            'categories', 
-            'totalGenres', 
-            'activeGenres', 
+            'genres',
+            'categories',
+            'totalGenres',
+            'activeGenres',
             'inactiveGenres'
         ));
     }
@@ -117,18 +117,18 @@ class GenreController extends Controller
      * @param  \App\Models\Genre  $genre
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Genre $genre)
-    {
-        //
-        $data = $request->validate([
-            'main_genre' => 'required|string|max:255',
-            'sub_genre' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|in:active,inactive',
-        ]);
-        $genre->update($data);
-        return redirect()->route('genre.index', compact('success','Genre updated successfully'));
-    }
+
+public function update(Request $request, Genre $genre)
+{
+    $data = $request->validate([
+        'main_genre' => 'required|string|max:255',
+        'sub_genre' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'status' => 'required|in:active,inactive',
+    ]);
+    $genre->update($data);
+    return redirect()->route('genre.index')->with('success', 'Genre updated successfully');
+}
 
     /**
      * Remove the specified resource from storage.

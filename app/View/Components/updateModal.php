@@ -22,7 +22,7 @@ class updateModal extends Component
     public $suppliers;
     public $classifications;
 
-    public function __construct()
+    public function __construct( )
     {
         //
         $this->dataTable = 'default';

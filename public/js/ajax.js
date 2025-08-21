@@ -121,3 +121,24 @@ function EditById(btnEdit, Base_url) {
         });
     });
 }
+
+
+
+
+function showDetails(id , type) {
+    $.ajax({
+        url: `/${type}/${id}`,
+        type: "GET",
+        success: function (response) {
+            // Populate the modal with movie details
+            $("#detailsModal .modal-body").html(response);
+            $("#detailsModal").modal("show");
+        },
+        error: function (xhr) {
+            $("#detailsModal .modal-body").html(
+                '<div class="alert alert-danger">Error loading details. Please try again.</div>'
+            );
+            console.error("Error loading details:", xhr);
+        },
+    });
+}

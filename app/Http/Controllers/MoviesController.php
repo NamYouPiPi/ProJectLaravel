@@ -148,16 +148,12 @@ class MoviesController extends Controller
      * @param  \App\Models\Movies  $movies
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|string
      */
-public function edit(Movies $movie)
+public function edit($id)
 {
+    $movie = Movies::findOrFail($id);
     $genres = Genre::all();
     $suppliers = Supplier::all();
     $classifications = Classification::all();
-
-    // For AJAX requests, return just the form HTML
-    if (request()->ajax()) {
-        return view('Backend.Movies.edit', compact('movie', 'genres', 'suppliers', 'classifications'))->render();
-    }
 
     return view('Backend.Movies.edit', compact('movie', 'genres', 'suppliers', 'classifications'));
 }

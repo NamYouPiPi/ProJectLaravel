@@ -224,7 +224,6 @@
             <script>
                 $(document).ready(function() {
                     EditById($('.btn_update_genre'), 'genre');
-                    DeleteById($('.btn_delete_genre'), 'genre');
 
                     // Debounced search functionality
                     let searchTimeout;

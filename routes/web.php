@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\PaymentController;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{InventoryController,
@@ -11,7 +12,10 @@ use App\Http\Controllers\{InventoryController,
     ClassificationController,
     HallLocationController,
     HallCinemaController,
-    ShowtimesController};
+    ShowtimesController ,
+CustomerAccountController ,
+GoogleController
+};
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
@@ -21,8 +25,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-// use App\Http\Controllers\Auth\GoogleController;
-use App\Http\Controllers\GoogleController;
 
 
 
@@ -67,7 +69,9 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 
 
-
+// aba
+Route::get('/pay' , [PaymentController::class, 'pay']);
+Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
 
 // google login and  google callback routes
@@ -104,6 +108,9 @@ Route::resource('genre' ,GenreController::class);
 Route::resource('seatTypes', SeatTypeController::class);
 Route::resource('seats', SeatsController::class);
 
+// customer accoutn
+
+Route::resource('customerAccount', CustomerAccountController::class);
 
 //route for connection sales
 Route::get('/connection-sales/report', [ConnectionSaleController::class, 'generateReport'])->name('sale.report');

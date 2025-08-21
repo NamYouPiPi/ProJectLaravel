@@ -129,7 +129,7 @@
                     <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
-{{--            <div class="col-md-2">--}}
+           {{-- <div class="col-md-2">--}}
 {{--                <label for="hall_type" class="form-label">Hall Type</label>--}}
 {{--                <select class="form-select" name="hall_type" id="hall_type">--}}
 {{--                    <option value="all" {{ request('hall_type') == 'all' ? 'selected' : '' }}>All Types</option>--}}
@@ -139,7 +139,7 @@
 {{--                        </option>--}}
 {{--                    @endforeach--}}
 {{--                </select>--}}
-{{--            </div>--}}
+{{--            </div> --}}
             <div class="col-md-3">
                 <label for="location" class="form-label">Location</label>
                 <select class="form-select" name="location" id="location">

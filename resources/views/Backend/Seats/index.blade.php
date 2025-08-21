@@ -5,39 +5,7 @@
 @section('content')
 
     {{-- ================== check message add and update if succeed =======================--}}
-    @if(session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: "{{ session('success') }}",
-                showConfirmButton: false,
-                timer: 2000
-            })
-        </script>
-    @endif
-
-    @if(session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: "{{ session('error') }}",
-            })
-        </script>
-    @endif
-
-    @if(session('warning'))
-        <script>
-            Swal.fire({
-                icon: 'warning',
-                title: 'Warning',
-                text: "{{ session('warning') }}",
-            })
-        </script>
-    @endif
-
-
+   @include('backend.components.toast')
 
     {{-- ======================= end of check messange ========================= --}}
 
@@ -111,57 +79,9 @@
     </div>
     </div>
 
-    @include('Backend.components.alert')
     {{-- Scripts --}}
     <script src="{{ asset('js/ajax.js')}}"></script>
     <script>
-        // Run SweetAlert notifications after page loads
-
-
-        function EditById(btnEdit, Base_url) {
-            btnEdit.on("click", function () {
-                let id = $(this).data("id");
-
-                // Open modal
-                $("#updateModal").modal("show");
-
-                // Load form via AJAX
-                $.ajax({
-                    url: `/${Base_url}/` + id + "/edit",
-                    type: "GET",
-                    success: function (response) {
-                        $("#updateModal .modal-body").html(response); // insert form
-                    },
-                    error: function () {
-                        $("#updateModal .modal-body").html("<p class='text-danger'>Error loading form</p>");
-                    }
-                });
-            });
-
-            // Submit update form
-            $(document).on("submit", "#updateForm", function (e) {
-                e.preventDefault();
-
-                let formData = new FormData(this);
-                let id = $("input[name='id']").val();
-
-                $.ajax({
-                    url: `/${Base_url}/` + id,
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function () {
-                        $("#updateModal").modal("hide");
-                        toastr.success("Updated successfully!");
-                        $("#example").load(location.href + " #example"); // reload table only
-                    },
-                    error: function () {
-                        toastr.error("Update failed!");
-                    }
-                });
-            });
-        }
         EditById($(".btnupdateseat"), "seats");
     </script>
 @endsection

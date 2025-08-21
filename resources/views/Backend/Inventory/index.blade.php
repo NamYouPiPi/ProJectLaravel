@@ -152,28 +152,55 @@
 {{--                    <td>{{$inventory->id}}</td>--}}
                     <td>{{$inventory->supplier_name}}</td>
                     <td>{{$inventory->item_name}}</td>
-                    <td>{{$inventory->category}}</td>
+                           <td>
+                                    <span class="badge
+                        @if($inventory->category === 'drinks') bg-primary
+                        @elseif($inventory->category === 'foods') bg-success
+                        @elseif($inventory->category === 'snacks') bg-warning text-dark
+                        @elseif($inventory->category === 'movies') bg-info text-dark
+                        @elseif($inventory->category === 'others') bg-secondary
+                        @else bg-light text-dark
+                        @endif
+                    ">
+                                        {{ $inventory->category ?? 'N/A' }}
+                                    </span>
+                                </td>
                     <td>{{$inventory->quantity}}</td>
                     <td>{{$inventory->unit}}</td>
                     <td>{{$inventory->cost_price}}</td>
                     <td>{{$inventory->sale_price}}</td>
                     <td>{{$inventory->stock_level}}</td>
                     <td>{{$inventory->reorder_level}}</td>
-                    <td>{{$inventory->stock}}</td>
+                    <td><span class="badge
+                        @if($inventory->stock === 'in_stock') bg-success
+                        @elseif($inventory->stock === 'low_stock') bg-warning text-dark
+                        @elseif($inventory->stock === 'out_of_stock') bg-danger
+                        @else bg-light text-dark
+                        @endif
+                    ">
+                                        {{ $inventory->stock ?? 'N/A' }}
+                                    </span></td>
                     {{-- ====== base image url i read from .end file ============ --}}
                     <td><img src="{{config('app.image_base_url')}}{{$inventory->image}}" alt="Avatar"
                             class="rounded-circle img-fluid" style="width: 40px; height: 40px;"></td>
-                    <td>{{$inventory->status}}</td>
+                    <td><span class="badge
+                        @if($inventory->status === 'active') bg-success
+                        @elseif($inventory->status === 'inactive') bg-danger
+                        @else bg-light text-dark
+                        @endif
+                    ">
+                                        {{ $inventory->status ?? 'N/A' }}
+                                    </span></td>
                     <td>{{ $inventory->created_at->format("Y/m/d") }}</td>
                     <td>{{ $inventory->updated_at->format("Y/m/d") }}</td>
                     <td class="d-flex gap-1">
                         <x-update-modal dataTable="inventory" title="Edit Inventory">
-                            <button type="button" class="btn btn-success btnEditInventory" data-id="{{$inventory->id}}"
-                                data-bs-toggle="modal" data-bs-target="#updateModal">UPDATE
+                            <button type="button" class="btn btn-outline-primary btn-sm btnEditInventory" data-id="{{$inventory->id}}"
+                                data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil"></i>
                             </button>
                         </x-update-modal>
 
-                      <button type="button" class="btn btn-outline-danger"
+                      <button type="button" class="btn btn-outline-danger btn-sm"
                                     onclick="confirmDelete({{ $inventory->id }}, 'inventory')">
                                     <i class="bi bi-trash3"></i>
                                 </button>

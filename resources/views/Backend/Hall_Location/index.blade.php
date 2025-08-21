@@ -62,11 +62,13 @@
             color: white;
         }
 
+        /* Make entire card clickable */
         .location-card {
             transition: transform 0.2s;
             border-radius: 10px;
             border: none;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
         }
 
         .location-card:hover {
@@ -74,40 +76,50 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .halls-count-badge {
-            background: linear-gradient(45deg, #17a2b8, #20c997);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            font-weight: 600;
+        /* Table row hover effect */
+        #tableContainer tbody tr {
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        /* Fix button trembling on hover */
-        .btn_update_hall,
-        .btn_del_hall,
-        .location-details-btn {
-            transition: all 0.2s ease-in-out !important;
+        #tableContainer tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Add ripple effect for better click feedback */
+        .ripple {
             position: relative;
-            border-width: 1px !important;
-            min-width: fit-content;
+            overflow: hidden;
+            transform: translate3d(0, 0, 0);
         }
 
-        .btn_update_hall:hover,
-        .btn_del_hall:hover,
-        .location-details-btn:hover {
-            /* transform: none !important; */
-            border-width: 1px !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+        .ripple:after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+            background-repeat: no-repeat;
+            background-position: 50%;
+            transform: scale(10, 10);
+            opacity: 0;
+            transition: transform .5s, opacity 1s;
         }
 
-        /* Prevent layout shift by maintaining consistent dimensions */
-        .btn-sm {
-            padding: 0.25rem 0.5rem !important;
-            font-size: 0.875rem !important;
-            line-height: 1.5 !important;
-            border-radius: 0.375rem !important;
-            white-space: nowrap;
+        .ripple:active:after {
+            transform: scale(0, 0);
+            opacity: .3;
+            transition: 0s;
+        }
+
+        /* Prevent action buttons from triggering card click */
+        .card-footer .btn {
+            position: relative;
+            z-index: 10;
         }
     </style>
 
@@ -237,10 +249,10 @@
     </div>
 
     {{-- Card-based layout for better visual presentation --}}
-    <div class="row">
+    <div class="row" id="cardViewContainer">
         @forelse($hallocation as $hall)
             <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card location-card h-100">
+                <div class="card location-card h-100 ripple" data-id="{{ $hall->id }}">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h6 class="mb-0 fw-bold">{{ $hall->name }}</h6>
                         @if($hall->status == 'active')
@@ -288,7 +300,7 @@
                                 ✏️ Edit
                             </button>
                         </x-update-modal>
-                        <button type="button" class="btn btn-outline-danger"
+                        <button type="button" class="btn btn-sm btn-outline-danger"
                             onclick="confirmDelete({{ $hall->id }}, 'hall_locations')">
                             <i class="bi bi-trash3"></i>
                         </button>
@@ -341,7 +353,7 @@
                 </thead>
                 <tbody>
                     @foreach($hallocation as $hall)
-                        <tr class="text-center">
+                        <tr class="text-center location-row" data-id="{{ $hall->id }}">
                             <td><strong>{{ $hall->name }}</strong></td>
                             <td>{{ $hall->address }}</td>
                             <td>{{ $hall->city }}</td>
@@ -357,7 +369,7 @@
                                 @endif
                             </td>
                             <td>{{ $hall->created_at->format("d/m/Y") }}</td>
-                            <td class="d-flex gap-1 ">
+                            <td class="d-flex gap-1 justify-content-center">
                                 <button class="btn btn-sm btn-outline-info location-details-btn"
                                     data-id="{{ $hall->id }}">👁️</button>
                                 <x-update-modal dataTable="hall_location" title="Edit Location">
@@ -365,8 +377,8 @@
                                         data-id="{{ $hall->id}}" data-bs-toggle="modal"
                                         data-bs-target="#updateModal">✏️</button>
                                 </x-update-modal>
-                                <button type="button" class="btn btn-outline-danger"
-                                    onclick="confirmDelete({{ $hall->id }}, 'hall_location')">
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                    onclick="event.stopPropagation(); confirmDelete({{ $hall->id }}, 'hall_locations')">
                                     <i class="bi bi-trash3"></i>
                                 </button>
                             </td>
@@ -405,6 +417,98 @@
     {{-- ------------ add file ajax ---------------}}
     <script src="{{ asset('js/ajax.js')}}"></script>
 
+    {{-- Interactive features script --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // View toggle functionality
+            const cardViewBtn = document.getElementById('cardView');
+            const tableViewBtn = document.getElementById('tableView');
+            const cardViewContainer = document.getElementById('cardViewContainer');
+            const tableContainer = document.getElementById('tableContainer');
 
+            cardViewBtn.addEventListener('click', function() {
+                cardViewContainer.classList.remove('d-none');
+                tableContainer.classList.add('d-none');
+                cardViewBtn.classList.add('active');
+                tableViewBtn.classList.remove('active');
+            });
+
+            tableViewBtn.addEventListener('click', function() {
+                cardViewContainer.classList.add('d-none');
+                tableContainer.classList.remove('d-none');
+                cardViewBtn.classList.remove('active');
+                tableViewBtn.classList.add('active');
+            });
+
+            // Make cards clickable
+            document.querySelectorAll('.location-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on a button
+                    if (e.target.closest('.btn')) return;
+                    
+                    const id = this.dataset.id;
+                    showLocationDetails(id);
+                });
+            });
+
+            // Make table rows clickable
+            document.querySelectorAll('.location-row').forEach(row => {
+                row.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on a button
+                    if (e.target.closest('.btn')) return;
+                    
+                    const id = this.dataset.id;
+                    showLocationDetails(id);
+                });
+            });
+
+            // Location details button click
+            document.querySelectorAll('.location-details-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent card/row click
+                    const id = this.dataset.id;
+                    showLocationDetails(id);
+                });
+            });
+
+            // Function to show location details
+            function showLocationDetails(id) {
+                const modal = new bootstrap.Modal(document.getElementById('locationDetailsModal'));
+                modal.show();
+                
+                // Load location details via AJAX
+                fetch(`/hall_locations/${id}/details`)
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('locationDetailsContent').innerHTML = data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching location details:', error);
+                        document.getElementById('locationDetailsContent').innerHTML = 
+                            `<div class="alert alert-danger">Error loading location details. Please try again.</div>`;
+                    });
+            }
+
+            // Analytics button click
+            document.getElementById('analyticsBtn').addEventListener('click', function() {
+                // Replace with actual analytics functionality
+                alert('Analytics feature will be available soon!');
+            });
+
+            // Export button click
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                window.location.href = "{{ route('hall_locations.index') }}?export=true";
+            });
+            
+            // Fix update modal behavior
+            document.querySelectorAll('.btn_update_hall').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent card/row click
+                    
+                    // The rest is handled by the update-modal component
+                });
+            });
+        });
+    </script>
 
 @endsection

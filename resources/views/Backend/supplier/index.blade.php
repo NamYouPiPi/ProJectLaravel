@@ -13,37 +13,37 @@
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .supplier-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
-        
+
         .supplier-card .card-body {
             padding: 1.5rem;
         }
-        
+
         .supplier-card h5 {
             font-weight: 600;
             margin-bottom: 0.75rem;
         }
-        
+
         .supplier-card h2 {
             font-size: 2.5rem;
             font-weight: 700;
         }
-        
+
         /* Table Styles */
         .table-responsive {
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             overflow: hidden;
         }
-        
+
         #suppliersTable {
             margin-bottom: 0;
         }
-        
+
         #suppliersTable thead th {
             background-color: #f8f9fa;
             border-bottom: 2px solid #dee2e6;
@@ -52,78 +52,84 @@
             font-size: 0.8rem;
             letter-spacing: 0.5px;
         }
-        
+
         #suppliersTable tbody tr {
             transition: background-color 0.2s;
         }
-        
+
         #suppliersTable tbody tr:hover {
             background-color: rgba(0, 123, 255, 0.05);
         }
-        
+
         /* Highlight effect animation */
         .table-success {
             animation: highlight-fade 2s ease-in-out;
         }
-        
+
         @keyframes highlight-fade {
-            0% { background-color: rgba(40, 167, 69, 0.2); }
-            100% { background-color: transparent; }
+            0% {
+                background-color: rgba(40, 167, 69, 0.2);
+            }
+
+            100% {
+                background-color: transparent;
+            }
         }
-        
+
         /* Buttons and actions */
-        .btn-outline-primary, .btn-outline-danger {
+        .btn-outline-primary,
+        .btn-outline-danger {
             border-radius: 5px;
             padding: 0.375rem 0.75rem;
             transition: all 0.3s;
         }
-        
+
         .btn-outline-primary:hover {
             background-color: #0d6efd;
             color: white;
             box-shadow: 0 2px 5px rgba(13, 110, 253, 0.3);
         }
-        
+
         .btn-outline-danger:hover {
             background-color: #dc3545;
             color: white;
             box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
         }
-        
+
         /* Filter form */
         #filterForm {
             background-color: #f8f9fa;
             padding: 10px;
             border-radius: 8px;
         }
-        
+
         .search-box {
             min-width: 250px;
             border-radius: 6px;
         }
-        
+
         /* Pagination */
         .pagination {
             margin-top: 1.5rem;
             justify-content: center;
         }
-        
+
         .page-item.active .page-link {
             background-color: #0d6efd;
             border-color: #0d6efd;
         }
-        
+
         .page-link {
             color: #0d6efd;
             border-radius: 5px;
             margin: 0 3px;
         }
-        
+
         /* Status badges */
         .supplier-status {
             position: relative;
         }
-        
+
         .supplier-status:before {
             content: "";
             display: inline-block;
@@ -132,11 +138,11 @@
             border-radius: 50%;
             margin-right: 5px;
         }
-        
+
         .supplier-status:contains("active"):before {
             background-color: #28a745;
         }
-        
+
         .supplier-status:contains("inactive"):before {
             background-color: #dc3545;
         }
@@ -194,41 +200,46 @@
 
         {{-- Filters Section --}}
         <div class="card mb-4">
-            <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="card-body bg-red d-flex justify-content-between align-items-center">
                 <div>
                     <x-create_modal dataTable="supplier" title="Add New Supplier">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                            <i class="fas fa-plus"></i> Add Supplier
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                            data-bs-target="#createModal">
+                            <i class="bi bi-plus-lg"></i> Add Supplier
                         </button>
                     </x-create_modal>
                 </div>
-                <form method="GET" action="{{ route('suppliers.index') }}" class="d-flex align-items-center gap-3 float-end"
-                    id="filterForm">
-                    {{-- Add New Button --}}
+                <div class="float-end">
+                    <form method="GET" action="{{ route('suppliers.index') }}" class="d-flex align-items-center gap-3 "
+                        id="filterForm">
+                        {{-- Add New Button --}}
 
 
-                    {{-- Search Box --}}
-                    <div class="flex-grow-1">
-                        <input type="text" name="search" class="form-control search-box" id="searchInput"
-                            placeholder="Search by name, email, or phone..." value="{{ $search }}">
-                    </div>
+                        {{-- Search Box --}}
+                        <div class="flex-grow-1">
+                            <input type="text" name="search" class="form-control search-box" id="searchInput"
+                                placeholder="Search by name, email, or phone..." value="{{ $search }}">
+                        </div>
 
-                    {{-- Status Filter --}}
-                    <div style="width: 150px;">
-                        <select name="status" id="status" class="form-select" onchange="this.form.submit()">
-                            <option value="">All Status</option>
-                            <option value="active" {{ $searchStatus === 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ $searchStatus === 'inactive' ? 'selected' : '' }}>Inactive</option>
-                        </select>
-                    </div>
+                        {{-- Status Filter --}}
+                        <div style="width: 150px;">
+                            <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Status</option>
+                                <option value="active" {{ $searchStatus === 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ $searchStatus === 'inactive' ? 'selected' : '' }}>Inactive
+                                </option>
+                            </select>
+                        </div>
 
-                    {{-- Clear Filters --}}
-                    <div>
-                        <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Clear
-                        </a>
-                    </div>
-                </form>
+                        {{-- Clear Filters --}}
+                        <div>
+                            <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Clear
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
         {{--
@@ -268,31 +279,47 @@
             </thead>
             <tbody>
                 @foreach($suppliers as $supplier)
-                    <tr id="supplier-row{{ $supplier->id }}">
-                        {{-- <td>{{ $supplier->id }}</td>--}}
-                        <td class="supplier-name">{{ $supplier->name }}</td>
-                        <td class="supplier-email">{{ $supplier->email }}</td>
-                        <td class="supplier-phone">{{ $supplier->phone }}</td>
-                        <td class="supplier-contact">{{ $supplier->contact_person }}</td>
-                        <td class="supplier-type">{{ $supplier->supplier_type }}</td>
-                        <td class="supplier-status">{{ $supplier->status }}</td>
-                        <td class="supplier-address">{{ $supplier->address }}</td>
-                        <td>{{ $supplier->created_at->format("Y/m/d") }}</td>
-                        <td class="supplier-updated">{{ $supplier->updated_at->format("Y/m/d") }}</td>
-                        <td class="d-flex gap-2">
-                            <x-update-modal dataTable="supplier" title="update Supplier">
-                                <button type="button" class="btn btn-outline-primary editSupplierBtn"
-                                    data-id="{{ $supplier->id }}">
-                                    <i class="bi bi-pencil"></i>
-                                 </button>
-                            </x-update-modal>
+                            <tr id="supplier-row{{ $supplier->id }}">
+                                {{-- <td>{{ $supplier->id }}</td>--}}
+                                <td>{{ $supplier->name }}</td>
+                                <td>{{ $supplier->email }}</td>
+                                <td>{{ $supplier->phone }}</td>
+                                <td>{{ $supplier->contact_person }}</td>
+                                {{-- <td><span class="badge bg-{{ $supplier->supplier_type === 'drinks' ? 'primary' : 'secondary' }}">{{
+                                        $supplier->supplier_type }}</span></td> --}}
+                                <td>
+                                    <span class="badge
+                        @if($supplier->supplier_type === 'drinks') bg-primary
+                        @elseif($supplier->supplier_type === 'foods') bg-success
+                        @elseif($supplier->supplier_type === 'snacks') bg-warning text-dark
+                        @elseif($supplier->supplier_type === 'movies') bg-info text-dark
+                        @elseif($supplier->supplier_type === 'others') bg-secondary
+                        @else bg-light text-dark
+                        @endif
+                    ">
+                                        {{ $supplier->supplier_type ?? 'N/A' }}
+                                    </span>
+                                </td>
+                                <td><span
+                                        class="badge bg-{{ $supplier->status === 'active' ? 'success' : 'danger' }}">{{ $supplier->status }}</span>
+                                </td>
+                                <td>{{ $supplier->address }}</td>
+                                <td>{{ $supplier->created_at->format("Y/m/d") }}</td>
+                                <td class="supplier-updated">{{ $supplier->updated_at->format("Y/m/d") }}</td>
+                                <td class="d-flex gap-2">
+                                    <x-update-modal dataTable="supplier" title="update Supplier">
+                                        <button type="button" class="btn btn-outline-primary btn-sm editSupplierBtn"
+                                            data-id="{{ $supplier->id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </x-update-modal>
 
-                            <button type="button" class="btn btn-outline-danger"
-                                onclick="confirmDelete({{ $supplier->id }}, 'suppliers')">
-                                <i class="bi bi-trash3"></i>
-                            </button>
-                        </td>
-                    </tr>
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        onclick="confirmDelete({{ $supplier->id }}, 'suppliers')">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </td>
+                            </tr>
                 @endforeach
             </tbody>
         </table>
@@ -317,27 +344,6 @@
         $(document).ready(function () {
             EditById($('.editSupplierBtn'), 'suppliers');
 
-            function updateTableRow(supplier) {
-                let row = $("#supplier-row" + supplier.id);
-                if (row.length) {
-                    row.find(".supplier-name").text(supplier.name);
-                    row.find(".supplier-email").text(supplier.email);
-                    row.find(".supplier-phone").text(supplier.phone);
-                    row.find(".supplier-contact").text(supplier.contact_person);
-                    row.find(".supplier-type").text(supplier.supplier_type);
-                    row.find(".supplier-status").text(supplier.status);
-                    row.find(".supplier-address").text(supplier.address);
-                    row.find(".supplier-updated").text(
-                        new Date().toLocaleDateString("en-CA")
-                    );
-                    // Add a highlight effect
-                    row.addClass("table-success");
-                    setTimeout(() => {
-                        row.removeClass("table-success");
-                    }, 500);
-                }
-                updateTableRow(supplier)
-            }
         });
     </script>
 @endsection

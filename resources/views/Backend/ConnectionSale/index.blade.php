@@ -164,11 +164,11 @@
                     <td>{{ $sale->updated_at->format("Y/m/d") }}</td>
                     <td class="d-flex gap-3">
                         <x-update-modal dataTable="sale" title="update sale ">
-                            <button type="button" class="btn btn-primary btn_edit_sale" data-id="{{$sale->id}}"
-                                data-bs-toggle="modal" data-bs-target="#updateModal">Eidt
+                            <button type="button" class="btn btn-outline-primary btn-sm  btn_edit_sale" data-id="{{$sale->id}}"
+                                data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil-square"></i> 
                             </button>
                         </x-update-modal>
-                        <button type="button" class="btn btn-outline-danger" onclick="confirmDelete({{ $sale->id }}, 'sale')">
+                        <button type="button" class=" btn-sm  btn btn-outline-danger" onclick="confirmDelete({{ $sale->id }}, 'sale')">
                             <i class="bi bi-trash3"></i>
                         </button>
                     </td>
