@@ -2,7 +2,7 @@
 {{-- ============ add title and active =======================--}}
 @section('title', 'supplier')
 @section('supplier', 'active')
-@section('menu-open', 'menu-open')
+{{--@section('menu-open', 'menu-open')--}}
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 

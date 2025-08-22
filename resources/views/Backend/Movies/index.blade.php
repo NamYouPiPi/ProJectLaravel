@@ -15,26 +15,26 @@
 
 
                             {{-- Filters Section --}}
-                            <form action="{{ route('movies.index') }}" method="GET" id="filterForm"
+                            {{-- <form action="{{ route('movies.index') }}" method="GET" id="filterForm"
                             class="d-flex align-items-center gap-3 "
                             >
                                 {{-- Search --}}
-                                <div class="flex-grow-1">
+                                {{-- <div class="flex-grow-1">
                                     <input type="text" name="search" class="form-control" placeholder="Search by title..."
                                         value="{{ request('search') }}">
-                                </div>
+                                </div> --}}
 
                                 {{-- Status Filter --}}
-                                <div style="width: 150px;">
+                                {{-- <div style="width: 150px;">
                                     <select name="status" class="form-select" onchange="document.getElementById('filterForm').submit()">
                                         <option value="">All Status</option>
                                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                                         <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                     </select>
-                                </div>
+                                </div> --}}
 
                                 {{-- Genre Filter --}}
-                                <div style="width: 150px;">
+                                {{-- <div style="width: 150px;">
                                     <select name="genre_id" class="form-select" onchange="document.getElementById('filterForm').submit()">
                                         <option value="">All Genres</option>
                                         @foreach($genres as $genre)
@@ -43,10 +43,10 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                </div>
+                                </div> --}}
 
                                 {{-- Supplier Filter --}}
-                                <div style="width: 150px;">
+                                {{-- <div style="width: 150px;">
                                     <select name="supplier_id" class="form-select" onchange="document.getElementById('filterForm').submit()">
                                         <option value="">All Suppliers</option>
                                         @foreach($suppliers as $supplier)
@@ -55,18 +55,18 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                </div>
+                                </div> --}}
 
 
 
                                 {{-- Clear Filters --}}
-                                <div>
+                                {{-- <div>
                                     <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('movies.index') }}'">
                                         <i class="fas fa-times"></i> Clear
                                     </button>
                                 </div>
-                            </form>
-                            <div class="float-end">
+                            </form> --}}
+                            <div class="float-end"> --}}
                                 <x-create_modal dataTable="movies" title="Add New Movie">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                                         <i class="fas fa-plus"></i> Add New Movie

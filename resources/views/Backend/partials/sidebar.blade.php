@@ -116,6 +116,18 @@
                         <p>Seats </p>
                     </a>
                 </li>
+                <li class="nav-item  @yield('customer')">
+                    <a href="{{route('customer.index')}}" class="nav-link">
+                        <i class="bi bi-geo-alt"></i>
+                        <p>Customers </p>
+                    </a>
+                </li>
+                <li class="nav-item  @yield('employees')">
+                    <a href="{{route('employees.index')}}" class="nav-link">
+                        <i class="bi bi-geo-alt"></i>
+                        <p>Employees </p>
+                    </a>
+                </li>
             </ul>
             <!--end::Sidebar Menu-->
         </nav>

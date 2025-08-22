@@ -53,6 +53,13 @@
                      @case('seats')
                         @include("Backend.Seats.create", ['hallCinema' => $hallCinema, 'seatsType' => $seatsType])
                         @break
+                    @case('customer')
+                        @include("Customers.create")
+                        @break
+                    @case('employees')
+                        @include("Backend.Employees.create")
+                    @break
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch

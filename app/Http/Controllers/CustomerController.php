@@ -15,6 +15,8 @@ class CustomerController extends Controller
     public function index()
     {
         //
+        $customers = Customer::paginate(10);
+        return  view('Customers.index' , compact('customers'));
     }
 
     /**
@@ -25,6 +27,7 @@ class CustomerController extends Controller
     public function create()
     {
         //
+        return  view('Customers.create');
     }
 
     /**
@@ -36,6 +39,23 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         //
+        // dd($request->all());
+    $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:customers,email',
+            'phone' => 'required|string|max:20|unique:customers,phone',
+            'password' => 'required|string|min:5|confirmed',
+            'status' => 'required|in:active,inactive',
+        ]);
+        Customer::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => bcrypt($request->password),
+            'status' => $request->status,
+        ]);
+        // $customer = Customer::create($data);
+        return  redirect()->route('customer.index')->with('success', 'Customer created successfully');
     }
 
     /**
@@ -58,6 +78,7 @@ class CustomerController extends Controller
     public function edit(Customer $customer)
     {
         //
+        return  view('Customers.create' , compact('customer'));
     }
 
     /**
@@ -70,6 +91,13 @@ class CustomerController extends Controller
     public function update(Request $request, Customer $customer)
     {
         //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:customers,email,' . $customer->id,
+            'phone' => 'required|string|max:20|unique:customers,phone,' . $customer->id,
+        ]);
+        $customer->update($request->all());
+        return redirect()->route('customer.index')->with('success', 'Customer updated successfully');
     }
 
     /**
@@ -81,5 +109,9 @@ class CustomerController extends Controller
     public function destroy(Customer $customer)
     {
         //
+        $customer->status = 'inactive';
+        $customer->save();
+        return redirect()->route('customer.index')->with('success', 'Customer change status to inactive successfully');
+
     }
 }

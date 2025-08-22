@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
@@ -13,20 +14,20 @@ use App\Http\Controllers\{InventoryController,
     HallLocationController,
     HallCinemaController,
     ShowtimesController ,
-CustomerAccountController ,
-GoogleController
+    GoogleController,
+    EmployeesController,
+    RoleController,
+    PermissionController,
+    UserController
 };
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-
-
+use App\Http\Controllers\Auth\{
+    LoginController,
+    RegisterController,
+    ForgotPasswordController,
+    ResetPasswordController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -54,18 +55,6 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-// Dashboard Route
-// Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-// Redirect home to dashboard for authenticated users
-// Route::get('/', function () {
-//     if (auth()->check()) {
-//         return redirect()->route('dashboard');
-//     }
-//     return view('welcome');
-// });
-
-
 
 
 
@@ -80,21 +69,6 @@ Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback'])
 // end of google login and  google callback routes
 
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::resource('suppliers', SupplierController::class);
-//     Route::resource('inventory',InventoryController::class );
-//     Route::resource('sale'  , ConnectionSaleController::class);
-//     Route::resource('hall_locations', HallLocationController::class);
-//     Route::resource('hallCinema', HallCinemaController::class);
-//     Route::resource('movies' , MoviesController::class);
-//     Route::resource('Showtime', ShowtimesController::class);
-//     Route::resource('genre' ,GenreController::class);
-//     Route::resource('seatTypes', SeatTypeController::class);
-//     Route::resource('seats', SeatsController::class);
-// });
-
-
-
 
 Route::get('/dashboard' , function (){return  view('Backend.Dashboard.index');})->name('dashboard');
 Route::resource('suppliers', SupplierController::class);
@@ -107,10 +81,9 @@ Route::resource('Showtime', ShowtimesController::class);
 Route::resource('genre' ,GenreController::class);
 Route::resource('seatTypes', SeatTypeController::class);
 Route::resource('seats', SeatsController::class);
+Route::resource('customer' , CustomerController::class);
+Route::resource('employees', EmployeesController::class);
 
-// customer accoutn
-
-Route::resource('customerAccount', CustomerAccountController::class);
 
 //route for connection sales
 Route::get('/connection-sales/report', [ConnectionSaleController::class, 'generateReport'])->name('sale.report');
@@ -213,3 +186,21 @@ Route::get('/permission-test/admin-only', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Customer Authentication Routes
+Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
+    // Guest routes (for non-authenticated customers)
+    Route::middleware('guest:customer')->group(function () {
+        // Registration routes
+        Route::get('/register', [App\Http\Controllers\CustomerAuthController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [App\Http\Controllers\CustomerAuthController::class, 'register']);
+
+        // Login routes
+        Route::get('/login', [App\Http\Controllers\CustomerAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [App\Http\Controllers\CustomerAuthController::class, 'login']);
+
+        // Google OAuth Routes
+        Route::get('/auth/google', [App\Http\Controllers\CustomerAuthController::class, 'redirectToGoogle'])->name('google.redirect');
+        Route::get('/auth/google/callback', [App\Http\Controllers\CustomerAuthController::class, 'handleGoogleCallback'])->name('google.callback');
+    });
+});

@@ -99,10 +99,7 @@
     </div>
 
 
-    <script src="{{ asset('js/supplier-filter.js') }}"></script>
 
-    </div>
-    {{-- ================ end of pagination ================--}}
 
     <Script src="{{ asset('js/ajax.js')}}"></Script>
     <script>

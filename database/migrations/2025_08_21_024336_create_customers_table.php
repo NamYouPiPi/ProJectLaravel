@@ -15,7 +15,15 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            
+           $table->string('name');
+            $table->string('email')->unique();
+            $table->string('phone')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('google_id')->nullable();
+            $table->string('profile_photo')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->rememberToken()->nullable();
             $table->timestamps();
         });
     }

@@ -48,6 +48,12 @@
                     @case('seats')
                         @include('Backend.Seats.edit')
                         @break
+                    @case('customer')
+                        @include('Customers.create')
+                        @break
+                    @case('employees')
+                        @include('Backend.Employees.create')
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch

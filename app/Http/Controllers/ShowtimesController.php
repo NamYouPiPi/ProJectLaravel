@@ -7,6 +7,7 @@ use App\Models\Movies;
 use App\Models\showtimes;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ShowtimesController extends Controller
 {
@@ -67,23 +68,31 @@ class ShowtimesController extends Controller
     {
         //
         // dd($request->all());
-        $request->validate([
-            'movie_id' => 'required|exists:movies,id',
-            'hall_id' => 'required|exists:hall_cinemas,id',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'base_price' => 'required|numeric|min:0',
-            'status' => 'required|in:upcoming,ongoing,ended',
-        ]);
+         $request->validate([
+        'movie_id' => 'required|exists:movies,id',
+        'hall_id' => 'required|exists:hall_cinemas,id',
+        'start_time' => 'required|date',
+        'base_price' => 'required|numeric|min:0',
+        // End time is calculated, not required from input
+    ]);
 
+    // Get the movie duration
+    $movie = Movies::findOrFail($request->movie_id);
+    $durationInMinutes = $movie->duration;
+
+    // Calculate end time based on start time and movie duration
+    $startTime = Carbon::parse($request->start_time);
+    $endTime = $startTime->copy()->addMinutes($durationInMinutes);
+
+    // Create the s
         showtimes::create([
-            'movie_id' => $request->movie_id,
-            'hall_id' => $request->hall_id,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'base_price' => $request->base_price,
-            'status' => $request->status,
-            'is_active' => 'active',
+           'movie_id' => $request->movie_id,
+        'hall_id' => $request->hall_id,
+        'start_time' => $startTime,
+        'end_time' => $endTime,
+        'base_price' => $request->base_price,
+        'status' => $request->status,
+        'is_active' => 'active',
         ]);
         return redirect()->route('Showtime.index')->with('success', 'Showtime created successfully.');
     }
