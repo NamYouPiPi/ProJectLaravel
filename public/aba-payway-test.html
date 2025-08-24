@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ABA PayWay QR Payment</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; }
+        .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; }
+        label { display: block; margin-top: 16px; }
+        input, select, button { width: 100%; padding: 8px; margin-top: 8px; }
+        .result { margin-top: 24px; padding: 12px; background: #e9ffe9; border: 1px solid #b2ffb2; border-radius: 4px; }
+        .error { background: #ffe9e9; border: 1px solid #ffb2b2; }
+        pre { white-space: pre-wrap; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Test ABA PayWay QR Payment</h2>
+        <form id="payForm">
+            <label for="booking_id">Booking ID</label>
+            <input type="number" id="booking_id" name="booking_id" required>
+
+            <label for="amount">Amount (USD)</label>
+            <input type="number" id="amount" name="amount" min="1" required>
+
+            <label for="payment_method">Payment Method</label>
+            <select id="payment_method" name="payment_method">
+                <option value="qr">ABA QR</option>
+                <option value="card">ABA Card</option>
+            </select>
+
+            <button type="submit">Pay</button>
+        </form>
+        <div id="result" class="result" style="display:none;"></div>
+    </div>
+    <script>
+    document.getElementById('payForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const booking_id = document.getElementById('booking_id').value;
+        const amount = document.getElementById('amount').value;
+        const payment_method = document.getElementById('payment_method').value;
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'none';
+        resultDiv.className = 'result';
+        resultDiv.innerHTML = '';
+        try {
+            const res = await fetch('http://127.0.0.1:8000/api/payments/initiate-aba', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ booking_id, amount, payment_method })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                if (payment_method === 'qr' && data.qrCode) {
+                    resultDiv.innerHTML = `<b>Scan this QR code with ABA app:</b><br><img src='https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(data.qrCode)}' alt='QR Code'><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else if (payment_method === 'card' && data.checkout_url) {
+                    resultDiv.innerHTML = `<b>Redirecting to ABA Card Payment...</b><br><a href='${data.checkout_url}' target='_blank'>Click here if not redirected</a>`;
+                    window.open(data.checkout_url, '_blank');
+                } else {
+                    resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } else {
+                resultDiv.className += ' error';
+                resultDiv.innerHTML = `<b>Error:</b><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+            resultDiv.style.display = 'block';
+        } catch (err) {
+            resultDiv.className += ' error';
+            resultDiv.innerHTML = `<b>Request failed:</b> ${err}`;
+            resultDiv.style.display = 'block';
+        }
+    });
+    </script>
+</body>
+</html>

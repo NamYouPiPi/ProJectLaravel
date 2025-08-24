@@ -54,6 +54,12 @@
                     @case('employees')
                         @include('Backend.Employees.create')
                         @break
+                    @case('user')
+                        @include('ManagementEmployee.User.create')
+                        @break
+                    @case('roles')
+                        @include('ManagementEmployee.Role.create')
+                        @break
                     @default
                         <div>No data available</div>
                 @endswitch

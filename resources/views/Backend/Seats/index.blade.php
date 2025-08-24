@@ -5,7 +5,7 @@
 @section('content')
 
     {{-- ================== check message add and update if succeed =======================--}}
-   @include('backend.components.toast')
+    @include('backend.components.toast')
 
     {{-- ======================= end of check messange ========================= --}}
 
@@ -75,7 +75,14 @@
 
                 </tbody>
             </table>
+
         </div>
+          <div class="d-flex justify-content-between align-items-center m-4">
+                <div class="text-muted">
+                    Showing {{ $Seats->firstItem() ?? 0 }} to {{ $Seats->lastItem() ?? 0 }} of {{ $Seats->total() }} results
+                </div>
+                {{ $Seats->appends(request()->query())->links() }}
+            </div>
     </div>
     </div>
 

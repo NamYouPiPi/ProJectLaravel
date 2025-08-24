@@ -2,80 +2,149 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('permission:manage roles');
-    }
-
     public function index()
     {
-        $roles = Role::with('permissions')->get();
-        return view('admin.roles.index', compact('roles'));
-    }
-
-    public function create()
-    {
-        $permissions = Permission::all();
-        return view('admin.roles.create', compact('permissions'));
+        $roles = Role::withCount('users')
+                    ->orderBy('id')
+                    ->paginate(10);
+        return view('ManagementEmployee.Role.index', compact('roles'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:roles,name',
+            'name' => 'required|string|max:255|unique:roles,name',
+            'display_name' => 'required|string|max:255',
+            'description' => 'nullable|string'
         ]);
 
-        $role = Role::create(['name' => $request->name]);
+        try {
+            DB::beginTransaction();
 
-        if ($request->has('permissions')) {
-            $role->givePermissionTo($request->permissions);
+            Role::create([
+                'name' => Str::slug($request->name),
+                'display_name' => $request->display_name,
+                'description' => $request->description,
+                'is_protected' => false
+            ]);
+
+            DB::commit();
+            return redirect()->route('roles.index')
+                           ->with('success', 'Role created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('roles.index')
+                           ->with('error', 'Error creating role: ' . $e->getMessage());
         }
-
-        return redirect()->route('roles.index')
-            ->with('success', 'Role created successfully');
     }
 
-        public function edit(Role $role)
-        {
-            $permissions = Permission::all();
-            // Change this line to use names instead of IDs
-            $rolePermissions = $role->permissions->pluck('name')->toArray();
-
-            return view('admin.roles.edit', compact('role', 'permissions', 'rolePermissions'));
-        }
+    public function edit(Role $role)
+    {
+        return view('ManagementEmployee.Role.create', compact('role'));
+    }
 
     public function update(Request $request, Role $role)
     {
+        if ($role->is_protected) {
+            return redirect()->route('roles.index')
+                           ->with('error', 'Cannot modify protected roles');
+        }
+
         $request->validate([
-            'name' => 'required|unique:roles,name,' . $role->id,
+            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'display_name' => 'required|string|max:255',
+            'description' => 'nullable|string'
         ]);
 
-      $role->update(['name' => $request->name]);
+        try {
+            DB::beginTransaction();
 
-// Replace this line
-    // With this line
-    $role->syncPermissions($request->permissions ?? []);
+            $role->update([
+                'name' => Str::slug($request->name),
+                'display_name' => $request->display_name,
+                'description' => $request->description
+            ]);
 
+            DB::commit();
             return redirect()->route('roles.index')
-            ->with('success', 'Role updated successfully');
+                           ->with('success', 'Role updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('roles.index')
+                           ->with('error', 'Error updating role: ' . $e->getMessage());
+        }
     }
 
     public function destroy(Role $role)
     {
-        if ($role->name === 'admin') {
+        if ($role->is_protected) {
             return redirect()->route('roles.index')
-                ->with('error', 'Cannot delete admin role');
+                           ->with('error', 'Cannot delete protected roles');
         }
 
-        $role->delete();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Role deleted successfully');
+            // Check if role has users
+            if ($role->users()->count() > 0) {
+                return redirect()->route('roles.index')
+                               ->with('error', 'Cannot delete role with assigned users');
+            }
+
+            // Remove role permissions first
+            $role->permissions()->detach();
+
+            // Delete the role
+            $role->delete();
+
+            DB::commit();
+            return redirect()->route('roles.index')
+                           ->with('success', 'Role deleted successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('roles.index')
+                           ->with('error', 'Error deleting role: ' . $e->getMessage());
+        }
+    }
+
+    public function assignPermissions(Request $request, Role $role)
+    {
+        if ($role->is_protected) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot modify protected roles'
+            ], 403);
+        }
+
+        $request->validate([
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,id'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $role->permissions()->sync($request->permissions);
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Permissions assigned successfully'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error assigning permissions: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

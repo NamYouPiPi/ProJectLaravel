@@ -71,7 +71,13 @@
     </div>
 
     {{--================== pagination ====================--}}
-    {{-- {{ $suppliers->links() }}--}}
+    <div class="d-flex justify-content-between align-items-center m-4">
+        <div class="text-muted">
+            Showing {{ $seat_types->firstItem() ?? 0 }} to {{ $seat_types->lastItem() ?? 0 }} of {{ $seat_types->total() }}
+            results
+        </div>
+        {{ $seat_types->appends(request()->query())->links() }}
+    </div>
 
     <script src="{{ asset('js/supplier-filter.js') }}"></script>
 

@@ -58,8 +58,20 @@
                         @break
                     @case('employees')
                         @include("Backend.Employees.create")
-                    @break
                         @break
+                    @case('booking')
+                        @include("Bookings.create", ['customers' => $customers,  'showtimes' => $showtimes])
+
+                    @break
+                    @case('booking_seats')
+                        @include("booking_seats.create", ['bookings' => $bookings ,'seats' => $seats])
+                    @break
+                    @case('user')
+                        @include("ManagementEmployee.User.create", ['roles' => $roles])
+                    @break
+                    @case('roles')
+                        @include("ManagementEmployee.Role.create")
+                    @break
                     @default
                         <div>No data available</div>
                 @endswitch

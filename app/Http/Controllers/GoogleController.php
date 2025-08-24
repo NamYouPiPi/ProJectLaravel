@@ -47,11 +47,11 @@ class GoogleController extends Controller
                     'email' => $user->email,
                     'google_id' => $user->getId(),
                     'avatar' => $user->getAvatar(),
-                    'password' => bcrypt(rand(100000, 999999))
+                    'password' => ''
                 ]);
 
                 // Assign default role to new user
-                $newUser->assignRole('user');
+                $newUser->assignRole('customer');
 
                 // Add this line to log in the user
                 Auth::login($newUser);

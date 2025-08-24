@@ -27,6 +27,10 @@ class showtimes extends Model
         'end_time',
     ];
 
+public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany
+{
+    return $this->hasMany(Booking::class);
+}
 
     public function movie(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

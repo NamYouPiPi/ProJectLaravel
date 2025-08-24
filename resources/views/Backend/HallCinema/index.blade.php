@@ -249,8 +249,11 @@
         </div>
     </div>
     {{-- ========== paginate ----------------}}
-    <div class="d-flex justify-content-center mt-4">
-        {{ $hall_cinema->appends(request()->query())->links() }}
+   <div class="d-flex justify-content-between align-items-center m-4">
+        <div class="text-muted">
+            Showing {{ $hall_cinemas->firstItem() ?? 0 }} to {{ $hall_cinemas->lastItem() ?? 0 }} of {{ $hall_cinemas->total() }} results
+        </div>
+        {{ $hall_cinemas->appends(request()->query())->links() }}
     </div>
     {{-- ---------- end of paginate ------------}}
 

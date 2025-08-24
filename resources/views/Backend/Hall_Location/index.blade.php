@@ -389,7 +389,10 @@
         </div>
     </div>
     {{-- ========== paginate ----------------}}
-    <div class="d-flex justify-content-center mt-4">
+    <div class="d-flex justify-content-between align-items-center m-4">
+        <div class="text-muted">
+            Showing {{ $hallocation->firstItem() ?? 0 }} to {{ $hallocation->lastItem() ?? 0 }} of {{ $hallocation->total() }} results
+        </div>
         {{ $hallocation->appends(request()->query())->links() }}
     </div>
     {{-- ---------- end of paginate ------------}}
@@ -445,7 +448,7 @@
                 card.addEventListener('click', function(e) {
                     // Don't trigger if clicking on a button
                     if (e.target.closest('.btn')) return;
-                    
+
                     const id = this.dataset.id;
                     showLocationDetails(id);
                 });
@@ -456,7 +459,7 @@
                 row.addEventListener('click', function(e) {
                     // Don't trigger if clicking on a button
                     if (e.target.closest('.btn')) return;
-                    
+
                     const id = this.dataset.id;
                     showLocationDetails(id);
                 });
@@ -475,7 +478,7 @@
             function showLocationDetails(id) {
                 const modal = new bootstrap.Modal(document.getElementById('locationDetailsModal'));
                 modal.show();
-                
+
                 // Load location details via AJAX
                 fetch(`/hall_locations/${id}/details`)
                     .then(response => response.text())
@@ -484,7 +487,7 @@
                     })
                     .catch(error => {
                         console.error('Error fetching location details:', error);
-                        document.getElementById('locationDetailsContent').innerHTML = 
+                        document.getElementById('locationDetailsContent').innerHTML =
                             `<div class="alert alert-danger">Error loading location details. Please try again.</div>`;
                     });
             }
@@ -499,12 +502,12 @@
             document.getElementById('exportBtn').addEventListener('click', function() {
                 window.location.href = "{{ route('hall_locations.index') }}?export=true";
             });
-            
+
             // Fix update modal behavior
             document.querySelectorAll('.btn_update_hall').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation(); // Prevent card/row click
-                    
+
                     // The rest is handled by the update-modal component
                 });
             });

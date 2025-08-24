@@ -2,67 +2,71 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
 
 class PermissionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('permission:manage roles');
-    }
-
     public function index()
     {
-        $permissions = Permission::with('roles')->get();
-        return view('admin.permissions.index', compact('permissions'));
+        $permissions = Permission::all()->groupBy('group');
+        $roles = Role::with('permissions')->get();
+
+        return view('ManagementEmployee.Permission.index', compact('permissions', 'roles'));
     }
 
-    public function create()
+    public function update(Request $request)
     {
-        return view('admin.permissions.create');
-    }
+        try {
+            DB::beginTransaction();
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|unique:permissions,name',
-        ]);
+            // Get all roles except protected ones
+            $roles = Role::where('is_protected', false)->get();
 
-        Permission::create(['name' => $request->name]);
+            foreach ($roles as $role) {
+                $permissionIds = $request->input('permissions.' . $role->id, []);
+                $role->permissions()->sync($permissionIds);
+            }
 
-        return redirect()->route('permissions.index')
-            ->with('success', 'Permission created successfully');
-    }
+            DB::commit();
 
-    public function edit(Permission $permission)
-    {
-        return view('admin.permissions.edit', compact('permission'));
-    }
-
-    public function update(Request $request, Permission $permission)
-    {
-        $request->validate([
-            'name' => 'required|unique:permissions,name,' . $permission->id,
-        ]);
-
-        $permission->update(['name' => $request->name]);
-
-        return redirect()->route('permissions.index')
-            ->with('success', 'Permission updated successfully');
-    }
-
-    public function destroy(Permission $permission)
-    {
-        // Check if permission is in use
-        if ($permission->roles()->count() > 0) {
             return redirect()->route('permissions.index')
-                ->with('error', 'Cannot delete permission as it is assigned to roles');
+                           ->with('success', 'Permissions updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('Permission Update Error: ' . $e->getMessage());
+            return redirect()->route('permissions.index')
+                           ->with('error', 'Error updating permissions. Please try again.');
         }
+    }
 
-        $permission->delete();
+    public function getRolePermissions(Role $role)
+    {
+        return response()->json([
+            'success' => true,
+            'permissions' => $role->permissions->pluck('id')
+        ]);
+    }
 
-        return redirect()->route('permissions.index')
-            ->with('success', 'Permission deleted successfully');
+    public function getPermissionsByGroup()
+    {
+        $permissions = Permission::all()->groupBy('group')->map(function ($group) {
+            return $group->map(function ($permission) {
+                return [
+                    'id' => $permission->id,
+                    'name' => $permission->name,
+                    'display_name' => $permission->display_name,
+                    'description' => $permission->description
+                ];
+            });
+        });
+
+        return response()->json([
+            'success' => true,
+            'permissions' => $permissions
+        ]);
     }
 }

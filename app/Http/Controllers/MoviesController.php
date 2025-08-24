@@ -87,7 +87,7 @@ class MoviesController extends Controller
      */
     public function store(Request $request)
    {
-//        dd($request->all());
+    //    dd($request->all());
         $request->validate([
             'title'             => 'required|string|max:255',
             'duration_minutes'  => 'required|integer',
@@ -100,17 +100,12 @@ class MoviesController extends Controller
             'classification_id' => 'required|exists:classifications,id',
             'supplier_id'       => 'required|exists:suppliers,id',
             'poster'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'trailer'           => 'nullable|file|mimes:mp4,mov,avi|max:51200',
+            'trailer'           => 'nullable|string|max:500',
         ]);
 
-        $trailerPath = null;
         $PosterPath = null;
         if ($request->hasFile('poster')) {
             $PosterPath = $request->file('poster')->store('Poster', 'public');
-        }
-
-        if ($request->hasFile('trailer')) {
-            $trailerPath = $request->file('trailer')->store('Trailer', 'public');
         }
 
         Movies::create([
@@ -125,7 +120,7 @@ class MoviesController extends Controller
             'classification_id' => $request->classification_id,
             'supplier_id'       => $request->supplier_id,
             'poster'            => $PosterPath,
-            'trailer'           => $trailerPath,
+            'trailer'           => $request->trailer, // Store URL directly
 
         ]);
 
@@ -201,14 +196,14 @@ public function update(Request $request, Movies $movie): \Illuminate\Http\Respon
     }
 
     // Handle trailer
-    if ($request->hasFile('trailer')) {
-        if ($movies->trailer) {
-            Storage::disk('public')->delete($movies->trailer);
-        }
-        $trailerPath = $request->file('trailer')->store('Trailer', 'public');
-    } else {
-        $trailerPath = $movies->trailer;
-    }
+    // if ($request->hasFile('trailer')) {
+    //     if ($movies->trailer) {
+    //         Storage::disk('public')->delete($movies->trailer);
+    //     }
+    //     $trailerPath = $request->file('trailer')->store('Trailer', 'public');
+    // } else {
+    //     $trailerPath = $movies->trailer;
+    // }
 
     $movies->update([
         'title'             => $request->title,
@@ -222,7 +217,7 @@ public function update(Request $request, Movies $movie): \Illuminate\Http\Respon
         'classification_id' => $request->classification_id,
         'supplier_id'       => $request->supplier_id,
         'poster'            => $PosterPath,
-        'trailer'           => $trailerPath,
+        'trailer'           => $request->trailer,
     ]);
 
     // Add AJAX response support

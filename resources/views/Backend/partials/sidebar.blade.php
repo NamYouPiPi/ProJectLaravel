@@ -128,6 +128,49 @@
                         <p>Employees </p>
                     </a>
                 </li>
+
+                <li class="nav-item  @yield('bookings')">
+                    <a href="{{route('bookings.index')}}" class="nav-link">
+                        <i class="bi bi-journal-text"></i>
+                        <p>Bookings</p>
+                    </a>
+                </li>
+                <li class="nav-item  @yield('booking-seats')">
+                    <a href="{{route('booking-seats.index')}}" class="nav-link">
+                        <i class="bi bi-journal-text"></i>
+                        <p>Booking Seats</p>
+                    </a>
+                </li>
+                <li class="nav-item @yield('menu-open')">
+                    <a href="#" class="nav-link ">
+                        <i class="nav-icon bi bi-speedometer"></i>
+                        <p>
+                            Management User
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item ">
+                            <a href="{{route('users.index')}}" class="nav-link @yield('supplier')">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('permissions.index')}}" class="nav-link @yield('inventory')">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Permission</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('roles.index')  }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Role</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
             <!--end::Sidebar Menu-->
         </nav>

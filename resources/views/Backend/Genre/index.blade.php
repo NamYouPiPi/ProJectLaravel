@@ -153,7 +153,7 @@
                             <th>Description</th>
                             <th>Status</th>
                             <th>Created</th>
-                            <th>Updated</th>
+                            {{-- <th>Updated</th> --}}
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -171,7 +171,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $genre->created_at->format("d/m/Y") }}</td>
-                                <td>{{ $genre->updated_at->format("d/m/Y") }}</td>
+                                {{-- <td>{{ $genre->updated_at->format("d/m/Y") }}</td> --}}
                                 <td class="d-flex gap-2 justify-content-center">
                                     <x-update-modal dataTable="genre" title="Edit Genre">
                                         <button type="button" class="btn btn-sm btn-success btn_update_genre" data-id="{{ $genre->id}}"

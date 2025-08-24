@@ -3,7 +3,9 @@
 namespace App\View\Components;
 
 
-use App\Models\{Seat_type, Showtimes, Supplier, Classification, Hall_location, Genre, Movies, Inventory, Hall_cinema};
+use App\Models\{Seat_type, Showtimes, Supplier, Classification, Hall_location, Genre, Movies, Inventory, Hall_cinema, Role, Seats};
+use App\Models\Booking;
+use App\Models\Customer;
 use Illuminate\View\Component;
 
 class CreateModal extends Component
@@ -23,6 +25,10 @@ class CreateModal extends Component
     protected \Illuminate\Database\Eloquent\Collection $hall_location;
     protected \Illuminate\Database\Eloquent\Collection $hallCinema;
     protected  $seatsType;
+    protected $customers ;
+    protected $bookings;
+    protected $seats;
+    protected $roles;
     public function __construct($dataTable = 'default', $title = 'Add New Record')
     {
         $this->dataTable = $dataTable;
@@ -35,6 +41,10 @@ class CreateModal extends Component
         $this->hallCinema = Hall_cinema::all();
         $this->movies = Movies::where('status', 'active')->get();
         $this->seatsType = Seat_type::all();
+        $this->customers = Customer::all();
+        $this->bookings = Booking::all();
+        $this->seats = Seats::all();
+        $this->roles = Role::all();
     }
 
     /**
@@ -52,7 +62,12 @@ class CreateModal extends Component
             'hallCinema' => $this->hallCinema,
             'movies' => $this->movies,
             'classifications' => $this->classifications,
-            'seatsType' => $this->seatsType
+            'seatsType' => $this->seatsType,
+            'customers' => $this->customers,
+            'showtimes' => Showtimes::all(),
+            'bookings' => $this->bookings,
+            'seats' => $this->seats,
+            'roles' => $this->roles,
 
         ]);
     }

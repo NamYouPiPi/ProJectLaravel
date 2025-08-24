@@ -326,12 +326,11 @@
     </div>
 
     {{--================== pagination ====================--}}
-    <div class="flex justify-center mt-1">
-
-        {{-- Pagination --}}
-        <div class="d-flex justify-content-center mt-4">
-            {{ $suppliers->links() }}
+   <div class="d-flex justify-content-between align-items-center m-4">
+        <div class="text-muted">
+            Showing {{ $suppliers->firstItem() ?? 0 }} to {{ $suppliers->lastItem() ?? 0 }} of {{ $suppliers->total() }} results
         </div>
+        {{ $suppliers->appends(request()->query())->links() }}
     </div>
 
     <script src="{{ asset('js/supplier-filter.js') }}"></script>

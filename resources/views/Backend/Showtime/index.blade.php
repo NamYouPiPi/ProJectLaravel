@@ -8,7 +8,6 @@
     {{--================= end of add title and active ==============--}}
 
 
-
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
     <x-create_modal dataTable="showTimes" title="Add New showTimes">
@@ -21,7 +20,7 @@
     {{-- ================ Table for Suppliers detail all ===================== --}}
     <div class="table-responsive">
 
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered ">
             <thead class="table-dark">
                 <tr>
                     <th>#</th>
@@ -93,9 +92,12 @@
         </table>
 
         {{-- Pagination --}}
-        <div class="d-flex justify-content-center">
-            {{ $showtimes->links() }}
+        <div class="d-flex justify-content-between align-items-center m-4">
+        <div class="text-muted">
+            Showing {{ $showtimes->firstItem() ?? 0 }} to {{ $showtimes->lastItem() ?? 0 }} of {{ $showtimes->total() }} results
         </div>
+        {{ $showtimes->appends(request()->query())->links() }}
+    </div>
     </div>
 
 

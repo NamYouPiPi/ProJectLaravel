@@ -216,9 +216,12 @@
         </div>
 
         {{-- Pagination --}}
-        <div class="d-flex justify-content-center mt-4">
-            {{ $inventories->links() }}
+      <div class="d-flex justify-content-between align-items-center m-4">
+        <div class="text-muted">
+            Showing {{ $inventories->firstItem() ?? 0 }} to {{ $inventories->lastItem() ?? 0 }} of {{ $inventories->total() }} results
         </div>
+        {{ $inventories->appends(request()->query())->links() }}
+    </div>
     </div>
 
     {{-- Scripts --}}

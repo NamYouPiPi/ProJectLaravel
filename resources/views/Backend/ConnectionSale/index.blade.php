@@ -14,9 +14,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3 m-2">
         <div>
             <!-- Analytics Dashboard Button -->
-            <a href="{{ route('sale.analytics') }}" class="btn btn-info me-2">
-                <i class="fas fa-chart-bar"></i> Analytics Dashboard
-            </a>
+
             <!-- Generate Report Button -->
             <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#reportModal">
                 <i class="fas fa-file-pdf"></i> Generate Report
@@ -147,7 +145,7 @@
                 <th>Price</th>
                 <th>Total Price</th>
                 <th>Create_at</th>
-                <th>Update_at</th>
+                {{-- <th>Update_at</th> --}}
                 <th>Action</th>
             </tr>
         </thead>
@@ -161,11 +159,11 @@
                     <td>{{$sale->price}} $</td>
                     <td>{{$sale->total_price}} $</td>
                     <td>{{ $sale->created_at->format("Y/m/d") }}</td>
-                    <td>{{ $sale->updated_at->format("Y/m/d") }}</td>
+                    {{-- <td>{{ $sale->updated_at->format("Y/m/d") }}</td> --}}
                     <td class="d-flex gap-3">
                         <x-update-modal dataTable="sale" title="update sale ">
                             <button type="button" class="btn btn-outline-primary btn-sm  btn_edit_sale" data-id="{{$sale->id}}"
-                                data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil-square"></i> 
+                                data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil-square"></i>
                             </button>
                         </x-update-modal>
                         <button type="button" class=" btn-sm  btn btn-outline-danger" onclick="confirmDelete({{ $sale->id }}, 'sale')">

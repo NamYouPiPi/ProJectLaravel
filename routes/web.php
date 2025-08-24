@@ -18,7 +18,10 @@ use App\Http\Controllers\{InventoryController,
     EmployeesController,
     RoleController,
     PermissionController,
-    UserController
+    UserController,
+    BookingController,
+    BookingSeatController
+
 };
 
 use Illuminate\Support\Facades\Auth;
@@ -74,26 +77,84 @@ Route::get('/dashboard' , function (){return  view('Backend.Dashboard.index');})
 Route::resource('suppliers', SupplierController::class);
 Route::resource('inventory',InventoryController::class );
 Route::resource('sale'  , ConnectionSaleController::class);
+Route::post('sale.best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');
+Route::get('sale.report', [ConnectionSaleController::class, 'report'])->name('sale.report');
+
+
+
 Route::resource('hall_locations', HallLocationController::class);
 Route::resource('hallCinema', HallCinemaController::class);
 Route::resource('movies' , MoviesController::class);
+Route::get('/movies/search', [MoviesController::class, 'search'])->name('movies.search');
+
 Route::resource('Showtime', ShowtimesController::class);
 Route::resource('genre' ,GenreController::class);
 Route::resource('seatTypes', SeatTypeController::class);
 Route::resource('seats', SeatsController::class);
 Route::resource('customer' , CustomerController::class);
 Route::resource('employees', EmployeesController::class);
+Route::resource('bookings', BookingController::class);
+Route::resource('booking-seats', BookingSeatController::class);
+Route::resource('payments', PaymentController::class);
+Route::resource('classification' , ClassificationController::class);
 
 
-//route for connection sales
-Route::get('/connection-sales/report', [ConnectionSaleController::class, 'generateReport'])->name('sale.report');
-Route::get('/connection-sales/best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');
-Route::get('/connection-sales/analytics', [ConnectionSaleController::class, 'analytics'])->name('sale.analytics');
-Route::get('/connection-sales/monthly-report', [ConnectionSaleController::class, 'monthlyReport'])->name('sale.monthly-report');
-Route::get('/connection-sales/chart-data', [ConnectionSaleController::class, 'chartData'])->name('sale.chart-data');
+
+// Permission Management Routes
+   Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index');
+    Route::put('permissions', [PermissionController::class, 'update'])->name('permissions.update');
+    Route::get('permissions/role/{role}', [PermissionController::class, 'getRolePermissions'])->name('permissions.role');
+    Route::get('permissions/groups', [PermissionController::class, 'getPermissionsByGroup'])->name('permissions.groups');
+Route::resource('users', UserController::class);
+
+
+
+// role
+   Route::resource('roles', RoleController::class);
+    Route::post('roles/{role}/permissions', [RoleController::class, 'assignPermissions'])
+         ->name('roles.permissions');
+
+
+
+
+// Booking Customer & Showtime Routes
+Route::get('/bookings/customer/{customer_id}', [BookingController::class, 'getCustomerBookings'])->name('bookings.customer');
+Route::get('/bookings/showtime/{showtime_id}', [BookingController::class, 'getShowtimeBookings'])->name('bookings.showtime');
+
+// Booking Status Management Routes
+Route::post('/bookings/{id}/confirm', [BookingController::class, 'confirmBooking'])->name('bookings.confirm');
+Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancelBooking'])->name('bookings.cancel');
+Route::post('/bookings/{id}/expire', [BookingController::class, 'expireBooking'])->name('bookings.expire');
+
+// Booking Documents & Reports Routes
+Route::get('/bookings/{id}/invoice', [BookingController::class, 'generateInvoice'])->name('bookings.invoice');
+Route::get('/bookings/stats/daily', [BookingController::class, 'getDailyStats'])->name('bookings.stats.daily');
+Route::get('/bookings/stats/monthly', [BookingController::class, 'getMonthlyStats'])->name('bookings.stats.monthly');
+
+// Booking Seats Routes
+Route::get('/booking-seats/booking/{booking_id}', [BookingSeatController::class, 'getBookingSeats'])->name('booking-seats.booking');
+Route::get('/booking-seats/showtime/{showtime_id}', [BookingSeatController::class, 'getShowtimeSeats'])->name('booking-seats.showtime');
+Route::post('/booking-seats/block', [BookingSeatController::class, 'blockSeats'])->name('booking-seats.block');
+Route::post('/booking-seats/release', [BookingSeatController::class, 'releaseSeats'])->name('booking-seats.release');
+Route::post('/booking-seats/swap', [BookingSeatController::class, 'swapSeat'])->name('booking-seats.swap');
+Route::put('/booking-seats/{id}/state', [BookingSeatController::class, 'updateSeatState'])->name('booking-seats.state');
+
+
+
+// ABA PayWay Payment Routes - Remove duplicates and ensure all needed routes are defined
+Route::post('/payments/initiate-aba', [PaymentController::class, 'initiateAbaPayment'])->name('payments.initiate.aba');
+Route::get('/payments/callback', [PaymentController::class, 'handlePaymentCallback'])->name('payments.callback');
+Route::get('/payments/callback/success', [PaymentController::class, 'handlePaymentSuccess'])->name('payments.callback.success');
+Route::get('/payments/callback/cancel', [PaymentController::class, 'handlePaymentCancel'])->name('payments.callback.cancel');
+Route::get('/payments/check-status/{transactionId}', [PaymentController::class, 'checkPaymentStatus'])->name('payments.check-status');
+Route::post('payments/{payment}/refund', [PaymentController::class, 'refund'])->name('payments.refund');
+
+
+
+
+
 
 // route for search movies
-Route::get('/movies/search', [MoviesController::class, 'search'])->name('movies.search');
 
 // Hall Cinema search and filter routes
 Route::get('/hall-cinema/search', [HallCinemaController::class, 'search'])->name('hallCinema.search');
@@ -106,101 +167,30 @@ Route::get('/hall-locations/nearby', [HallLocationController::class, 'nearby'])-
 Route::get('/hall-locations/analytics', [HallLocationController::class, 'analytics'])->name('hall_locations.analytics');
 Route::get('/hall-locations/cities', [HallLocationController::class, 'cities'])->name('hall_locations.cities');
 
-// Public API routes for customers (no authentication required)
-Route::prefix('api/locations')->group(function () {
-    Route::get('/search', [HallLocationController::class, 'search'])->name('api.locations.search');
-    Route::get('/cities', [HallLocationController::class, 'cities'])->name('api.locations.cities');
-    Route::get('/nearby', [HallLocationController::class, 'nearby'])->name('api.locations.nearby');
-    Route::get('/{id}/details', [HallLocationController::class, 'details'])->name('api.locations.details');
-});
-
-
-Route::resource('classification' , ClassificationController::class);
 
 
 
 
 
-// Admin routes protected by role middleware
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], function() {
-    Route::get('/', function() {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-
-    // Role management routes
-    Route::resource('roles', RoleController::class);
-
-    // User management with role assignment
-    Route::resource('users', UserController::class);
-    Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assign-role');
-    Route::delete('users/{user}/roles', [UserController::class, 'removeRole'])->name('users.remove-role');
-
-    // Permission management routes
-    Route::resource('permissions', PermissionController::class);
-});
-
-// Routes for managers
-Route::group(['prefix' => 'manager', 'middleware' => ['auth', 'role:admin|manager']], function() {
-    Route::get('/', function() {
-        return view('manager.dashboard');
-    })->name('manager.dashboard');
-
-    // Movie management routes
-    // ...
-});
-
-// Routes accessible to staff
-Route::group(['middleware' => ['auth', 'permission:manage bookings']], function() {
-    // Booking management routes
-    // ...
-});
-
-// My Permissions page
-Route::get('/my-permissions', function() {
-    $user = auth()->user();
-
-    if (!$user) {
-        return redirect('/login');
-    }
-
-    return view('auth.my-permissions', compact('user'));
-})->middleware('auth');
 
 
 
-// Test routes for checking permissions
-Route::get('/permission-test', function () {
-    return view('permission-test');
-})->name('permission.test');
 
-// Route protected with permission middleware - only users with 'manage movies' permission can access
-Route::get('/permission-test/protected', function () {
-    return view('permission-test-protected');
-})->middleware('permission:manage movies')->name('permission.test.protected');
 
-// Route protected with role middleware - only admins can access
-Route::get('/permission-test/admin-only', function () {
-    return view('permission-test-admin');
-})->middleware('role:admin')->name('permission.test.admin');
 
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// Customer Authentication Routes
-Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
-    // Guest routes (for non-authenticated customers)
-    Route::middleware('guest:customer')->group(function () {
-        // Registration routes
-        Route::get('/register', [App\Http\Controllers\CustomerAuthController::class, 'showRegistrationForm'])->name('register');
-        Route::post('/register', [App\Http\Controllers\CustomerAuthController::class, 'register']);
 
-        // Login routes
-        Route::get('/login', [App\Http\Controllers\CustomerAuthController::class, 'showLoginForm'])->name('login');
-        Route::post('/login', [App\Http\Controllers\CustomerAuthController::class, 'login']);
 
-        // Google OAuth Routes
-        Route::get('/auth/google', [App\Http\Controllers\CustomerAuthController::class, 'redirectToGoogle'])->name('google.redirect');
-        Route::get('/auth/google/callback', [App\Http\Controllers\CustomerAuthController::class, 'handleGoogleCallback'])->name('google.callback');
-    });
-});
+
+
+
+
+
+
+// Dashboard Route
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/chart-data', [App\Http\Controllers\DashboardController::class, 'getChartData'])->name('dashboard.chart-data');
+Route::get('/payments/callback/success', [PaymentController::class, 'handlePaymentSuccess'])->name('payments.callback.success');
+Route::get('/payments/callback/cancel', [PaymentController::class, 'handlePaymentCancel'])->name('payments.callback.cancel');
+Route::get('/payments/check-status/{transactionId}', [PaymentController::class, 'checkPaymentStatus'])->name('payments.check-status');
