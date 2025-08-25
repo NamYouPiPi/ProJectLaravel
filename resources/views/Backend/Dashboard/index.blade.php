@@ -174,9 +174,9 @@
                                     <td>
                                         @if($booking->status == 'pending')
                                             <span class="badge bg-warning">Pending</span>
-                                        @elseif($booking->status == 'confirmed')
+                                        @elseif($booking->status ==='confirmed')
                                             <span class="badge bg-success">Confirmed</span>
-                                        @elseif($booking->status == 'cancelled')
+                                        @elseif($booking->status === 'cancelled')
                                             <span class="badge bg-danger">Cancelled</span>
                                         @else
                                             <span class="badge bg-info">{{ ucfirst($booking->status) }}</span>
@@ -224,12 +224,12 @@
                                     <td>
                                         {{ $showtime->booked_seats_count }} / {{ $showtime->hall->capacity }}
                                         <div class="progress mt-1" style="height: 5px;">
-                                            <div class="progress-bar" role="progressbar" 
-                                                style="width: {{ ($showtime->booked_seats_count / $showtime->hall->capacity) * 100 }}%" 
-                                                aria-valuenow="{{ $showtime->booked_seats_count }}" 
-                                                aria-valuemin="0" 
+                                            {{-- <div class="progress-bar" role="progressbar"
+                                                style="width: {{ ($showtime->booked_seats_count / $showtime->hall->capacity) * 100 }}%"
+                                                aria-valuenow="{{ $showtime->booked_seats_count }}"
+                                                aria-valuemin="0"
                                                 aria-valuemax="{{ $showtime->hall->capacity }}">
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </td>
                                 </tr>
@@ -391,15 +391,15 @@
         movieData.labels.forEach((label, index) => {
             const color = movieData.datasets[0].backgroundColor[index];
             const percent = movieData.datasets[0].data[index];
-            
+
             const labelSpan = document.createElement('span');
             labelSpan.className = 'mr-2';
             labelSpan.innerHTML = `
                 <i class="fas fa-circle" style="color: ${color}"></i> ${label} (${percent}%)
             `;
-            
+
             labelsContainer.appendChild(labelSpan);
-            
+
             // Add space between items
             if (index < movieData.labels.length - 1) {
                 labelsContainer.appendChild(document.createTextNode(' · '));
@@ -411,7 +411,7 @@
     function updateChart(period) {
         // This would fetch data from your backend in a real application
         let newData;
-        
+
         if (period === 'weekly') {
             newData = {
                 labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -471,7 +471,7 @@
                 }],
             };
         }
-        
+
         window.revenueChart.data = newData;
         window.revenueChart.update();
     }

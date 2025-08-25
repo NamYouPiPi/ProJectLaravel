@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hall_cinema;
+use App\Models\Seat_type;
 use App\Models\Seats;
 use Illuminate\Http\Request;
 
@@ -65,14 +67,15 @@ class SeatsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Seats  $seats
+     * @param  \App\Models\Seats  $seat
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function edit(Seats $seats)
-    {
-        //
-        return view('Backend.Seats.edit', compact('seats'));
-    }
+    public function edit(Seats $seat)
+        {
+            $hallCinema  = Hall_cinema::all();
+            $seatsType  = Seat_type::all();
+            return view('Backend.Seats.edit', compact('seat', 'hallCinema', 'seatsType' ,'seatsType'));
+        }
 
     /**
      * Update the specified resource in storage.
@@ -105,7 +108,7 @@ class SeatsController extends Controller
         $seat = Seats::findOrFail($id);
         $seat->status = 'blocked';
         $seat->save();
-        
+
         // Use redirect() with flash message, not view()
         return redirect()->route('seats.index')->with('success', 'Seat blocked successfully.');
     }

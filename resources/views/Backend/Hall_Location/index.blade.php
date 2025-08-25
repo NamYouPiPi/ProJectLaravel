@@ -15,9 +15,9 @@
         }
 
         /* .stats-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        } */
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+                } */
 
         .stats-number {
             font-size: 2rem;
@@ -25,12 +25,12 @@
         }
 
         /* .filter-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        } */
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border-radius: 15px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                } */
 
 
 
@@ -69,49 +69,49 @@
 
         /* Table row hover effect */
         /* #tableContainer tbody tr {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+                    cursor: pointer;
+                    transition: background-color 0.2s;
+                }
 
-        #tableContainer tbody tr:hover {
-            background-color: rgba(102, 126, 234, 0.1);
-        } */
+                #tableContainer tbody tr:hover {
+                    background-color: rgba(102, 126, 234, 0.1);
+                } */
 
         /* Add ripple effect for better click feedback */
         /* .ripple {
-            position: relative;
-            overflow: hidden;
-            transform: translate3d(0, 0, 0);
-        }
+                    position: relative;
+                    overflow: hidden;
+                    transform: translate3d(0, 0, 0);
+                }
 
-        .ripple:after {
-            content: "";
-            display: block;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
-            background-repeat: no-repeat;
-            background-position: 50%;
-            transform: scale(10, 10);
-            opacity: 0;
-            transition: transform .5s, opacity 1s;
-        }
+                .ripple:after {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    pointer-events: none;
+                    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+                    background-repeat: no-repeat;
+                    background-position: 50%;
+                    transform: scale(10, 10);
+                    opacity: 0;
+                    transition: transform .5s, opacity 1s;
+                }
 
-        .ripple:active:after {
-            transform: scale(0, 0);
-            opacity: .3;
-            transition: 0s;
-        }
+                .ripple:active:after {
+                    transform: scale(0, 0);
+                    opacity: .3;
+                    transition: 0s;
+                }
 
-        Prevent action buttons from triggering card click */
+                Prevent action buttons from triggering card click */
         /* .card-footer .btn {
-            position: relative;
-            z-index: 10;
-        } */
+                    position: relative;
+                    z-index: 10;
+                } */
     </style>
 
     {{-- Dashboard Cards --}}
@@ -321,7 +321,7 @@
     </div>
 
     {{-- Traditional Table View (initially hidden) --}}
-    <div class="card shadow d-none" id="tableContainer">
+    <div class="card shadow d-none" id="">
         <div class="card-body">
             <table class="table table-responsive table-hover">
                 <thead class="table-dark">
@@ -361,8 +361,9 @@
                                     data-id="{{ $hall->id }}">detail</button>
                                 <x-update-modal dataTable="hall_location" title="Edit Location">
                                     <button type="button" class="btn btn-sm btn-outline-primary btn_update_hall"
-                                        data-id="{{ $hall->id}}" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal">edit</button>
+                                        data-id="{{ $hall->id }}" data-bs-toggle="modal" data-bs-target="#updateModal">
+                                        edit
+                                    </button>
                                 </x-update-modal>
                                 <button type="button" class="btn btn-sm btn-outline-danger"
                                     onclick="event.stopPropagation(); confirmDelete({{ $hall->id }}, 'hall_locations')">
@@ -394,10 +395,10 @@
     {{-- ------------ add file ajax ---------------}}
     <script src="{{ asset('js/ajax.js')}}"></script>
 
-    <script >
-      $(document).ready(function() {
-                    EditById($('.btn_update_hall'), 'hall_locations');
-      });
+    <script>
+        $(document).ready(function () {
+            EditById($('.btn_update_hall'), 'hall_locations');
+        });
     </script>
 
 @endsection

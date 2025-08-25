@@ -62,12 +62,12 @@ class SeatTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Seat_type  $seat_type
+     * @param  \App\Models\Seat_type  $seatType
      * @return \Illuminate\Http\Response
      */
-    public function edit(Seat_type $seat_type)
+    public function edit(Seat_type $seatType)
     {
-        return view('Backend.SeatsType.edit', compact('seat_type'));
+        return view('Backend.SeatsType.edit', compact('seatType'));
     }
 
     /**
@@ -97,7 +97,7 @@ class SeatTypeController extends Controller
      */
     public function destroy(Seat_type $seatType)
     {
-        
+
         $seatType->status = 'inactive'; // Correct field name is 'status', not 'active'
         $seatType->save();
         return redirect()->route('seatTypes.index')->with('success', 'Seat type deleted successfully');

@@ -106,6 +106,7 @@ class ShowtimesController extends Controller
     public function show(showtimes $showtimes)
     {
         //
+        return null;
     }
 
     /**
@@ -114,13 +115,13 @@ class ShowtimesController extends Controller
      * @param  \App\Models\showtimes  $Showtime
      * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function edit(showtimes $Showtime)
+    public function edit(showtimes $showtimes)
     {
 //        dd($Showtime);
         // $Showtime = showtimes::findOrFail($id);
         $movies = Movies::all();
         $hall_cinemas = Hall_cinema::all();
-        return view('Backend.Showtime.edit', compact('Showtime', 'movies', 'hall_cinemas'   ));
+        return view('Backend.Showtime.edit', compact('showtimes', 'movies', 'hall_cinemas'));
     }
     /**
      * Update the specified resource in storage.
@@ -139,7 +140,7 @@ class ShowtimesController extends Controller
             'end_time' => 'required|date|after:start_time',
             'base_price' => 'required|numeric|min:0',
             'status' => 'required|in:upcoming,ongoing,ended',
-            'is_active' => 'active',
+            'is_active' => 'required|in:active,inactive',
         ]);
 
         $showtime->update($data);
@@ -150,15 +151,15 @@ class ShowtimesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\showtimes  $showtime
+     * @param  \App\Models\showtimes  $showtimes
      * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function destroy(showtimes $showtime)
+    public function destroy(showtimes $showtimes)
     {
         //
-        $showtime->delete();
-    //   $showtimes -> is_active = 'inactive';
-    //   $showtimes -> save();
+        // $showtime->delete();
+      $showtimes->is_active = 'inactive';
+      $showtimes->save();
       return view('Backend.Showtime.index' )->with('success','Status was changed to inactive');
     }
 }
