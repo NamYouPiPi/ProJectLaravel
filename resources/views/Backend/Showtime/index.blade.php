@@ -7,6 +7,7 @@
 
     {{--================= end of add title and active ==============--}}
 
+<div>
 
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
@@ -15,12 +16,7 @@
             <i class="bi bi-plus-circle"></i> Add Showtimes
         </button>
     </x-create_modal>
-
-
-    {{-- ================ Table for Suppliers detail all ===================== --}}
-    <div class="table-responsive">
-
-        <table class="table table-bordered ">
+<table class="table table-bordered ">
             <thead class="table-dark">
                 <tr>
                     <th>#</th>
@@ -38,7 +34,8 @@
                 @forelse ($showtimes as $index => $showtime)
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td>{{ $showtime->movie->title ?? 'N/A' }}</td>
+                        <td>{{ $showtime->movie->title ?? 'N/A' }}  (
+                         {{ $showtime->movie->duration_minutes ?? 0 }} min)</td>
                         <td>{{ $showtime->hall->cinema_name ?? 'N/A' }}</td>
                         <td>{{ \Carbon\Carbon::parse($showtime->start_time)->format('d M Y H:i') }}</td>
                         <td>{{ \Carbon\Carbon::parse($showtime->end_time)->format('d M Y H:i') }}</td>
@@ -90,15 +87,19 @@
                 @endforelse
             </tbody>
         </table>
-
-        {{-- Pagination --}}
-        <div class="d-flex justify-content-between align-items-center m-4">
+           {{--================== pagination ====================--}}
+    <div class="d-flex justify-content-between align-items-center m-4">
         <div class="text-muted">
-            Showing {{ $showtimes->firstItem() ?? 0 }} to {{ $showtimes->lastItem() ?? 0 }} of {{ $showtimes->total() }} results
+            Showing {{ $showtimes->firstItem() ?? 0 }} to {{ $showtimes->lastItem() ?? 0 }} of {{ $showtimes->total() }}
+            results
         </div>
         {{ $showtimes->appends(request()->query())->links() }}
     </div>
-    </div>
+
+</div>
+
+
+
 
 
 

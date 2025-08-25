@@ -8,6 +8,7 @@ use App\Models\Movies;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class MoviesController extends Controller
 {
@@ -16,18 +17,35 @@ class MoviesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+      public function index(Request $request)
     {
         // Dashboard Statistics
-        $stats = [
-            'total_movies' => Movies::count(),
-            'active_movies' => Movies::where('status', 'active')->count(),
-            'inactive_movies' => Movies::where('status', 'inactive')->count(),
-            'by_genre' => Genre::withCount('movies')->get(),
+        $totalMovies = Movies::count();
+        $activeMovies = Movies::where('status', 'active')->count();
+        $inactiveMovies = Movies::where('status', 'inactive')->count();
 
-        ];
+        // Get top genre
+        $topGenre = DB::table('movies')
+            ->join('genres', 'movies.genre_id', '=', 'genres.id')
+            ->select('genres.main_genre', DB::raw('count(*) as total'))
+            ->groupBy('genres.main_genre')
+            ->orderBy('total', 'desc')
+            ->first();
 
-        $query = Movies::query();
+        // Recent movies & suppliers count
+        $recentMovies = Movies::where('created_at', '>=', now()->startOfMonth())->count();
+        $suppliersCount = Supplier::count();
+
+        // Most popular classification
+        $topClassification = DB::table('movies')
+            ->join('classifications', 'movies.classification_id', '=', 'classifications.id')
+            ->select('classifications.code', DB::raw('count(*) as total'))
+            ->groupBy('classifications.code')
+            ->orderBy('total', 'desc')
+            ->first();
+
+        // Build query with filters
+        $query = Movies::with(['genre', 'classification', 'supplier']);
 
         // Filter by status
         if ($request->filled('status')) {
@@ -44,22 +62,36 @@ class MoviesController extends Controller
             $query->where('supplier_id', $request->supplier_id);
         }
 
+        // Filter by classification
+        if ($request->filled('classification_id')) {
+            $query->where('classification_id', $request->classification_id);
+        }
 
-
-        // Search by name/title
+        // Search by title
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('title', 'LIKE', "%{$search}%");
         }
 
         // Get the data with pagination
-        $movies = $query->paginate(10);
+        $movies = $query->latest()->paginate(10);
         $genres = Genre::all();
         $classifications = Classification::all();
         $suppliers = Supplier::all();
 
-        // Pass stats to view
-        return view('Backend.Movies.index', compact('movies', 'genres', 'classifications', 'suppliers', 'stats'));
+        return view('Backend.Movies.index', compact(
+            'movies',
+            'genres',
+            'classifications',
+            'suppliers',
+            'totalMovies',
+            'activeMovies',
+            'inactiveMovies',
+            'topGenre',
+            'recentMovies',
+            'suppliersCount',
+            'topClassification'
+        ));
     }
 
 

@@ -42,7 +42,7 @@ class GenreController extends Controller
             ->pluck('main_genre');
 
         // Order by created_at desc and paginate
-        $genres = $query->orderBy('created_at', 'desc')->paginate(10);
+        $genres = $query->where('status', 'active')->orderBy('created_at', 'desc')->paginate(10);
 
         // Statistics for dashboard
         $totalGenres = Genre::count();
@@ -139,7 +139,9 @@ public function update(Request $request, Genre $genre)
     public function destroy(Genre $genre)
     {
         //
-        $genre->delete();
-        return redirect()->route('genre.index')->with('success', 'Genre deleted successfully');;
+        // $genre->delete();
+        $genre->status = 'inactive';
+        $genre->save();
+        return redirect()->route('genre.index')->with('success', 'Genre deleted successfully');
     }
 }

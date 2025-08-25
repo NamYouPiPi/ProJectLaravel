@@ -11,7 +11,7 @@
     {{-- end message toast --}}
 
     {{------------modal for generator a report for sale history ------------------}}
-    <div class="d-flex justify-content-between align-items-center mb-3 m-2">
+    <div class="d-flex justify-content-between align-items-center mb-3 m-2 p-3">
         <div>
             <!-- Analytics Dashboard Button -->
 
@@ -26,7 +26,7 @@
         </div>
 
         <x-create_modal dataTable="sale" title="Add New Sale">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+            <button type="button" class="btn btn-outline-success " data-bs-toggle="modal" data-bs-target="#createModal">
                 Add New
             </button>
         </x-create_modal>
@@ -135,7 +135,7 @@
 
 
 
-    <table class="table table-hover">
+    <table class="table table-hover p-3">
         <thead>
             <tr>
 
@@ -161,12 +161,14 @@
                     <td>{{ $sale->created_at->format("Y/m/d") }}</td>
                     {{-- <td>{{ $sale->updated_at->format("Y/m/d") }}</td> --}}
                     <td class="d-flex gap-3">
-                        <x-update-modal dataTable="sale" title="update sale ">
-                            <button type="button" class="btn btn-outline-primary btn-sm  btn_edit_sale" data-id="{{$sale->id}}"
-                                data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil-square"></i>
-                            </button>
-                        </x-update-modal>
-                        <button type="button" class=" btn-sm  btn btn-outline-danger" onclick="confirmDelete({{ $sale->id }}, 'sale')">
+             
+                            <x-update-modal dataTable="sale" title="update sale ">
+                                <button type="button" class="btn btn-outline-primary btn-sm  btn_edit_sale" data-id="{{$sale->id}}"
+                                    data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil-square"></i>
+                                </button>
+                            </x-update-modal>
+                        <button type="button" class=" btn-sm  btn btn-outline-danger"
+                            onclick="confirmDelete({{ $sale->id }}, 'sale')">
                             <i class="bi bi-trash3"></i>
                         </button>
                     </td>

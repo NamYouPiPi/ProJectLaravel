@@ -273,7 +273,7 @@
                     <th>Status</th>
                     <th>Address</th>
                     <th>Created</th>
-                    <th>Updated</th>
+                    {{-- <th>Updated</th> --}}
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -305,7 +305,7 @@
                                 </td>
                                 <td>{{ $supplier->address }}</td>
                                 <td>{{ $supplier->created_at->format("Y/m/d") }}</td>
-                                <td class="supplier-updated">{{ $supplier->updated_at->format("Y/m/d") }}</td>
+                                {{-- <td class="supplier-updated">{{ $supplier->updated_at->format("Y/m/d") }}</td> --}}
                                 <td class="d-flex gap-2">
                                     <x-update-modal dataTable="supplier" title="update Supplier">
                                         <button type="button" class="btn btn-outline-primary btn-sm editSupplierBtn"

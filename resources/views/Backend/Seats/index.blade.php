@@ -37,7 +37,7 @@
                 <tbody>
                     @foreach($Seats as $seat)
                         <tr class="text-center">
-                            <td>{{$seat->hall->cinema_name}}</td>
+                            <td>{{$seat->hall->cinema_name}}  {{$seat->hall->total_seats}} </td>
                             <td>{{$seat->seatType->name}}</td>
                             <td>{{$seat->seatType->price}}$</td>
                             <td>{{$seat->seat_number}}</td>

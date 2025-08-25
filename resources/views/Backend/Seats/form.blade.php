@@ -9,7 +9,7 @@
                 <option value="">Please select hall</option>
                 @foreach($hallCinema as $hall)
                     <option value="{{ $hall->id }}" {{ (old('hall_id', isset($seat) && $seat->hall_id ? $seat->hall_id : '') == $hall->id ? 'selected' : '') }}>
-                        {{ $hall->cinema_name }}
+                        {{ $hall->cinema_name }} ({{ $hall->total_seats }} seats)
                     </option>
                 @endforeach
             </select>

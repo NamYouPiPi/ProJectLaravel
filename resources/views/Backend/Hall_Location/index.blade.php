@@ -14,34 +14,25 @@
             border: none;
         }
 
-        .stats-card:hover {
+        /* .stats-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
+        } */
 
         .stats-number {
             font-size: 2rem;
             font-weight: 700;
         }
 
-        .filter-section {
+        /* .filter-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
-        }
+        } */
 
-        .btn-gradient {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
-            color: white;
-        }
 
-        .btn-gradient:hover {
-            background: linear-gradient(45deg, #764ba2, #667eea);
-            color: white;
-        }
 
         .status-badge {
             padding: 8px 16px;
@@ -77,17 +68,17 @@
         }
 
         /* Table row hover effect */
-        #tableContainer tbody tr {
+        /* #tableContainer tbody tr {
             cursor: pointer;
             transition: background-color 0.2s;
         }
 
         #tableContainer tbody tr:hover {
             background-color: rgba(102, 126, 234, 0.1);
-        }
+        } */
 
         /* Add ripple effect for better click feedback */
-        .ripple {
+        /* .ripple {
             position: relative;
             overflow: hidden;
             transform: translate3d(0, 0, 0);
@@ -116,11 +107,11 @@
             transition: 0s;
         }
 
-        /* Prevent action buttons from triggering card click */
-        .card-footer .btn {
+        Prevent action buttons from triggering card click */
+        /* .card-footer .btn {
             position: relative;
             z-index: 10;
-        }
+        } */
     </style>
 
     {{-- Dashboard Cards --}}
@@ -165,7 +156,7 @@
 
     {{-- Filter Section --}}
     <div class="filter-section">
-        <h5 class="mb-3">🔍 Search & Filter Locations</h5>
+
         <form method="GET" action="{{ route('hall_locations.index') }}" id="filterForm">
             <div class="row g-3">
                 <div class="col-md-3">
@@ -176,17 +167,17 @@
                 <div class="col-md-2">
                     <label for="status" class="form-label">Status</label>
                     <select class="form-select" name="status" id="status">
-                        <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>All Status</option>
-                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>All Status</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <label for="city" class="form-label">City</label>
                     <select class="form-select" name="city" id="city">
-                        <option value="all" {{ request('city') == 'all' ? 'selected' : '' }}>All Cities</option>
+                        <option value="all" {{ request('city') === 'all' ? 'selected' : '' }}>All Cities</option>
                         @foreach($cities as $city)
-                            <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>
+                            <option value="{{ $city }}" {{ request('city') === $city ? 'selected' : '' }}>
                                 {{ $city }}
                             </option>
                         @endforeach
@@ -195,9 +186,9 @@
                 <div class="col-md-2">
                     <label for="state" class="form-label">State</label>
                     <select class="form-select" name="state" id="state">
-                        <option value="all" {{ request('state') == 'all' ? 'selected' : '' }}>All States</option>
+                        <option value="all" {{ request('state') === 'all' ? 'selected' : '' }}>All States</option>
                         @foreach($states as $state)
-                            <option value="{{ $state }}" {{ request('state') == $state ? 'selected' : '' }}>
+                            <option value="{{ $state }}" {{ request('state') === $state ? 'selected' : '' }}>
                                 {{ $state }}
                             </option>
                         @endforeach
@@ -206,9 +197,9 @@
                 <div class="col-md-2">
                     <label for="country" class="form-label">Country</label>
                     <select class="form-select" name="country" id="country">
-                        <option value="all" {{ request('country') == 'all' ? 'selected' : '' }}>All Countries</option>
+                        <option value="all" {{ request('country') === 'all' ? 'selected' : '' }}>All Countries</option>
                         @foreach($countries as $country)
-                            <option value="{{ $country }}" {{ request('country') == $country ? 'selected' : '' }}>
+                            <option value="{{ $country }}" {{ request('country') === $country ? 'selected' : '' }}>
                                 {{ $country }}
                             </option>
                         @endforeach
@@ -255,7 +246,7 @@
                 <div class="card location-card h-100 ripple" data-id="{{ $hall->id }}">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h6 class="mb-0 fw-bold">{{ $hall->name }}</h6>
-                        @if($hall->status == 'active')
+                        @if($hall->status === 'active')
                             <span class="status-badge status-active">✓ Active</span>
                         @else
                             <span class="status-badge status-inactive">✗ Inactive</span>
@@ -290,19 +281,15 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex gap-2 justify-content-center">
-                        <button class="btn btn-sm btn-outline-info location-details-btn" data-id="{{ $hall->id }}"
-                            title="View Details">
-                            👁️ Details
-                        </button>
+                        <button class="btn btn-sm btn-outline-info location-details-btn"
+                            data-id="{{ $hall->id }}">detail</button>
                         <x-update-modal dataTable="hall_location" title="Edit Location">
-                            <button type="button" class="btn btn-sm btn-success btn_update_hall" data-id="{{ $hall->id}}"
-                                data-bs-toggle="modal" data-bs-target="#updateModal" title="Edit">
-                                ✏️ Edit
-                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary btn_update_hall"
+                                data-id="{{ $hall->id}}" data-bs-toggle="modal" data-bs-target="#updateModal">edit</button>
                         </x-update-modal>
                         <button type="button" class="btn btn-sm btn-outline-danger"
-                            onclick="confirmDelete({{ $hall->id }}, 'hall_locations')">
-                            <i class="bi bi-trash3"></i>
+                            onclick="event.stopPropagation(); confirmDelete({{ $hall->id }}, 'hall_locations')">
+                            del
                         </button>
                     </div>
                 </div>
@@ -371,15 +358,15 @@
                             <td>{{ $hall->created_at->format("d/m/Y") }}</td>
                             <td class="d-flex gap-1 justify-content-center">
                                 <button class="btn btn-sm btn-outline-info location-details-btn"
-                                    data-id="{{ $hall->id }}">👁️</button>
+                                    data-id="{{ $hall->id }}">detail</button>
                                 <x-update-modal dataTable="hall_location" title="Edit Location">
-                                    <button type="button" class="btn btn-sm btn-success btn_update_hall"
+                                    <button type="button" class="btn btn-sm btn-outline-primary btn_update_hall"
                                         data-id="{{ $hall->id}}" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal">✏️</button>
+                                        data-bs-target="#updateModal">edit</button>
                                 </x-update-modal>
                                 <button type="button" class="btn btn-sm btn-outline-danger"
                                     onclick="event.stopPropagation(); confirmDelete({{ $hall->id }}, 'hall_locations')">
-                                    <i class="bi bi-trash3"></i>
+                                    del
                                 </button>
                             </td>
                         </tr>
@@ -388,130 +375,29 @@
             </table>
         </div>
     </div>
+
+
+
+
     {{-- ========== paginate ----------------}}
     <div class="d-flex justify-content-between align-items-center m-4">
         <div class="text-muted">
-            Showing {{ $hallocation->firstItem() ?? 0 }} to {{ $hallocation->lastItem() ?? 0 }} of {{ $hallocation->total() }} results
+            Showing {{ $hallocation->firstItem() ?? 0 }} to {{ $hallocation->lastItem() ?? 0 }} of
+            {{ $hallocation->total() }} results
         </div>
         {{ $hallocation->appends(request()->query())->links() }}
     </div>
     {{-- ---------- end of paginate ------------}}
 
-    {{-- Location Details Modal --}}
-    <div class="modal fade" id="locationDetailsModal" tabindex="-1" aria-labelledby="locationDetailsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="locationDetailsModalLabel">📍 Location Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="locationDetailsContent">
-                    <div class="text-center">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     {{-- ------------ add file ajax ---------------}}
     <script src="{{ asset('js/ajax.js')}}"></script>
 
-    {{-- Interactive features script --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // View toggle functionality
-            const cardViewBtn = document.getElementById('cardView');
-            const tableViewBtn = document.getElementById('tableView');
-            const cardViewContainer = document.getElementById('cardViewContainer');
-            const tableContainer = document.getElementById('tableContainer');
-
-            cardViewBtn.addEventListener('click', function() {
-                cardViewContainer.classList.remove('d-none');
-                tableContainer.classList.add('d-none');
-                cardViewBtn.classList.add('active');
-                tableViewBtn.classList.remove('active');
-            });
-
-            tableViewBtn.addEventListener('click', function() {
-                cardViewContainer.classList.add('d-none');
-                tableContainer.classList.remove('d-none');
-                cardViewBtn.classList.remove('active');
-                tableViewBtn.classList.add('active');
-            });
-
-            // Make cards clickable
-            document.querySelectorAll('.location-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // Don't trigger if clicking on a button
-                    if (e.target.closest('.btn')) return;
-
-                    const id = this.dataset.id;
-                    showLocationDetails(id);
-                });
-            });
-
-            // Make table rows clickable
-            document.querySelectorAll('.location-row').forEach(row => {
-                row.addEventListener('click', function(e) {
-                    // Don't trigger if clicking on a button
-                    if (e.target.closest('.btn')) return;
-
-                    const id = this.dataset.id;
-                    showLocationDetails(id);
-                });
-            });
-
-            // Location details button click
-            document.querySelectorAll('.location-details-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent card/row click
-                    const id = this.dataset.id;
-                    showLocationDetails(id);
-                });
-            });
-
-            // Function to show location details
-            function showLocationDetails(id) {
-                const modal = new bootstrap.Modal(document.getElementById('locationDetailsModal'));
-                modal.show();
-
-                // Load location details via AJAX
-                fetch(`/hall_locations/${id}/details`)
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('locationDetailsContent').innerHTML = data;
-                    })
-                    .catch(error => {
-                        console.error('Error fetching location details:', error);
-                        document.getElementById('locationDetailsContent').innerHTML =
-                            `<div class="alert alert-danger">Error loading location details. Please try again.</div>`;
-                    });
-            }
-
-            // Analytics button click
-            document.getElementById('analyticsBtn').addEventListener('click', function() {
-                // Replace with actual analytics functionality
-                alert('Analytics feature will be available soon!');
-            });
-
-            // Export button click
-            document.getElementById('exportBtn').addEventListener('click', function() {
-                window.location.href = "{{ route('hall_locations.index') }}?export=true";
-            });
-
-            // Fix update modal behavior
-            document.querySelectorAll('.btn_update_hall').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent card/row click
-
-                    // The rest is handled by the update-modal component
-                });
-            });
-        });
+    <script >
+      $(document).ready(function() {
+                    EditById($('.btn_update_hall'), 'hall_locations');
+      });
     </script>
 
 @endsection

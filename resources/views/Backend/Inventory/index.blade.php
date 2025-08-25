@@ -142,7 +142,7 @@
                 <th>Image</th>
                 <th>Status</th>
                 <th>Create_at</th>
-                <th>Update_at</th>
+                {{-- <th>Update_at</th> --}}
                 <th>Action</th>
             </tr>
         </thead>
@@ -192,7 +192,7 @@
                                         {{ $inventory->status ?? 'N/A' }}
                                     </span></td>
                     <td>{{ $inventory->created_at->format("Y/m/d") }}</td>
-                    <td>{{ $inventory->updated_at->format("Y/m/d") }}</td>
+                    {{-- <td>{{ $inventory->updated_at->format("Y/m/d") }}</td> --}}
                     <td class="d-flex gap-1">
                         <x-update-modal dataTable="inventory" title="Edit Inventory">
                             <button type="button" class="btn btn-outline-primary btn-sm btnEditInventory" data-id="{{$inventory->id}}"

@@ -15,7 +15,7 @@ class ClassificationController extends Controller
     public function index()
     {
         //
-        $classifications = Classification::all();
+        $classifications = Classification::where('status', 'active')->paginate(10);
         return view('Backend.Classification.index', compact('classifications'));
     }
 
@@ -106,7 +106,9 @@ class ClassificationController extends Controller
     public function destroy(Classification $classification)
     {
         //
-        $classification->delete();
+        // $classification->delete();
+        $classification->status = 'inactive';
+        $classification->save();
         return redirect()->route('classification.index')->with('success', 'Classification deleted successfully!');
     }
 }

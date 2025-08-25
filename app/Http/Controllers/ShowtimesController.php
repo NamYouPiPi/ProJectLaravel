@@ -77,8 +77,8 @@ class ShowtimesController extends Controller
     ]);
 
     // Get the movie duration
-    $movie = Movies::findOrFail($request->movie_id);
-    $durationInMinutes = $movie->duration;
+    $movie = Movies::findOrFail(id: $request->movie_id);
+    $durationInMinutes = $movie->duration_minutes;
 
     // Calculate end time based on start time and movie duration
     $startTime = Carbon::parse($request->start_time);
@@ -114,10 +114,10 @@ class ShowtimesController extends Controller
      * @param  \App\Models\showtimes  $Showtime
      * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(showtimes $Showtime)
     {
 //        dd($Showtime);
-        $Showtime = showtimes::findOrFail($id);
+        // $Showtime = showtimes::findOrFail($id);
         $movies = Movies::all();
         $hall_cinemas = Hall_cinema::all();
         return view('Backend.Showtime.edit', compact('Showtime', 'movies', 'hall_cinemas'   ));

@@ -9,15 +9,142 @@
 
     {{-- ======================= end of check message ========================= --}}
 
+
+    <style>
+        /* Add these styles to your CSS */
+        .border-left-primary {
+            border-left: 4px solid #4e73df;
+        }
+
+        .border-left-success {
+            border-left: 4px solid #1cc88a;
+        }
+
+        .border-left-info {
+            border-left: 4px solid #36b9cc;
+        }
+
+        .border-left-warning {
+            border-left: 4px solid #f6c23e;
+        }
+
+        .border-left-danger {
+            border-left: 4px solid #e74a3b;
+        }
+
+        .card {
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .text-xs {
+            font-size: 0.7rem;
+        }
+
+        .text-gray-300 {
+            color: #dddfeb;
+        }
+
+        .text-gray-800 {
+            color: #5a5c69;
+        }
+    </style>
+
+
+    <div class="container py-4">
+        <div class="row row-cols-1 row-cols-lg-5 g-4">
+            <!-- Total Movies Card -->
+            <div class="col">
+                <div class="card border-left-primary h-100 py-2 shadow">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total Movies</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalMovies ?? $movies->total() }}
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-film fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Movies Card -->
+            <div class="col">
+                <div class="card border-left-success h-100 py-2 shadow">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Active Movies</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ $activeMovies ?? $movies->where('status', 'active')->count() }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    
+
+            <!-- Recent Additions Card -->
+            <div class="col">
+                <div class="card border-left-warning h-100 py-2 shadow">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Added This Month</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ $recentMovies ?? $movies->where('created_at', '>=', now()->startOfMonth())->count() }}
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suppliers Card -->
+            <div class="col">
+                <div class="card border-left-danger h-100 py-2 shadow">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Suppliers</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ $suppliersCount ?? $suppliers->count() }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-truck fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
     <div class="m-4">
         <div class="card">
             <div class="card-body d-flex justify-content-between align-items-center">
 
-                <button>testing</button>
+
                 {{-- Filters Section --}}
                 <form action="{{ route('movies.index') }}" method="GET" id="filterForm"
                     class="d-flex align-items-center gap-3 ">
-                    Search
                     <div class="flex-grow-1">
                         <input type="text" name="search" class="form-control" placeholder="Search by title..." --}}
                             value="{{ request('search') }}">
@@ -52,7 +179,7 @@
                             <option value="">All Suppliers</option>
                             @foreach($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : ''
-                                        }}>
+                                                                }}>
                                     {{ $supplier->name }}
                                 </option>
                             @endforeach
@@ -71,7 +198,8 @@
                 </form>
                 <div class="float-end">
                     <x-create_modal dataTable="movies" title="Add New Movie">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                            data-bs-target="#createModal">
                             <i class="fas fa-plus"></i> Add New Movie
                         </button>
                     </x-create_modal>
@@ -87,7 +215,7 @@
     {{-- Movies Title and Count --}}
 
     {{-- Table --}}
-    <table id="example" class="table table-striped table-bordered align-middle text-center" style="width:100%">
+    <table id="example" class="table table-striped  align-middle text-center table-hover" style="width:100%">
         <thead class="table-dark">
             <tr>
                 <th>Title</th>
@@ -103,19 +231,19 @@
                 <th>Classification</th>
                 <th>Supplier</th>
                 <th>Created At</th>
-                <th>Updated At</th>
+                {{-- <th>Updated At</th> --}}
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach($movies as $movie)
                 <tr id="movie{{$movie->id}}">
-                    <td>{{$movie->title}}</td>
-                    <td>{{$movie->duration_minutes}}(mn)</td>
-                    <td>{{$movie->director}}</td>
-                    <td>{{Str::limit($movie->description, 50)}}</td>
-                    <td>{{$movie->language}}</td>
-                    <td>
+                    <td class="text-muted">{{$movie->title}}</td>
+                    <td class="text-muted">{{$movie->duration_minutes}}(mn)</td>
+                    <td class="text-muted">{{$movie->director}}</td>
+                    <td class="text-muted">{{Str::limit($movie->description, 50)}}</td>
+                    <td class="text-muted">{{$movie->language}}</td>
+                    <td class="text-muted">
                         @if($movie->poster)
                             <img src="{{config('app.image_base_url')}}{{$movie->poster}}" alt="Poster" class="img-fluid"
                                 style="width: 40px; height: 40px;">
@@ -138,21 +266,21 @@
                         </span>
                     </td>
                     <td>{{ $movie->release_date ? \Carbon\Carbon::parse($movie->release_date)->format('Y/m/d') : 'N/A' }}</td>
-                    <td>{{$movie->genre->main_genre ?? 'N/A'}}</td>
-                    <td>{{$movie->classification->code ?? 'N/A'}}</td>
-                    <td>{{$movie->supplier->name ?? 'N/A'}}</td>
+                    <td><span class="badge text-bg-success">{{$movie->genre->main_genre ?? 'N/A'}}</span></td>
+                    <td><span class="badge text-bg-warning"> {{$movie->classification->code ?? 'N/A'}}</span></td>
+
+                    <td class="text-info-emphasis">{{$movie->supplier->name ?? 'N/A'}}</td>
                     <td>{{ $movie->created_at->format("Y/m/d") }}</td>
-                    <td>{{ $movie->updated_at->format("Y/m/d") }}</td>
+                    {{-- <td>{{ $movie->updated_at->format("Y/m/d") }}</td> --}}
                     <td class="d-flex gap-2">
                         <x-update-modal dataTable="MOVIES" title="UPDATE MOVIES">
                             <button type="button" class="btn-outline-primary btn btnEditMovie btn-sm" data-id="{{$movie->id}}"
-                                data-modal-title="UPDATE MOVIES" data-bs-toggle="modal" data-bs-target="#updateModal"><i
-                                    class="bi bi-pencil-fill"></i>
+                                data-modal-title="UPDATE MOVIES" data-bs-toggle="modal" data-bs-target="#updateModal">Edit
                             </button>
                         </x-update-modal>
                         <button type="button" class="btn btn-outline-danger btn-sm"
                             onclick="confirmDelete({{ $movie->id }}, 'movies')">
-                            <i class="bi bi-trash3"></i>
+                            del
                         </button>
                     </td>
                 </tr>

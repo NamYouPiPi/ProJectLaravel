@@ -29,15 +29,8 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-        .btn-gradient {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
-            color: white;
-        }
-        .btn-gradient:hover {
-            background: linear-gradient(45deg, #764ba2, #667eea);
-            color: white;
-        }
+
+
         .status-badge {
             padding: 8px 16px;
             border-radius: 20px;
@@ -59,7 +52,7 @@
     {{-- Dashboard Cards --}}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card stats-card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card stats-card text-white" style="background:#667eea ;">
                 <div class="card-body text-center">
                     <h5 class="card-title">Total Genres</h5>
                     <div class="stats-number">{{ $totalGenres }}</div>
@@ -91,8 +84,8 @@
     <div class="filter-section">
              {{-- ==================== begin button add new ========================--}}
         <x-create_modal dataTable="genre" title="Add New Genre">
-            <button type="button" class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#createModal">
-                ➕ Add New Genre
+            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#createModal">
+            <i class="bi bi-plus-lg"></i> Add New Genre
             </button>
         </x-create_modal>
         {{--================================= end of button add new ==========================--}}
@@ -161,8 +154,8 @@
                         @forelse($genres as $genre)
                             <tr class="text-center genre-row{{$genre->id}}">
                                 <td><strong>{{$genre->main_genre}}</strong></td>
-                                <td>{{$genre->sub_genre}}</td>
-                                <td>{{$genre->description ?? 'No description'}}</td>
+                                <td class="text-muted">{{$genre->sub_genre}}</td>
+                                <td class="text-muted">{{$genre->description ?? 'No description'}}</td>
                                 <td>
                                     @if($genre->status == 'active')
                                         <span class="status-badge status-active">✓ Active</span>
@@ -170,19 +163,21 @@
                                         <span class="status-badge status-inactive">✗ Inactive</span>
                                     @endif
                                 </td>
-                                <td>{{ $genre->created_at->format("d/m/Y") }}</td>
+                                <td class="text-muted">{{ $genre->created_at->format("d/m/Y") }}</td>
                                 {{-- <td>{{ $genre->updated_at->format("d/m/Y") }}</td> --}}
                                 <td class="d-flex gap-2 justify-content-center">
                                     <x-update-modal dataTable="genre" title="Edit Genre">
-                                        <button type="button" class="btn btn-sm btn-success btn_update_genre" data-id="{{ $genre->id}}"
+                                        <button type="button" class="btn btn-sm btn-outline-primary btn_update_genre" data-id="{{ $genre->id}}"
                                                 data-bs-toggle="modal" data-bs-target="#updateModal">
-                                            ✏️ Edit
+                                         Edit
                                         </button>
                                     </x-update-modal>
 
-                                   <button type="button" class="btn btn-outline-danger"
+                                   <button type="button" class="btn btn-outline-danger btn-sm"
                                     onclick="confirmDelete({{ $genre->id }}, 'genre')">
-                                    <i class="bi bi-trash3"></i>
+                                    {{-- <i class="bi bi-trash3"></i>
+                                     --}}
+                                     del
                                 </button>
                                 </td>
                             </tr>

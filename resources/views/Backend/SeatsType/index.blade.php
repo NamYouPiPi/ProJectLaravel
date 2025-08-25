@@ -31,7 +31,7 @@
                     <th>Price</th>
                     <th>Status</th>
                     <th>Created</th>
-                    <th>Updated</th>
+                    {{-- <th>Updated</th> --}}
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -48,7 +48,7 @@
                             @endif
                         </td>
                         <td>{{ $seat_type->created_at->format('Y-m-d') }}</td>
-                        <td>{{ $seat_type->updated_at->format('Y-m-d') }}</td>
+                        {{-- <td>{{ $seat_type->updated_at->format('Y-m-d') }}</td> --}}
                         <td class="d-flex gap-2">
                             <x-update-modal dataTable="SeatsType" title="update SeatsType">
                                 <button type="button" class="btn btn-outline-primary  btnUpdateSeats"

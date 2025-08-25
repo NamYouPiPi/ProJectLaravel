@@ -2,7 +2,7 @@
 function confirmDelete(id, base_url) {
     Swal.fire({
         title: "Are you sure?",
-        text: "This will permanently delete the seat type.",
+        text: "This will permanently delete the " + base_url,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -96,11 +96,11 @@ function EditById(btnEdit, Base_url) {
 
                 // Show success message with SweetAlert
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Updated!',
-                    text: 'The record has been updated successfully.',
+                    icon: "success",
+                    title: "Updated!",
+                    text: "The record has been updated successfully.",
                     timer: 1500,
-                    showConfirmButton: false
+                    showConfirmButton: false,
                 });
 
                 // Reload page after SweetAlert closes
@@ -122,10 +122,7 @@ function EditById(btnEdit, Base_url) {
     });
 }
 
-
-
-
-function showDetails(id , type) {
+function showDetails(id, type) {
     $.ajax({
         url: `/${type}/${id}`,
         type: "GET",

@@ -189,14 +189,14 @@
                         <th>Total Seats</th>
                         <th>Status</th>
                         <th>Created</th>
-                        <th>Updated</th>
+                        {{-- <th>Updated</th> --}}
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($hall_cinema as $hall_cinemas)
                         <tr class="text-center">
-                            <td><strong>{{ $hall_cinemas->cinema_name }}</strong></td>
+                            <td><strong>{{ $hall_cinemas->cinema_name }}  </strong></td>
                             <td>
                                 <div>
                                     <strong>{{ $hall_cinemas->hall_location->name ?? 'N/A' }}</strong><br>
@@ -219,17 +219,18 @@
                                 @endif
                             </td>
                             <td>{{ $hall_cinemas->created_at->format("d/m/Y") }}</td>
-                            <td>{{ $hall_cinemas->updated_at->format("d/m/Y") }}</td>
-                            <td class="d-flex gap-2 justify-content-center">
+                            {{-- <td>{{ $hall_cinemas->updated_at->format("d/m/Y") }}</td> --}}
+                            <td class="d-flex gap-1 justify-content-center">
                                 <x-update-modal dataTable="hallCinema" title="Edit Hall Cinema">
-                                    <button type="button" class="btn btn-sm btn-success btn_edit_cinema" data-id="{{ $hall_cinemas->id}}"
+                                    <button type="button" class="btn btn-sm btn-outline-primary btn_edit_cinema" data-id="{{ $hall_cinemas->id}}"
                                         data-bs-toggle="modal" data-bs-target="#updateModal">
-                                        ✏️ Edit
+                                         Edit
                                     </button>
                                     </x-update-modal>
-                                    <button type="button" class="btn btn-outline-danger"
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
                                         onclick="confirmDelete({{ $hall_cinemas->id }}, 'hallCinema')">
-                                        <i class="bi bi-trash3"></i>
+                                        {{-- <i class="bi bi-trash3"></i> --}}
+                                        del
                                     </button>
                             </td>
                         </tr>
@@ -251,9 +252,9 @@
     {{-- ========== paginate ----------------}}
    <div class="d-flex justify-content-between align-items-center m-4">
         <div class="text-muted">
-            Showing {{ $hall_cinemas->firstItem() ?? 0 }} to {{ $hall_cinemas->lastItem() ?? 0 }} of {{ $hall_cinemas->total() }} results
+            Showing {{ $hall_cinema->firstItem() ?? 0 }} to {{ $hall_cinema->lastItem() ?? 0 }} of {{ $hall_cinema->total() }} results
         </div>
-        {{ $hall_cinemas->appends(request()->query())->links() }}
+        {{ $hall_cinema->appends(request()->query())->links() }}
     </div>
     {{-- ---------- end of paginate ------------}}
 
