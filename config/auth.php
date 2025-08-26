@@ -45,7 +45,7 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
-        
+
         'customer' => [
             'driver' => 'session',
             'provider' => 'customers',
@@ -117,4 +117,5 @@ return [
     */
 
     'password_timeout' => 10800,
+
 ];

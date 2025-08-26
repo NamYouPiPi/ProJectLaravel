@@ -39,8 +39,8 @@ class GoogleController extends Controller
         Auth::login($findUser);
 
         // Redirect based on role
-        if ($findUser->hasRole('customer')) {
-            return redirect('home');
+    if ($findUser->role && $findUser->role->name === 'customer') {
+             return redirect('home');
         } else {
             return redirect('dashboard');
         }
