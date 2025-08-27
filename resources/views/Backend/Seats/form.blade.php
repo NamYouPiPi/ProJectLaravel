@@ -17,7 +17,8 @@
 
         <!-- Seats Type -->
         <div class="col-md-6">
-            <label for="seat_type_id" class="form-label float-start">Seat Type <span class="text-danger">*</span></label>
+            <label for="seat_type_id" class="form-label float-start">Seat Type <span
+                    class="text-danger">*</span></label>
             <select class="form-select" name="seat_type_id" id="seat_type_id" required>
                 <option value="">Please select a seat type</option>
                 @foreach($seatsType as $seatType)
@@ -30,7 +31,8 @@
 
         <!-- Seat Number -->
         <div class="col-md-6">
-            <label for="seat_number" class="form-label float-start">Seat Number <span class="text-danger">*</span></label>
+            <label for="seat_number" class="form-label float-start">Seat Number <span
+                    class="text-danger">*</span></label>
             <input type="text" class="form-control" name="seat_number" id="seat_number"
                 value="{{ old('seat_number', $seat->seat_number ?? '') }}" required />
         </div>
@@ -47,22 +49,22 @@
             <label for="status" class="form-label float-start">Status <span class="text-danger">*</span></label>
             <select class="form-select" name="status" id="status" required>
                 <option value="">Please select a status</option>
-                @php
-                    $statuses = ['available', 'reserved', 'booked', 'cancelled', 'blocked', 'broken'];
-                @endphp
-                @foreach ($statuses as $status)
-                    <option value="{{ $status }}" @selected(old('status', $seat->status ?? '') == $status)>
-                        {{ ucfirst($status) }}
-                    </option>
-                @endforeach
+                <option value="available" @selected(old('status', $seat->status ?? '') == 'available')>Available</option>
+                <option value="reserved" @selected(old('status', $seat->status ?? '') == 'reserved')>Reserved</option>
+                <option value="booked" @selected(old('status', $seat->status ?? '') == 'booked')>Booked</option>
+                <option value="cancelled" @selected(old('status', $seat->status ?? '') == 'cancelled')>Cancelled</option>
+                <option value="blocked" @selected(old('status', $seat->status ?? '') == 'blocked')>Blocked</option>
+                <option value="broken" @selected(old('status', $seat->status ?? '') == 'broken')>Broken</option>
             </select>
         </div>
     </div>
 </div>
-<!--end::Body-->
+
+
 
 <!--begin::Footer-->
 <div class="card-footer mt-2 border-top pt-3 ">
-    <button class="btn btn-primary float-start" type="submit">{{ isset($seat) ? 'Update Seat' : 'Create Seat' }}</button>
+    <button class="btn btn-primary float-start"
+        type="submit">{{ isset($seat) ? 'Update Seat' : 'Create Seat' }}</button>
     <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Cancel</button>
 </div>

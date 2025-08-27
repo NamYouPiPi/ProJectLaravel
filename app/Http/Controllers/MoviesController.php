@@ -74,26 +74,41 @@ class MoviesController extends Controller
         }
 
         // Get the data with pagination
-        $movies = $query->latest()->paginate(10);
+        $movies = $query->where('status', 'active')->orderBy('created_at', 'desc')->paginate(10);
         $genres = Genre::all();
         $classifications = Classification::all();
         $suppliers = Supplier::all();
 
-        return view('Backend.Movies.index', compact(
-            'movies',
-            'genres',
-            'classifications',
-            'suppliers',
-            'totalMovies',
-            'activeMovies',
-            'inactiveMovies',
-            'topGenre',
-            'recentMovies',
-            'suppliersCount',
-            'topClassification'
-        ));
+
+            return response(
+                view('Backend.Movies.index', compact(
+                    'movies',
+                    'genres',
+                    'classifications',
+                    'suppliers',
+                    'totalMovies',
+                    'activeMovies',
+                    'inactiveMovies',
+                    'topGenre',
+                    'recentMovies',
+                    'suppliersCount',
+                    'topClassification'
+                ))
+            );
     }
 
+        public function bookingCreate($movieId)
+        {
+            $movie = Movies::with(['showtimes'])->findOrFail($movieId);
+            // Example: get all seats for the hall (replace with your actual seat logic)
+            $seats = \App\Models\Seats::where('hall_id', $movie->hall_id ?? 1)->get();
+            return view('Frontend.Booking.create', compact('movie', 'seats'));
+        }
+
+    public function home (){
+        $movies = Movies::all(); // or with any filters you want
+        return view('Frontend.home', compact('movies'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -161,23 +176,25 @@ class MoviesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Movies  $movies
+     * @param  \App\Models\Movies  $movie
      * @return \Illuminate\Http\Response
      */
-    public function show(Movies $movies)
+    public function show(Movies $movie)
     {
         //
+        return view( 'Frontend.Movies.show', compact('movie'));
+
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Movies  $movies
+     * @param  \App\Models\Movies  $movie
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|string
      */
-public function edit($id)
+public function edit(Movies $movie)
 {
-    $movie = Movies::findOrFail($id);
+    // $movie = Movies::findOrFail($id);
     $genres = Genre::all();
     $suppliers = Supplier::all();
     $classifications = Classification::all();
@@ -191,17 +208,10 @@ public function edit($id)
      * @param  \App\Models\Movies  $movies
      * @return \Illuminate\Http\Response
      */
-public function update(Request $request, Movies $movie): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+public function update(Request $request, Movies $movies): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
 {
     try {
-        \Illuminate\Support\Facades\Log::info('Movie Update Request', [
-            'movie_id'      => $movie->id,
-            'request_data'  => $request->except(['poster', 'trailer']),
-            'has_poster'    => $request->hasFile('poster'),
-            'has_trailer'   => $request->hasFile('trailer')
-        ]);
 
-        $movies = $movie; // Keep $movies for compatibility with existing code
     $request->validate([
         'title'                 => 'required|string|max:255',
         'duration_minutes'      => 'required|integer',
@@ -226,17 +236,6 @@ public function update(Request $request, Movies $movie): \Illuminate\Http\Respon
     } else {
         $PosterPath = $movies->poster;
     }
-
-    // Handle trailer
-    // if ($request->hasFile('trailer')) {
-    //     if ($movies->trailer) {
-    //         Storage::disk('public')->delete($movies->trailer);
-    //     }
-    //     $trailerPath = $request->file('trailer')->store('Trailer', 'public');
-    // } else {
-    //     $trailerPath = $movies->trailer;
-    // }
-
     $movies->update([
         'title'             => $request->title,
         'duration_minutes'  => $request->duration_minutes,

@@ -42,8 +42,10 @@
         crossorigin="anonymous" />
     <!--end::Third Party Plugin(Bootstrap Icons)-->
     <!--begin::Required Plugin(AdminLTE)-->
-    <link rel="stylesheet" href="./css/adminlte.css" />
+    <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}" />
     <!--end::Required Plugin(AdminLTE)-->
+    <!-- Laravel compiled assets -->
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <!-- apexcharts -->
     {{-- <link--}} {{-- rel="stylesheet" --}} {{--
         href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" --}} {{--
@@ -59,4 +61,6 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>

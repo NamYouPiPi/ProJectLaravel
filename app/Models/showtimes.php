@@ -5,39 +5,36 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @method static create(array $array)
- */
-class showtimes extends Model
+class Showtimes extends Model
 {
     use HasFactory;
 
-    /** allow create([...]) on these columns **/
+    protected $table = 'showtimes'; // Ensure this matches your table name
+
     protected $fillable = [
         'movie_id',
         'hall_id',
         'start_time',
         'end_time',
-        'base_price',
         'status',
-        'is_active'
-    ];
-    protected $dates = [
-        'start_time',
-        'end_time',
+        'base_price',
+        'is_active',
     ];
 
-public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany
-{
-    return $this->hasMany(Booking::class);
-}
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
 
-    public function movie(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    // Relationship to Movie
+    public function movie()
     {
-        return $this->belongsTo(Movies::class);
+        return $this->belongsTo(Movies::class, 'movie_id');
     }
-    public function hall(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+
+    // Relationship to Hall
+    public function hall()
     {
-        return $this->belongsTo(Hall_cinema::class);
+        return $this->belongsTo(Hall_cinema::class, 'hall_id'); // Adjust if Hall model is named differently
     }
 }

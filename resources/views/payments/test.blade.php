@@ -60,12 +60,14 @@
                                             <td>{{ $booking->customer->name }}</td>
                                             <td>${{ number_format($booking->final_amount, 2) }}</td>
                                             <td>
-                                                @if($booking->payment_status == 'pending')
+                                                @if($booking->payment && $booking->payment->status == 'pending')
                                                     <span class="badge bg-warning">Pending</span>
-                                                @elseif($booking->payment_status == 'paid')
+                                                @elseif($booking->payment && $booking->payment->status == 'paid')
                                                     <span class="badge bg-success">Paid</span>
-                                                @elseif($booking->payment_status == 'failed')
+                                                @elseif($booking->payment && $booking->payment->status == 'failed')
                                                     <span class="badge bg-danger">Failed</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Not Started</span>
                                                 @endif
                                             </td>
                                             <td>

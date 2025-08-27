@@ -29,7 +29,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
-    // add base image url herer 
+    // add base image url herer
     'image_base_url' => env('IMAGE_BASE_URL', 'http://localhost/Khmer_cenima/storage/app/public/'),
 
 
@@ -167,6 +167,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        App\Providers\BladeServiceProvider::class,
 
         /*
          * Package Service Providers...

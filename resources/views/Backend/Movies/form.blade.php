@@ -106,7 +106,6 @@
             <div class="col-md-6">
                 <label for="trailer" class="form-label float-start">Trailer</label>
                 <input type="url" class="form-control" name="trailer" id="trailer" placeholder="Enter video URL" value="{{ old('trailer', isset($movie->trailer) ? $movie->trailer : '') }}">
-                <iframe width="40px" height="40px" src="{{ old('trailer', isset($movie->trailer) ? $movie->trailer : '') }}" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
         <div class="row g-3 mt-2">

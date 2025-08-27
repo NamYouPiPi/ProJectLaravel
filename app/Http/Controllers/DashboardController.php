@@ -31,9 +31,9 @@ class DashboardController extends Controller
     {
         // Calculate monthly revenue
         $startOfMonth = Carbon::now()->startOfMonth();
-        // $totalRevenue = Booking::where('payment_status', 'paid')
-        //                     ->where('created_at', '>=', $startOfMonth)
-        //                     ->sum('final_amount');
+        $totalRevenue = Booking::where('status', 'confirmed')
+                            ->where('created_at', '>=', $startOfMonth)
+                            ->sum('final_amount');
 
         // Get monthly bookings count
         $totalBookings = Booking::where('created_at', '>=', $startOfMonth)->count();
@@ -44,32 +44,56 @@ class DashboardController extends Controller
         // Get pending bookings count
         $pendingBookings = Booking::where('status', 'pending')->count();
 
-        // Get recent bookings
-        // $recentBookings = Booking::with(['customer', 'showtime.movie'])
-        //                     ->latest()
-        //                     ->take(5)
-        //                     ->get();
+        // Get recent bookings with safety checks
+        try {
+            $recentBookings = Booking::with([
+                'customer:id,name',
+                'showtime:id,start_time',
+                'showtime.movie:id,title',
+                'showtime.hall:id,cinema_name,capacity'
+            ])
+            ->whereHas('customer')
+            ->whereHas('showtime.movie')
+            ->whereHas('showtime.hall')
+            ->whereNotNull('booking_reference')
+            ->latest()
+            ->take(5)
+            ->get();
+        } catch (\Exception $e) {
+            $recentBookings = collect(); // Empty collection as fallback
+        }
 
-        // Get upcoming showtimes
-        $now = Carbon::now();
-        $upcomingShowtimes = Showtimes::with(['movie', 'hall'])
-                            ->where('start_time', '>', $now)
-                            ->orderBy('start_time')
-                            ->take(5)
-                            ->get();
+        // Get upcoming showtimes with safety checks
+        try {
+            $now = Carbon::now();
+            $upcomingShowtimes = Showtimes::with([
+                'movie:id,title',
+                'hall:id,cinema_name,capacity'
+            ])
+            ->whereHas('movie')
+            ->whereHas('hall')
+            ->where('start_time', '>', $now)
+            ->orderBy('start_time')
+            ->take(5)
+            ->get();
 
-        // Add booked seats count to each showtime
-        foreach ($upcomingShowtimes as $showtime) {
-            $showtime->booked_seats_count = DB::table('booking_seats')
-                ->join('bookings', 'booking_seats.booking_id', '=', 'bookings.id')
-                ->where('bookings.showtime_id', $showtime->id)
-                ->where('bookings.status', '!=', 'cancelled')
-                ->where('booking_seats.status', 'active')
-                ->count();
+            // Add booked seats count to each showtime
+            foreach ($upcomingShowtimes as $showtime) {
+                $bookedSeatsCount = DB::table('booking_seats')
+                    ->join('bookings', 'booking_seats.booking_id', '=', 'bookings.id')
+                    ->where('bookings.showtime_id', $showtime->id)
+                    ->where('bookings.status', '!=', 'cancelled')
+                    ->where('booking_seats.status', 'active')
+                    ->count();
+
+                $showtime->booked_seats_count = $bookedSeatsCount;
+            }
+        } catch (\Exception $e) {
+            $upcomingShowtimes = collect(); // Empty collection as fallback
         }
 
         // Get monthly revenue data for chart
-        // $monthlyRevenue = Booking::where('payment_status', 'paid')
+        // $monthlyRevenue = Booking::where('status', 'confirmed')
         //                     ->whereYear('created_at', Carbon::now()->year)
         //                     ->select(
         //                         DB::raw('MONTH(created_at) as month'),
@@ -92,11 +116,11 @@ class DashboardController extends Controller
                     ->get();
 
         return view('Backend.Dashboard.index', compact(
-            // 'totalRevenue',
+            'totalRevenue',
             'totalBookings',
             'activeMovies',
             'pendingBookings',
-            // 'recentBookings',
+            'recentBookings',
             'upcomingShowtimes',
             // 'monthlyRevenue',
             'topMovies'
@@ -115,7 +139,7 @@ class DashboardController extends Controller
             $startOfWeek = Carbon::now()->startOfWeek();
             $endOfWeek = Carbon::now()->endOfWeek();
 
-            $data = Booking::where('payment_status', 'paid')
+            $data = Booking::where('status', 'confirmed')
                         ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                         ->select(
                             DB::raw('DAYOFWEEK(created_at) as day'),
@@ -139,7 +163,7 @@ class DashboardController extends Controller
                 'data' => $chartData
             ]);
         } elseif ($period === 'yearly') {
-            $data = Booking::where('payment_status', 'paid')
+            $data = Booking::where('status', 'confirmed')
                         ->whereYear('created_at', '>=', $currentYear - 5)
                         ->select(
                             DB::raw('YEAR(created_at) as year'),
@@ -165,7 +189,7 @@ class DashboardController extends Controller
             ]);
         } else {
             // Monthly (default)
-            $data = Booking::where('payment_status', 'paid')
+            $data = Booking::where('status', 'confirmed')
                         ->whereYear('created_at', $currentYear)
                         ->select(
                             DB::raw('MONTH(created_at) as month'),

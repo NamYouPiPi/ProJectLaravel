@@ -1,0 +1,197 @@
+:root {
+    --cinema-primary: #e50914;
+    --cinema-dark: #141414;
+    --cinema-gold: #ffd700;
+}
+
+body {
+    background-color: var(--cinema-dark);
+    color: white;
+}
+
+.navbar {
+    background: linear-gradient(90deg, var(--cinema-dark) 0%, #2d2d2d 100%);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-brand {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--cinema-primary) !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+    width: 60px;
+    height: auto;
+}
+
+.logo img {
+    width: 100%;
+    height: auto;
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+    font-weight: 500;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--cinema-gold) !important;
+    transform: translateY(-2px);
+}
+
+.navbar-nav .nav-link::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: var(--cinema-primary);
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+.btn-book-now {
+    background: linear-gradient(45deg, var(--cinema-primary), #ff3333);
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+}
+
+.btn-book-now:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+}
+
+/* .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23222" width="1200" height="600"/><circle fill="%23e50914" cx="200" cy="150" r="50" opacity="0.1"/><circle fill="%23ffd700" cx="800" cy="400" r="80" opacity="0.1"/><circle fill="%23e50914" cx="1000" cy="200" r="60" opacity="0.1"/></svg>');
+            background-size: cover;
+            background-position: center;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+        } */
+
+.movie-card {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #333;
+}
+
+.movie-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(229, 9, 20, 0.2);
+}
+
+.movie-poster {
+    height: 300px;
+    background: linear-gradient(45deg, var(--cinema-primary), #ff6b6b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+}
+
+.booking-section {
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 3rem 0;
+}
+
+.footer {
+    background: linear-gradient(90deg, var(--cinema-dark) 0%, #0a0a0a 100%);
+    padding: 3rem 0 1rem;
+    margin-top: 4rem;
+    border-top: 3px solid var(--cinema-primary);
+}
+
+.footer h5 {
+    color: var(--cinema-gold);
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.footer a {
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: block;
+    padding: 5px 0;
+}
+
+.footer a:hover {
+    color: var(--cinema-primary);
+    padding-left: 5px;
+}
+
+.social-icons a {
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 1.5rem;
+    color: #ccc;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: var(--cinema-primary);
+    transform: translateY(-3px);
+}
+
+.quick-book {
+    background: linear-gradient(45deg, var(--cinema-primary), #ff4757);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.form-control,
+.form-select {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 10px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--cinema-gold);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    color: white;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-search {
+    background: var(--cinema-gold);
+    color: black;
+    border: none;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.btn-search:hover {
+    background: #ffed4a;
+    color: black;
+    transform: translateY(-2px);
+}

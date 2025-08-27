@@ -40,7 +40,7 @@ class GoogleController extends Controller
 
         // Redirect based on role
     if ($findUser->role && $findUser->role->name === 'customer') {
-             return redirect('home');
+             return redirect('/home');
         } else {
             return redirect('dashboard');
         }

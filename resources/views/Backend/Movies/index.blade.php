@@ -10,133 +10,6 @@
     {{-- ======================= end of check message ========================= --}}
 
 
-    <style>
-        /* Add these styles to your CSS */
-        .border-left-primary {
-            border-left: 4px solid #4e73df;
-        }
-
-        .border-left-success {
-            border-left: 4px solid #1cc88a;
-        }
-
-        .border-left-info {
-            border-left: 4px solid #36b9cc;
-        }
-
-        .border-left-warning {
-            border-left: 4px solid #f6c23e;
-        }
-
-        .border-left-danger {
-            border-left: 4px solid #e74a3b;
-        }
-
-        .card {
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .text-xs {
-            font-size: 0.7rem;
-        }
-
-        .text-gray-300 {
-            color: #dddfeb;
-        }
-
-        .text-gray-800 {
-            color: #5a5c69;
-        }
-    </style>
-
-
-    <div class="container py-4">
-        <div class="row row-cols-1 row-cols-lg-5 g-4">
-            <!-- Total Movies Card -->
-            <div class="col">
-                <div class="card border-left-primary h-100 py-2 shadow">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Total Movies</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalMovies ?? $movies->total() }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-film fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Active Movies Card -->
-            <div class="col">
-                <div class="card border-left-success h-100 py-2 shadow">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Active Movies</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ $activeMovies ?? $movies->where('status', 'active')->count() }}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-    
-
-            <!-- Recent Additions Card -->
-            <div class="col">
-                <div class="card border-left-warning h-100 py-2 shadow">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Added This Month</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ $recentMovies ?? $movies->where('created_at', '>=', now()->startOfMonth())->count() }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Suppliers Card -->
-            <div class="col">
-                <div class="card border-left-danger h-100 py-2 shadow">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Suppliers</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ $suppliersCount ?? $suppliers->count() }}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-truck fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
     <div class="m-4">
         <div class="card">
             <div class="card-body d-flex justify-content-between align-items-center">
@@ -179,7 +52,7 @@
                             <option value="">All Suppliers</option>
                             @foreach($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : ''
-                                                                }}>
+                                                                        }}>
                                     {{ $supplier->name }}
                                 </option>
                             @endforeach

@@ -61,7 +61,7 @@ class SupplierController extends Controller
                 ]);
             }
 
-            return redirect()->route('suppliers.index')
+            return redirect()->route('admin.suppliers.index')
                 ->with('success', 'Supplier created successfully!');
         }catch (\Exception $e){
             return response()->json([

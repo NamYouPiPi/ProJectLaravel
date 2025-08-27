@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hall_cinema;
+use App\Models\Movies;
 use App\Models\Seat_type;
 use App\Models\Seats;
 use Illuminate\Http\Request;
@@ -31,6 +32,19 @@ class SeatsController extends Controller
         //
         return view('Backend.Seats.create');
     }
+    public function showBooking($movieId)
+{
+    $movie = Movies::with(['showtimes'])->findOrFail($movieId);
+    $hallId = $movie->hall_id; // or get from showtime/hall relationship
+
+    // Get all seats for the hall
+    $seats = Seats::where('hall_id', $hallId)->orderBy('seat_row')->orderBy('seat_number')->get();
+
+    // Group seats by row
+    $seatRows = $seats->groupBy('seat_row');
+
+    return view('Frontend.Booking.create', compact('movie', 'seatRows'));
+}
 
     /**
      * Store a newly created resource in storage.
@@ -50,6 +64,15 @@ class SeatsController extends Controller
             'seat_row' => 'required|string|max:255',
         ]);
         Seats::create($data);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Seat created successfully.',
+                'data' => $data
+            ]);
+        }
+
         return  redirect()->route('seats.index')->with('success', 'Seat created successfully.');
     }
 
@@ -74,7 +97,7 @@ class SeatsController extends Controller
         {
             $hallCinema  = Hall_cinema::all();
             $seatsType  = Seat_type::all();
-            return view('Backend.Seats.edit', compact('seat', 'hallCinema', 'seatsType' ,'seatsType'));
+            return view('Backend.Seats.edit', compact('seat', 'hallCinema', 'seatsType'));
         }
 
     /**
@@ -93,8 +116,18 @@ class SeatsController extends Controller
             'status' => 'required|in:available,reserved,booked,cancelled,blocked,broken',
             'seat_row' => 'required|string|max:255',
         ]);
+
         $seats->update($data);
-        return  redirect()->route('seats.index')->with('success', 'Seat updated successfully.');
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Seat updated successfully.',
+                'data' => $seats
+            ]);
+        }
+
+        return redirect()->route('seats.index')->with('success', 'Seat updated successfully.');
     }
 
     /**

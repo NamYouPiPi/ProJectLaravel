@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\BookingSeat;
 use App\Models\Customer;
 use App\Models\Employees;
 use App\Models\Movies;
+use App\Models\Seats;
 use App\Models\Showtime;
 use App\Models\showtimes;
+use App\Models\Seat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -32,6 +35,44 @@ class BookingController extends Controller
         $bookings = $query->latest()->paginate(10);
         return view('bookings.index', compact('bookings'))->with('success', 'Bookings retrieved successfully.');
     }
+public function createForMovie($movieId)
+{
+    $movie = Movies::findOrFail($movieId);
+    $showtime = showtimes::where('movie_id', $movieId)
+        ->where('start_time', '>', now())
+        ->orderBy('start_time')
+        ->first();
+
+    if (!$showtime) {
+        return back()->with('error', 'No upcoming showtime found for this movie.');
+    }
+
+    $hall = $showtime->hall;
+    $seats = Seats::where('hall_id', $hall->id)->get();
+
+    // Get booked seats for this showtime
+    $bookedSeats = BookingSeat::whereHas('booking', function($query) use ($showtime) {
+        $query->where('showtime_id', $showtime->id)
+              ->whereIn('status', ['confirmed', 'pending']);
+    })->pluck('seat_id')->toArray();
+
+    // Group seats by row
+    $seatRows = $seats->groupBy('seat_row');
+
+    // Sort rows in reverse order (L to A)
+    $sortedRows = $seatRows->sortKeysDesc();
+
+    $cinema = $hall->cinema_name ?? null;
+    return view('Frontend.Booking.create', [
+        'movie' => $movie,
+        'showtime' => $showtime,
+        'hall' => $hall,
+        'seats' => $seats,
+        'bookedSeats' => $bookedSeats,
+        'sortedRows' => $sortedRows,
+        'cinema' => $cinema,
+    ]);
+}
 
     /**
      * Show the form for creating a new resource.
@@ -42,7 +83,9 @@ class BookingController extends Controller
     {
         $customers = Customer::all();
         $showtimes = showtimes::where('start_time', '>', now())->get();
-        return view('bookings.create', compact('customers', 'employees', 'showtimes'));
+        // If this method is mistakenly called for frontend, pass empty $seatRows to avoid error
+        $seatRows = collect(); // Empty collection to prevent undefined
+        return view('bookings.create', compact('customers', 'employees', 'showtimes'))->with('seatRows', $seatRows);
     }
 
     /**
@@ -51,38 +94,89 @@ class BookingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $movieId)
     {
+        // Validate frontend fields
         $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'showtime_id' => 'required|exists:showtimes,id',
-            'total_amount' => 'required|numeric|min:0',
-            'booking_fee' => 'required|numeric|min:0',
-            'discount_amount' => 'nullable|numeric|min:0',
-            'status' => 'required|in:pending,confirmed,cancelled,completed',
+            'seats' => 'required|string', // Comma-separated seat IDs like 'A-1,B-2'
         ]);
 
-        // Calculate final amount
-        $discount = $validated['discount_amount'] ?? 0;
-        $final_amount = $validated['total_amount'] + $validated['booking_fee'] - $discount;
+        $movie = Movies::findOrFail($movieId);
+        $showtime = showtimes::where('movie_id', $movieId)
+            ->where('start_time', '>', now())
+            ->orderBy('start_time')
+            ->first();
 
-        // Generate booking reference
-        $booking_reference = 'BK-' . strtoupper(substr(md5(uniqid()), 0, 8));
+        if (!$showtime) {
+            return back()->with('error', 'No upcoming showtime found for this movie.');
+        }
 
+        $selectedSeatIds = explode(',', $validated['seats']);
+        $seats = collect();
+
+        // Parse seat IDs and find corresponding seats
+        foreach ($selectedSeatIds as $seatId) {
+            $parts = explode('-', $seatId);
+            if (count($parts) === 2) {
+                $row = $parts[0];
+                $number = $parts[1];
+                $seat = Seats::where('hall_id', $showtime->hall_id)
+                           ->where('seat_row', $row)
+                           ->where('seat_number', $number)
+                           ->first();
+                if ($seat) {
+                    $seats->push($seat);
+                }
+            }
+        }
+
+        if ($seats->isEmpty()) {
+            return back()->with('error', 'No valid seats selected.');
+        }
+
+        // Check if seats are available
+        foreach ($seats as $seat) {
+            $isBooked = BookingSeat::where('seat_id', $seat->id)
+                                 ->whereHas('booking', function($query) use ($showtime) {
+                                     $query->where('showtime_id', $showtime->id)
+                                           ->whereIn('status', ['confirmed', 'pending']);
+                                 })
+                                 ->exists();
+
+            if ($isBooked || $seat->status !== 'available') {
+                return back()->with('error', 'Some seats are already booked or not available.');
+            }
+        }
+
+        // Calculate total (assuming $3.00 per seat)
+        $seatPrice = 3.00;
+        $totalAmount = count($selectedSeatIds) * $seatPrice;
+
+        // Create booking (assume authenticated user as customer; adjust if needed)
+        $customer = auth()->user(); // Or fetch from session
         $booking = Booking::create([
-            'customer_id' => $request->customer_id,
-            'showtime_id' => $request->showtime_id,
-            'booking_reference' => $booking_reference,
-            'total_amount' => $request->total_amount,
-            'booking_fee' => $request->booking_fee,
-            'discount_amount' => $discount,
-            'final_amount' => $final_amount,
-            'status' => $request->status,
-            'expires_at' => showtimes::find($request->showtime_id)->end_time, // Expires when movie ends
+            'customer_id' => $customer->id ?? 1, // Default or adjust
+            'showtime_id' => $showtime->id,
+            'booking_reference' => 'BK-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+            'total_amount' => $totalAmount,
+            'booking_fee' => 0, // Adjust if needed
+            'discount_amount' => 0,
+            'final_amount' => $totalAmount,
+            'status' => 'pending',
+            'expires_at' => $showtime->end_time,
         ]);
 
-        return redirect()->route('bookings.show', $booking)
-            ->with('success', 'Booking created successfully.');
+        // Attach seats to booking
+        foreach ($seats as $seat) {
+            BookingSeat::create([
+                'booking_id' => $booking->id,
+                'seat_id' => $seat->id,
+                'price' => $seatPrice,
+                'status' => 'pending'
+            ]);
+        }
+
+        return redirect()->route('bookings.show', $booking)->with('success', 'Booking created successfully.');
     }
 
     /**
@@ -205,15 +299,15 @@ class BookingController extends Controller
     public function confirmBooking($id)
     {
         $booking = Booking::findOrFail($id);
-        
+
         if ($booking->status === 'cancelled') {
             return back()->with('error', 'Cannot confirm a cancelled booking.');
         }
-        
+
         $booking->update([
             'status' => 'confirmed'
         ]);
-        
+
         return redirect()->route('bookings.show', $booking->id)
             ->with('success', 'Booking has been confirmed successfully.');
     }
@@ -227,22 +321,22 @@ class BookingController extends Controller
     public function cancelBooking($id)
     {
         $booking = Booking::findOrFail($id);
-        
+
         if ($booking->status === 'completed') {
             return back()->with('error', 'Cannot cancel a completed booking.');
         }
-        
+
         $booking->update([
             'status' => 'cancelled'
         ]);
-        
+
         // Update seats status to cancelled
         if ($booking->seats) {
             foreach ($booking->seats as $seat) {
                 $seat->update(['status' => 'cancelled']);
             }
         }
-        
+
         return redirect()->route('bookings.show', $booking->id)
             ->with('success', 'Booking has been cancelled successfully.');
     }

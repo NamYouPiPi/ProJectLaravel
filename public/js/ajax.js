@@ -88,6 +88,7 @@ function EditById(btnEdit, Base_url) {
             contentType: false, // Important for FormData
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                "X-Requested-With": "XMLHttpRequest", // Add this for AJAX detection
             },
 
             success: function (response) {
@@ -138,4 +139,19 @@ function showDetails(id, type) {
             console.error("Error loading details:", xhr);
         },
     });
+}
+
+function displayValidationErrors(form, errors) {
+    // Remove previous error messages
+    form.find('.text-danger').remove();
+    form.find('.is-invalid').removeClass('is-invalid');
+
+    // Display new error messages
+    for (let field in errors) {
+        let input = form.find(`[name="${field}"]`);
+        if (input.length) {
+            input.addClass('is-invalid');
+            input.after(`<div class="text-danger">${errors[field][0]}</div>`);
+        }
+    }
 }

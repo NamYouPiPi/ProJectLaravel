@@ -44,14 +44,14 @@
                             <td>{{$seat->seat_row}}</td>
                             <td>
                                 <span class="badge
-                                @if($seat->status === 'available') bg-primary
-                                @elseif($seat->status === 'booked') bg-success
-                                @elseif($seat->status === 'cancelled') bg-warning text-dark
-                                @elseif($seat->status === 'blocked') bg-danger
-                                @elseif($seat->status === 'broken') bg-secondary
-                                @else bg-light text-dark
-                                @endif
-                            ">
+                                        @if($seat->status == 'available') bg-primary
+                                        @elseif($seat->status == 'booked') bg-success
+                                        @elseif($seat->status == 'cancelled') bg-warning text-dark
+                                        @elseif($seat->status == 'blocked') bg-danger
+                                        @elseif($seat->status == 'broken') bg-secondary
+                                        @else bg-light text-dark
+                                        @endif
+                                    ">
                                     {{ ucfirst($seat->status) }}
                                 </span>
                             <td>

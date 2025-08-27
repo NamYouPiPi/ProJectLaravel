@@ -1,5 +1,4 @@
-<form action="{{ route('seats.update', $seat) }}" method="post">
+<form id="updateForm" action="{{ route('seats.update', $seat) }}" method="post">
     @csrf
-    @method('PUT')
     @include('Backend.Seats.form')
 </form>

@@ -40,7 +40,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('suppliers.index') }}" class="nav-link @yield('supplier')">
+                            <a href="{{route('suppliers.index') }}" class="nav-link @yield('supplier')">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Suppliers</p>
                             </a>

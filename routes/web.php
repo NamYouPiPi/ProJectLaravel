@@ -44,13 +44,18 @@ use App\Http\Controllers\Auth\{
 */
 
 // Authentication Routes
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/home', function () {
+Route::get('/', function () {
     return view('Frontend.home');
-});
+})->name('home');
+
+// Route::get('/booking/{movie}', [MoviesController::class, 'bookingCreate'])->name('booking.create');
+
+
+
 // Registration Routes
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
@@ -82,6 +87,10 @@ Route::resource('inventory',InventoryController::class );
 Route::resource('sale'  , ConnectionSaleController::class);
 Route::post('sale.best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');
 Route::get('sale.report', [ConnectionSaleController::class, 'report'])->name('sale.report');
+
+
+Route::get('/', [MoviesController::class, 'home'])->name('frontend.home');
+
 
 
 
@@ -197,3 +206,7 @@ Route::get('/dashboard/chart-data', [App\Http\Controllers\DashboardController::c
 Route::get('/payments/callback/success', [PaymentController::class, 'handlePaymentSuccess'])->name('payments.callback.success');
 Route::get('/payments/callback/cancel', [PaymentController::class, 'handlePaymentCancel'])->name('payments.callback.cancel');
 Route::get('/payments/check-status/{transactionId}', [PaymentController::class, 'checkPaymentStatus'])->name('payments.check-status');
+
+// Booking routes
+Route::get('/booking/create/{movieId}', [BookingController::class, 'createForMovie'])->name('booking.create');
+Route::post('/booking/{movieId}', [BookingController::class, 'store'])->name('booking.store');

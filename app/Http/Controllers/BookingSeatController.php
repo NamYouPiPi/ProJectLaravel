@@ -63,6 +63,27 @@ class BookingSeatController extends Controller
         return view('booking_seats.create', compact('bookings', 'booking_id', 'seats'));
     }
 
+    public function getSeatByLetter (){
+        $GroupA = Seats::where('seat_row', 'A')->get();
+        $GroupB = Seats::where('seat_row', 'B')->get();
+        $GroupC = Seats::where('seat_row', 'C')->get();
+        $GroupD = Seats::where('seat_row', 'D')->get();
+        $GroupE = Seats::where('seat_row', 'E')->get();
+        $GroupF = Seats::where('seat_row', 'F')->get();
+        $GroupG = Seats::where('seat_row', 'G')->get();
+        $GroupH = Seats::where('seat_row', 'H')->get();
+        $GroupI = Seats::where('seat_row', 'I')->get();
+        $GroupJ = Seats::where('seat_row', 'J')->get();
+        $GroupK = Seats::where('seat_row', 'K')->get();
+        $GroupL = Seats::where('seat_row', 'L')->get();
+        $GroupM = Seats::where('seat_row', 'M')->get();
+        $GroupN = Seats::where('seat_row', 'N')->get();
+        $GroupO = Seats::where('seat_row', 'O')->get();
+        $GroupP = Seats::where('seat_row', 'P')->get();
+        $GroupQ = Seats::where('seat_row', 'Q')->get();
+
+    }
+
     /**
      * Store a newly created booking seat in storage.
      *

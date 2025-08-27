@@ -14,12 +14,25 @@ class CheckPermission
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, $permission)
+    public function handle(Request $request, Closure $next, ...$permissions): Response
     {
-        if (!$request->user() || !$request->user()->hasPermission($permission)) {
-            abort(403, 'Unauthorized action.');
+        $user = $request->user();
+
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        return $next($request);
+        // Super admin has all permissions
+        if ($user->isSuperAdmin()) {
+            return $next($request);
+        }
+
+        foreach ($permissions as $permission) {
+            if ($user->hasPermission($permission)) {
+                return $next($request);
+            }
+        }
+
+        abort(403, 'Unauthorized access');
     }
 }

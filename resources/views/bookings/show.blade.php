@@ -225,7 +225,7 @@
                     </form>
                     
                     <!-- Add Payment Button -->
-                    @if($booking->payment_status == 'pending')
+                    @if($booking->payment && $booking->payment->status == 'pending')
                         <a href="{{ route('payment.initiate', $booking->id) }}" class="btn btn-primary">
                             <i class="bi bi-credit-card"></i> Pay with ABA PayWay
                         </a>
@@ -243,13 +243,13 @@
                 @endif
                 
                 <!-- Display Payment Status -->
-                @if($booking->payment_status == 'paid')
+                @if($booking->payment && $booking->payment->status == 'paid')
                     <div class="ms-auto">
                         <span class="badge bg-success p-2">
                             <i class="bi bi-check-circle-fill me-1"></i> Payment Completed
                         </span>
                     </div>
-                @elseif($booking->payment_status == 'failed')
+                @elseif($booking->payment && $booking->payment->status == 'failed')
                     <div class="ms-auto">
                         <span class="badge bg-danger p-2">
                             <i class="bi bi-x-circle-fill me-1"></i> Payment Failed
@@ -258,7 +258,7 @@
                             <i class="bi bi-arrow-repeat"></i> Retry Payment
                         </a>
                     </div>
-                @elseif($booking->payment_status == 'pending' && $booking->transaction_id)
+                @elseif($booking->payment && $booking->payment->status == 'pending' && $booking->payment->transaction_id)
                     <div class="ms-auto">
                         <span class="badge bg-warning p-2">
                             <i class="bi bi-hourglass-split me-1"></i> Payment Pending

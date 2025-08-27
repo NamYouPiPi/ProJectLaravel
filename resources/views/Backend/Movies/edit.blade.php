@@ -1,7 +1,7 @@
-<form id="updateForm" method="POST" action="{{ route('movies.update', $movie->id) }}" enctype="multipart/form-data">
+<form id="updateForm" method="POST" action="{{ route('movies.update', $movie) }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
-    <input type="hidden" name="id" value="{{ $movie->id }}">
+    {{-- <input type="hidden" name="id" value="{{ $movie->id }}"> --}}
     @include('Backend.Movies.form')
 
 
