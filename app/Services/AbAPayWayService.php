@@ -26,11 +26,11 @@ class AbaPaywayService
     {
         $reqTime = date('YmdHis');
         $tranId = 'CINEMA' . $booking->id . time();
-        
+
         // Format items for ABA PayWay - handle case where seats might be null
         $seatCount = $booking->seats && $booking->seats->count() > 0 ? $booking->seats->count() : 1;
         $itemPrice = $seatCount > 0 ? number_format($booking->final_amount / $seatCount, 2) : number_format($booking->final_amount, 2);
-        
+
         $items = [
             [
                 'name' => 'Movie Ticket: ' . $booking->showtime->movie->title,
@@ -38,43 +38,43 @@ class AbaPaywayService
                 'price' => $itemPrice
             ]
         ];
-        
+
         $encodedItems = base64_encode(json_encode($items));
-        
+
         // Prepare request data
         $data = [
             'merchant_id' => $this->merchantId,
             'req_time' => $reqTime,
             'tran_id' => $tranId,
-            'amount' => number_format($booking->final_amount, 2),
+            'amount' => number_format($booking->final_amount, 2, '.', ''), // use dot for decimal
             'items' => $encodedItems,
             'currency' => 'USD',
             'return_url' => route('payment.callback'),
             'continue_success_url' => route('payment.success', $booking->id),
-            'payment_option' => 'cards',
+            'payment_option' => 'abapay', // or 'abapay_deeplink' for ABA Mobile
             'return_deeplink' => '',
         ];
-        
+
         // Generate hash
         $data['hash'] = $this->generateHash($data);
-        
+
         // Store transaction info in the database
         $booking->update([
             'transaction_id' => $tranId,
             'payment_status' => 'pending'
         ]);
-        
+
         // Send request to ABA PayWay
         $response = $this->sendRequest($data);
-        
+
         if (isset($response['checkout_url'])) {
             return $response['checkout_url'];
         }
-        
+
         Log::error('ABA PayWay error: ' . json_encode($response));
         return null;
     }
-    
+
     /**
      * Generate hash for the request
      */
@@ -83,7 +83,7 @@ class AbaPaywayService
         $stringToHash = $this->merchantId . $data['tran_id'] . $data['amount'] . $data['items'] . $data['currency'] . $data['req_time'];
         return hash_hmac('sha512', $stringToHash, $this->apiKey);
     }
-    
+
     /**
      * Send request to ABA PayWay API
      */
@@ -91,7 +91,7 @@ class AbaPaywayService
     {
         $url = $url ?: $this->apiUrl;
         $curl = curl_init();
-        
+
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
@@ -106,20 +106,20 @@ class AbaPaywayService
                 'Origin: ' . env('APP_URL')
             ],
         ]);
-        
+
         $response = curl_exec($curl);
         $err = curl_error($curl);
-        
+
         curl_close($curl);
-        
+
         if ($err) {
             Log::error('cURL Error: ' . $err);
             return ['error' => $err];
         }
-        
+
         return json_decode($response, true);
     }
-    
+
     /**
      * Verify the callback from ABA PayWay
      */
@@ -128,12 +128,12 @@ class AbaPaywayService
         if (!isset($data['tran_id'], $data['status'], $data['hash'])) {
             return false;
         }
-        
+
         $calculatedHash = hash_hmac('sha512', $data['tran_id'] . $data['status'], $this->apiKey);
-        
+
         return $calculatedHash === $data['hash'];
     }
-    
+
     /**
      * Check transaction status with ABA PayWay
      */
@@ -144,13 +144,13 @@ class AbaPaywayService
             'req_time' => date('YmdHis'),
             'tran_id' => $transactionId,
         ];
-        
+
         // Generate hash
-        $data['hash'] = hash_hmac('sha512', 
-            $data['merchant_id'] . $data['tran_id'] . $data['req_time'], 
+        $data['hash'] = hash_hmac('sha512',
+            $data['merchant_id'] . $data['tran_id'] . $data['req_time'],
             $this->apiKey
         );
-        
+
         // Send request to ABA PayWay check transaction endpoint
         return $this->sendRequest($data, $this->apiUrl . '/check-transaction');
     }

@@ -31,7 +31,7 @@ class GoogleController extends Controller
         // Update google_id if user exists by email but doesn't have google_id
         if (!$findUser->google_id) {
             $findUser->update([
-                'google_id' => $user->getId(),
+            'google_id' => $user->getId(),
                 'avatar' => $user->getAvatar()
             ]);
         }
@@ -39,9 +39,10 @@ class GoogleController extends Controller
         Auth::login($findUser);
 
         // Redirect based on role
-    if ($findUser->role && $findUser->role->name === 'customer') {
-             return redirect('/home');
+        if ($findUser->role && $findUser->role->name === 'customer') {
+            return redirect('/');
         } else {
+            // Redirect admin, employee, superadmin, manager to dashboard
             return redirect('dashboard');
         }
     } else {
@@ -59,7 +60,7 @@ class GoogleController extends Controller
         Auth::login($newUser);
 
         // Redirect new customers to home, not dashboard
-        return redirect('home')->with('success', 'User created successfully and logged in.');
+        return redirect('/')->with('success', 'User created successfully and logged in.');
     }
 }
 }

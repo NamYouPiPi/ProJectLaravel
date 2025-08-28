@@ -66,14 +66,14 @@
                         {{-- Actions --}}
 
                         <td class="d-flex gap-1">
-                            <x-update-modal dataTable="showTimes" title="update showTimes">
-                                <button type="button" class="btn btn-outline-primary btnEditInventory" data-id="{{$showtime->id}}"
+                            <x-update-modal dataTable="showTimes" title="update showTimes" :showtime="$showtime">
+                                <button type="button" class="btn btn-outline-primary btn_edit_showtime" data-id="{{$showtime->id}}"
                                     data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil"></i>
                                 </button>
                             </x-update-modal>
 
                            <button type="button" class="btn btn-outline-danger"
-                                    onclick="confirmDelete({{ $showtime->id }}, 'Showtime')">
+                                    onclick="confirmDelete({{ $showtime->id }}, 'showtimes')">
                                     <i class="bi bi-trash3"></i>
                                 </button>
 
@@ -108,7 +108,7 @@
     <script>
         $(document).ready(function () {
             // DeleteById($('.btnDelShowtime'), 'Showtime');
-            EditById($('.btn_edit_showtime'), 'Showtime');
+            EditById($('.btn_edit_showtime'), 'showtimes');
         });
     </script>
 

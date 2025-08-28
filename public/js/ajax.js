@@ -88,7 +88,7 @@ function EditById(btnEdit, Base_url) {
             contentType: false, // Important for FormData
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-                "X-Requested-With": "XMLHttpRequest", // Add this for AJAX detection
+                // "X-Requested-With": "XMLHttpRequest", // Add this for AJAX detection/
             },
 
             success: function (response) {
@@ -105,7 +105,7 @@ function EditById(btnEdit, Base_url) {
                 });
 
                 // Reload page after SweetAlert closes
-                setTimeout(() => location.reload(), 500);
+                setTimeout(() => location.reload(), 1000);
             },
             error: function (xhr) {
                 form.find('button[type="submit"]')

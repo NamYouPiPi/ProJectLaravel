@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Classification;
 use App\Models\Genre;
 use App\Models\Movies;
+use App\Models\Seats;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -97,16 +98,17 @@ class MoviesController extends Controller
             );
     }
 
-        public function bookingCreate($movieId)
-        {
+
+    public function bookingCreate($movieId)
+    {
             $movie = Movies::with(['showtimes'])->findOrFail($movieId);
             // Example: get all seats for the hall (replace with your actual seat logic)
-            $seats = \App\Models\Seats::where('hall_id', $movie->hall_id ?? 1)->get();
+            $seats = Seats::where('hall_id', $movie->hall_id ?? 1)->get();
             return view('Frontend.Booking.create', compact('movie', 'seats'));
-        }
+    }
 
     public function home (){
-        $movies = Movies::all(); // or with any filters you want
+        $movies = Movies::where('status', 'active')->get(); // or with any filters you want
         return view('Frontend.home', compact('movies'));
     }
 
@@ -205,68 +207,50 @@ public function edit(Movies $movie)
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Movies  $movies
+     * @param  \App\Models\Movies  $movie
      * @return \Illuminate\Http\Response
      */
-public function update(Request $request, Movies $movies): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+public function update(Request $request, Movies $movie)
 {
-    try {
-
-    $request->validate([
-        'title'                 => 'required|string|max:255',
-        'duration_minutes'      => 'required|integer',
-        'director'              => 'required|string|max:255',
-        'description'           => 'required|string',
-        'language'              => 'required|string|max:255',
-        'status'                => 'required|in:active,inactive',
-        'release_date'          => 'required|date',
-        'genre_id'              => 'required|exists:genres,id',
-        'classification_id'     => 'required|exists:classifications,id',
-        'supplier_id'           => 'required|exists:suppliers,id',
-        'poster'                => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'trailer'               => 'nullable|file|mimes:mp4,mov,avi|max:51200',
-    ]);
-
-    // Handle poster
-    if ($request->hasFile('poster')) {
-        if ($movies->poster) {
-            Storage::disk('public')->delete($movies->poster);
+     $request->validate([
+            'title'             => 'required|string|max:255',
+            'duration_minutes'  => 'required|integer',
+            'director'          => 'required|string|max:255',
+            'description'       => 'required|string', // no max
+            'language'          => 'required|string|max:255',
+            'status'            => 'required|in:active,inactive',
+            'release_date'      => 'required|date',
+            'genre_id'          => 'required|exists:genres,id',
+            'classification_id' => 'required|exists:classifications,id',
+            'supplier_id'       => 'required|exists:suppliers,id',
+            'poster'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'trailer'           => 'nullable|string|max:500',
+        ]);
+        if ($request->hasFile('poster')) {
+            // Delete old poster if exists
+            if ($movie->poster) {
+                Storage::disk('public')->delete($movie->poster);
+            }
+            $movie->poster = $request->file('poster')->store('Poster', 'public');
         }
-        $PosterPath = $request->file('poster')->store('Poster', 'public');
-    } else {
-        $PosterPath = $movies->poster;
+        $result = $movie->update([
+            'title'             => $request->title,
+            'duration_minutes'  => $request->duration_minutes,
+            'director'          => $request->director,
+            'description'       => $request->description,
+            'language'          => $request->language,
+            'status'            => $request->status,
+            'release_date'      => $request->release_date,
+            'genre_id'          => $request->genre_id,
+            'classification_id' => $request->classification_id,
+            'supplier_id'       => $request->supplier_id,
+            'poster'            => $movie->poster,
+            'trailer'           => $request->trailer,
+        ]);
+        $movie->save();
+
+        return redirect()->route('movies.index')->with('success', 'Movies updated successfully!');
     }
-    $movies->update([
-        'title'             => $request->title,
-        'duration_minutes'  => $request->duration_minutes,
-        'director'          => $request->director,
-        'description'       => $request->description,
-        'language'          => $request->language,
-        'status'            => $request->status,
-        'release_date'      => $request->release_date,
-        'genre_id'          => $request->genre_id,
-        'classification_id' => $request->classification_id,
-        'supplier_id'       => $request->supplier_id,
-        'poster'            => $PosterPath,
-        'trailer'           => $request->trailer,
-    ]);
-
-    // Add AJAX response support
-    if ($request->ajax()) {
-        return response()->json(['success' => true, 'message' => 'Movie updated successfully!']);
-    }
-
-    return redirect()->route('movies.index')->with('success', 'Movies updated successfully!');
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::error('Movie update failed', ['movie_id' => $movie->id, 'error' => $e->getMessage()]);
-
-        if ($request->ajax()) {
-            return response()->json(['success' => false, 'message' => 'Failed to update movie.'], 500);
-        }
-
-        return redirect()->route('movies.index')->with('error', 'Failed to update movie.');
-    }
-}
 
     /**
      * Remove the specified resource from storage.

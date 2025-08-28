@@ -146,8 +146,8 @@
                     <td>{{ $movie->created_at->format("Y/m/d") }}</td>
                     {{-- <td>{{ $movie->updated_at->format("Y/m/d") }}</td> --}}
                     <td class="d-flex gap-2">
-                        <x-update-modal dataTable="MOVIES" title="UPDATE MOVIES">
-                            <button type="button" class="btn-outline-primary btn btnEditMovie btn-sm" data-id="{{$movie->id}}"
+                        <x-update-modal dataTable="movies" title=" movies">
+                            <button type="button" dataTable="movies" class="btn-outline-primary btn btnEditMovie btn-sm" data-id="{{$movie->id}}"
                                 data-modal-title="UPDATE MOVIES" data-bs-toggle="modal" data-bs-target="#updateModal">Edit
                             </button>
                         </x-update-modal>

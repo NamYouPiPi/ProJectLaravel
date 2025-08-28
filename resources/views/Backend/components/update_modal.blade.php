@@ -1,8 +1,7 @@
 @props([
     'dataTable' => 'default',
-    'title' => 'Add New Record',
-
-
+    'title' => 'update record',
+    'showtime' => null
 ])
 
 <div {{ $attributes }}>
@@ -18,7 +17,7 @@
             </div>
             <div class="modal-body">
              @switch($dataTable)
-                    @case('MOVIES')
+                    @case('movies')
                         @include('Backend.Movies.edit')
                         @break
                     @case('supplier')
@@ -39,8 +38,8 @@
                     @case('hall_location')
                         @include('Backend.Hall_Location.edit')
                         @break
-                    @case('Showtime')
-                        @include('Backend.Showtime.edit')
+                   @case('showTimes')
+                        @include('Backend.Showtime.edit', ['showtime' => $showtime])
                         @break
                     @case('SeatsType')
                         @include('Backend.SeatsType.edit')

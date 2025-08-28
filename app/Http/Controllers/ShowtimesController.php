@@ -51,11 +51,8 @@ class ShowtimesController extends Controller
     {
         //
         $movies = Movies::all();
-        $hall_cinemas = Hall_cinema::all();
-        return view('Backend.Showtime.create', [
-            'movies' => $movies,
-            'hallCinema' => $hall_cinemas
-        ]);
+        $hallCinema = Hall_cinema::all();
+        return view('Backend.Showtime.create',compact('movies','hallCinema'));
     }
 
     /**
@@ -64,7 +61,7 @@ class ShowtimesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request ,showtimes $showtime)
     {
         //
         // dd($request->all());
@@ -85,7 +82,7 @@ class ShowtimesController extends Controller
     $endTime = $startTime->copy()->addMinutes($durationInMinutes);
 
     // Create the s
-        showtimes::create([
+        $showtime::create([
            'movie_id' => $request->movie_id,
         'hall_id' => $request->hall_id,
         'start_time' => $startTime,
@@ -94,7 +91,7 @@ class ShowtimesController extends Controller
         'status' => $request->status,
         'is_active' => 'active',
         ]);
-        return redirect()->route('Showtime.index')->with('success', 'Showtime created successfully.');
+        return redirect()->route('showtimes.index')->with('success', 'Showtime created successfully.');
     }
 
     /**
@@ -112,16 +109,16 @@ class ShowtimesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\showtimes  $Showtime
+     * @param  \App\Models\showtimes  $showtime
      * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function edit(showtimes $showtimes)
+    public function edit(showtimes $showtime)
     {
-//        dd($Showtime);
-        // $Showtime = showtimes::findOrFail($id);
+//        dd($showtime);
+        // $showtime = showtimes::findOrFail($id);
         $movies = Movies::all();
-        $hall_cinemas = Hall_cinema::all();
-        return view('Backend.Showtime.edit', compact('showtimes', 'movies', 'hall_cinemas'));
+        $hallCinema = Hall_cinema::all();
+        return view('Backend.Showtime.edit', compact('showtime', 'movies', 'hallCinema'));
     }
     /**
      * Update the specified resource in storage.
@@ -145,21 +142,21 @@ class ShowtimesController extends Controller
 
         $showtime->update($data);
 
-        return redirect()->route('Showtime.index')->with('success', 'Showtime updated successfully.');
+        return redirect()->route('showtimes.index')->with('success', 'Showtime updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\showtimes  $showtimes
+     * @param  \App\Models\showtimes  $showtime
      * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function destroy(showtimes $showtimes)
+    public function destroy(showtimes $showtime)
     {
         //
         // $showtime->delete();
-      $showtimes->is_active = 'inactive';
-      $showtimes->save();
-      return view('Backend.Showtime.index' )->with('success','Status was changed to inactive');
+      $showtime->is_active = 'inactive';
+      $showtime->save();
+      return redirect()->route('showtimes.index')->with('success','Status was changed to inactive');
     }
 }

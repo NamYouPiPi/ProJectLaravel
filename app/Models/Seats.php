@@ -24,4 +24,5 @@ class Seats extends Model
     {
         return $this->belongsTo(Seat_type::class, 'seat_type_id');
     }
+
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\BookingSeat;
+use App\Models\Movies;
 use App\Models\Seat;
 use App\Models\Seats;
 use App\Models\showtimes;
@@ -63,27 +64,20 @@ class BookingSeatController extends Controller
         return view('booking_seats.create', compact('bookings', 'booking_id', 'seats'));
     }
 
-    public function getSeatByLetter (){
-        $GroupA = Seats::where('seat_row', 'A')->get();
-        $GroupB = Seats::where('seat_row', 'B')->get();
-        $GroupC = Seats::where('seat_row', 'C')->get();
-        $GroupD = Seats::where('seat_row', 'D')->get();
-        $GroupE = Seats::where('seat_row', 'E')->get();
-        $GroupF = Seats::where('seat_row', 'F')->get();
-        $GroupG = Seats::where('seat_row', 'G')->get();
-        $GroupH = Seats::where('seat_row', 'H')->get();
-        $GroupI = Seats::where('seat_row', 'I')->get();
-        $GroupJ = Seats::where('seat_row', 'J')->get();
-        $GroupK = Seats::where('seat_row', 'K')->get();
-        $GroupL = Seats::where('seat_row', 'L')->get();
-        $GroupM = Seats::where('seat_row', 'M')->get();
-        $GroupN = Seats::where('seat_row', 'N')->get();
-        $GroupO = Seats::where('seat_row', 'O')->get();
-        $GroupP = Seats::where('seat_row', 'P')->get();
-        $GroupQ = Seats::where('seat_row', 'Q')->get();
 
+
+
+    public function showSeatMap($hallId)
+    {
+        // Get all seats for the hall, grouped by row and sorted by seat_number
+        $seats = Seats::where('hall_id', $hallId)
+            ->orderBy('seat_row')
+            ->orderBy('seat_number')
+            ->get()
+            ->groupBy('seat_row');
+
+        return view('Frontend.Booking.create', compact('seats'));
     }
-
     /**
      * Store a newly created booking seat in storage.
      *
@@ -346,6 +340,40 @@ class BookingSeatController extends Controller
             return back()->withErrors(['error' => 'Failed to book seats: ' . $e->getMessage()])
                         ->withInput();
         }
+    }
+
+    public function payment(Request $request, $movieId)
+    {
+        $seats = json_decode($request->input('seats', $request->query('seats', '[]')), true);
+        $movie = Movies::findOrFail($movieId);
+        $showtimeId = $request->input('showtime_id', $request->query('showtime_id'));
+        $showtime = $showtimeId ? showtimes::findOrFail($showtimeId) : null;
+        $total = count($seats) * 3.00;
+
+        // Generate your ABA PayWay payment payload or URL here
+        // Example: $qrCodeData = 'https://payway.ababank.com/payway/payment?amount=' . $total . '&order_id=...';
+        // For demo, just use a placeholder string
+        $qrCodeData = 'ABA_PAYWAY_PAYMENT_PAYLOAD_OR_URL';
+
+        return view('Frontend.Booking.payment', [
+            'movie' => $movie,
+            'showtime' => $showtime,
+            'seats' => $seats,
+            'total' => $total,
+            'qrCodeData' => $qrCodeData,
+        ]);
+    }
+
+    public function completePayment(Request $request)
+    {
+        $seats = json_decode($request->input('seats', '[]'), true);
+
+        // Update seats status to 'booked'
+            Seats::whereIn('id', $seats)->update(['status' => 'booked']);
+
+        // You can also insert booking record here if needed
+
+        return redirect()->route('bookingseats.success');
     }
 }
 

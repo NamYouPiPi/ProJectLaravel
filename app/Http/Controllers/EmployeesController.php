@@ -94,25 +94,25 @@ class EmployeesController extends Controller
      * @param  \App\Models\Employees  $employees
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function edit(Employees $employees)
+    public function edit(Employees $employee)
     {
         //
-        return view('Backend.Employees.create' , compact('employees'));
+        return view('Backend.Employees.create' , compact('employee'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Employees  $employees
+     * @param  \App\Models\Employees  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employees $employees)
+    public function update(Request $request, Employees $employee)
     {
         //
              $request->validate([
             'name' => 'required|string|max:255',
-          'email' => 'nullable|string|email|max:255|unique:employees,email,'.$employees->id,
+          'email' => 'nullable|string|email|max:255|unique:employees,email,'.$employee->id,
             'phone'=> 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'gender' => 'nullable|string|in:F,M,other',
@@ -127,7 +127,7 @@ class EmployeesController extends Controller
     if ($request->dob) {
         $age = Carbon::parse($request->dob)->age;
          }
-        $employees->update([
+        $employee->update([
             'name'=>$request->name,
             'email'=>$request->email,
             'phone'=>$request->phone,

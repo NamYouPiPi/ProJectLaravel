@@ -242,7 +242,7 @@
                         </table>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ route('Showtime.index') }}" class="btn btn-sm btn-primary">View All Showtimes</a>
+                        <a href="{{ route('showtimes.index') }}" class="btn btn-sm btn-primary">View All Showtimes</a>
                     </div>
                 </div>
             </div>

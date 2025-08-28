@@ -28,4 +28,6 @@ class Hall_cinema extends Model
     {
         return $this->hasMany(Seats::class, 'hall_id');
     }
+    
+
 }

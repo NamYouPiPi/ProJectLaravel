@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class HallCinemaController extends Controller
 {
+
+
+
     /**
      * Display a listing of the resource.
      *

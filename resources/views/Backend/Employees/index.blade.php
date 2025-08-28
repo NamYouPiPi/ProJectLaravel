@@ -70,13 +70,13 @@
                         <td class="d-flex gap-2">
                          <x-update-modal dataTable="employees" title="update employees">
                                 <button type="button" class="btn btn-outline-primary  btn-sm btn-employees " data-id="{{$employee->id}}"
-                                    data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil"></i>
+                                    data-bs-toggle="modal" data-bs-target="#updateModal">edit
                                 </button>
                             </x-update-modal>
 
-                            <button type="button" class="btn btn-outline-danger"
+                            <button type="button" class="btn btn-outline-danger btn-sm"
                                 onclick="confirmDelete({{ $employee->id }}, 'employees')">
-                                <i class="bi bi-trash3"></i>
+                                del
                             </button>
 
                     </tr>

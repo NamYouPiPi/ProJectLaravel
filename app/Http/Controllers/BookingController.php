@@ -35,44 +35,79 @@ class BookingController extends Controller
         $bookings = $query->latest()->paginate(10);
         return view('bookings.index', compact('bookings'))->with('success', 'Bookings retrieved successfully.');
     }
-public function createForMovie($movieId)
-{
-    $movie = Movies::findOrFail($movieId);
-    $showtime = showtimes::where('movie_id', $movieId)
-        ->where('start_time', '>', now())
-        ->orderBy('start_time')
-        ->first();
 
-    if (!$showtime) {
-        return back()->with('error', 'No upcoming showtime found for this movie.');
+
+    public function showseats(){
+        $GroupA = Seats::where('seat_row', 'A')->get();
+        $GroupB = Seats::where('seat_row', 'B')->get();
+        $GroupC = Seats::where('seat_row', 'C')->get();
+        $GroupD = Seats::where('seat_row', 'D')->get();
+        $GroupE = Seats::where('seat_row', 'E')->get();
+        $GroupF = Seats::where('seat_row', 'F')->get();
+        $GroupG = Seats::where('seat_row', 'G')->get();
+        $GroupE = Seats::where('seat_row', 'E')->get();
+        $GroupF = Seats::where('seat_row', 'F')->get();
+        $GroupG = Seats::where('seat_row', 'G')->get();
+        return view('Frontend.Booking.create', compact('GroupA','GroupB','GroupC','GroupD','GroupE','GroupF','GroupG'));
     }
 
+public function createForShowtime($showtimeId)
+{
+    $showtime = showtimes::with('hall', 'movie')->findOrFail($showtimeId);
+    $movie = $showtime->movie;
     $hall = $showtime->hall;
     $seats = Seats::where('hall_id', $hall->id)->get();
 
     // Get booked seats for this showtime
     $bookedSeats = BookingSeat::whereHas('booking', function($query) use ($showtime) {
         $query->where('showtime_id', $showtime->id)
-              ->whereIn('status', ['confirmed', 'pending']);
+            ->whereIn('status', ['confirmed', 'pending']);
     })->pluck('seat_id')->toArray();
 
     // Group seats by row
     $seatRows = $seats->groupBy('seat_row');
-
-    // Sort rows in reverse order (L to A)
     $sortedRows = $seatRows->sortKeysDesc();
+    $rowsArray = $sortedRows->keys()->toArray();
 
-    $cinema = $hall->cinema_name ?? null;
+    // Prepare seat statuses
+    $seatStatuses = [];
+    foreach ($seats as $seat) {
+        $status = in_array($seat->id, $bookedSeats) ? 'booked' : $seat->status;
+        $seatStatuses[$seat->seat_row . '-' . $seat->seat_number] = $status;
+    }
+
+ $GroupA = Seats::where('seat_row', 'A')->get();
+        $GroupB = Seats::where('seat_row', 'B')->get();
+        $GroupC = Seats::where('seat_row', 'C')->get();
+        $GroupD = Seats::where('seat_row', 'D')->get();
+        $GroupE = Seats::where('seat_row', 'E')->get();
+        $GroupF = Seats::where('seat_row', 'F')->get();
+        $GroupG = Seats::where('seat_row', 'G')->get();
+        $GroupE = Seats::where('seat_row', 'E')->get();
+        $GroupF = Seats::where('seat_row', 'F')->get();
+        $GroupG = Seats::where('seat_row', 'G')->get();
+
+
     return view('Frontend.Booking.create', [
         'movie' => $movie,
         'showtime' => $showtime,
         'hall' => $hall,
         'seats' => $seats,
         'bookedSeats' => $bookedSeats,
-        'sortedRows' => $sortedRows,
-        'cinema' => $cinema,
+        'rowsArray' => $rowsArray,
+        'seatStatuses' => $seatStatuses,
+        'GroupA' => $GroupA,
+        'GroupB' => $GroupB,
+        'GroupC' => $GroupC,
+        'GroupD' => $GroupD,
+        'GroupE' => $GroupE,
+        'GroupF' => $GroupF,
+        'GroupG' => $GroupG,
     ]);
 }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -85,7 +120,7 @@ public function createForMovie($movieId)
         $showtimes = showtimes::where('start_time', '>', now())->get();
         // If this method is mistakenly called for frontend, pass empty $seatRows to avoid error
         $seatRows = collect(); // Empty collection to prevent undefined
-        return view('bookings.create', compact('customers', 'employees', 'showtimes'))->with('seatRows', $seatRows);
+        return view('bookings.create', compact('customers', 'showtimes'))->with('seatRows', $seatRows);
     }
 
     /**

@@ -43,6 +43,21 @@ use App\Http\Controllers\Auth\{
 |
 */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
@@ -80,7 +95,6 @@ Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback'])
 // end of google login and  google callback routes
 
 
-
 Route::get('/dashboard' , function (){return  view('Backend.Dashboard.index');})->name('dashboard');
 Route::resource('suppliers', SupplierController::class);
 Route::resource('inventory',InventoryController::class );
@@ -99,13 +113,16 @@ Route::resource('hallCinema', HallCinemaController::class);
 Route::resource('movies' , MoviesController::class);
 Route::get('/movies/search', [MoviesController::class, 'search'])->name('movies.search');
 
-Route::resource('Showtime', ShowtimesController::class);
+Route::resource('showtimes', ShowtimesController::class);
 Route::resource('genre' ,GenreController::class);
 Route::resource('seatTypes', SeatTypeController::class);
 Route::resource('seats', SeatsController::class);
 Route::resource('customer' , CustomerController::class);
 Route::resource('employees', EmployeesController::class);
 Route::resource('bookings', BookingController::class);
+Route::get('/booking/create/{showtime}', [BookingController::class, 'createForShowtime'])->name('booking.createForShowtime');
+
+
 Route::resource('booking-seats', BookingSeatController::class);
 Route::resource('payments', PaymentController::class);
 Route::resource('classification' , ClassificationController::class);
@@ -151,6 +168,7 @@ Route::post('/booking-seats/release', [BookingSeatController::class, 'releaseSea
 Route::post('/booking-seats/swap', [BookingSeatController::class, 'swapSeat'])->name('booking-seats.swap');
 Route::put('/booking-seats/{id}/state', [BookingSeatController::class, 'updateSeatState'])->name('booking-seats.state');
 
+Route::resource('bookingseats', BookingSeatController::class);
 
 
 // ABA PayWay Payment Routes - Remove duplicates and ensure all needed routes are defined
@@ -161,7 +179,7 @@ Route::get('/payments/callback/cancel', [PaymentController::class, 'handlePaymen
 Route::get('/payments/check-status/{transactionId}', [PaymentController::class, 'checkPaymentStatus'])->name('payments.check-status');
 Route::post('payments/{payment}/refund', [PaymentController::class, 'refund'])->name('payments.refund');
 
-
+Route::post('/aba/payway/redirect', [\App\Http\Controllers\AbaPaywayController::class, 'redirect'])->name('aba.payway.redirect');
 
 
 
@@ -210,3 +228,15 @@ Route::get('/payments/check-status/{transactionId}', [PaymentController::class, 
 // Booking routes
 Route::get('/booking/create/{movieId}', [BookingController::class, 'createForMovie'])->name('booking.create');
 Route::post('/booking/{movieId}', [BookingController::class, 'store'])->name('booking.store');
+Route::get('/booking-seat-map/{hallId}', [BookingSeatController::class, 'showSeatMap'])->name('booking-seat.map');
+
+Route::post('/frontend/booking/payment', function (\Illuminate\Http\Request $request) {
+    $total = $request->input('total', '$0.00');
+    return view('Frontend.Booking.payment', ['total' => $total])->render();
+})->name('frontend.booking.payment');
+Route::post('/bookingseats/payment/{movie}', [BookingSeatController::class, 'payment'])->name('bookingseats.payment');
+Route::post('/bookingseats/complete-payment', [BookingSeatController::class, 'completePayment'])->name('bookingseats.completePayment');
+Route::get('/bookingseats/success', function() {
+    return view('Frontend.Booking.success');
+})->name('bookingseats.success');
+Route::get('/bookingseats/payment/{movie}', [\App\Http\Controllers\BookingSeatController::class, 'payment'])->name('bookingseats.payment');

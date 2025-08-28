@@ -104,10 +104,10 @@ class SeatsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Seats  $seats
+     * @param  \App\Models\Seats  $seat
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Seats $seats)
+    public function update(Request $request, Seats $seat)
     {
         $data = $request->validate([
             'hall_id' => 'required|exists:hall_cinemas,id',
@@ -117,13 +117,13 @@ class SeatsController extends Controller
             'seat_row' => 'required|string|max:255',
         ]);
 
-        $seats->update($data);
+        $seat->update($data);
 
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Seat updated successfully.',
-                'data' => $seats
+                'data' => $seat
             ]);
         }
 
@@ -144,6 +144,36 @@ class SeatsController extends Controller
 
         // Use redirect() with flash message, not view()
         return redirect()->route('seats.index')->with('success', 'Seat blocked successfully.');
+    }
+
+    public function showBookingUI()
+    {
+        $seats = Seats::select([
+            'hall_id',
+            'seat_type_id',
+            'seat_number',
+            'seat_row',
+            'status',
+            'created_at'
+        ])->with(['hall', 'seatType'])->get();
+
+        // Prepare data for JS (add hallName and seatsType)
+        $seatData = $seats->map(function($seat) {
+            return [
+                'hallName' => $seat->hall->name ?? '',
+                'seatsType' => $seat->seatType->name ?? '',
+                'price' => $seat->seatType->price ?? 0,
+                'seatNumber' => $seat->seat_number,
+                'seatRow' => $seat->seat_row,
+                'status' => $seat->status,
+                'createdAt' => $seat->created_at->format('Y-m-d'),
+            ];
+        });
+
+        return view('Frontend.Booking.index', [
+            'seatData' => $seatData,
+            // ...other data if needed...
+        ]);
     }
 }
 

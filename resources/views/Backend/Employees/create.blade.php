@@ -24,7 +24,7 @@
                 <label class="form-label float-start" for="name">Employee Name <span
                         class="text-danger">*</span></label>
                 <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name"
-                    value="{{ old('name', $employees->name ?? '') }}" required>
+                    value="{{ old('name', $employee->name ?? '') }}" required>
                 @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="col-md-6">
@@ -39,7 +39,7 @@
             <div class="col-md-6">
                 <label class="form-label float-start" for="age">Position </label>
                 <input type="text" class="form-control @error('position') is-invalid @enderror" name="position"
-                    id="position" value="{{ old('position', $employees->position ?? '') }}" required>
+                    id="position" value="{{ old('position', $employee->position ?? '') }}" required>
                 @error('position')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="col-md-6">
@@ -121,7 +121,7 @@
 
     <div class="card-footer mt-2">
         <button class="btn btn-info float-start" type="submit">
-            {{ isset($employees) ? 'Update' : 'Save' }}
+            {{ isset($employee) ? 'Update' : 'Save' }}
         </button>
         <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Cancel</button>
     </div>

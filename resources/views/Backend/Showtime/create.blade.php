@@ -1,4 +1,4 @@
-<form action="{{route('Showtime.store')}}" method="post">
+<form action="{{route('showtimes.store')}}" method="post">
     @csrf
     @include('Backend.Showtime.form', ['movies' => $movies, 'hallCinema' => $hallCinema])
 </form>

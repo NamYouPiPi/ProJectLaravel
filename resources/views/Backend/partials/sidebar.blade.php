@@ -107,7 +107,7 @@
 
                 <!-- Showtimes -->
                 <li class="nav-item @yield('showtimes')">
-                    <a href="{{ route('Showtime.index') }}" class="nav-link">
+                    <a href="{{ route('showtimes.index') }}" class="nav-link">
                         <i class="bi bi-clock"></i>
                         <p>Showtimes</p>
                     </a>
