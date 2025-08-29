@@ -12,11 +12,7 @@ class Booking extends Model
     protected $fillable = [
         'customer_id',
         'showtime_id',
-        'booking_reference',
-        'booking_fee',
         'total_amount',
-        'discount_amount',
-        'final_amount',
         'status',
         'expires_at',
     ];

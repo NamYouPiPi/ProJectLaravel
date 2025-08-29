@@ -1,0 +1,11 @@
+INSERT INTO genres (main_genre, sub_genre, description, status) VALUES
+('Action', 'Superhero', 'Movies featuring superheroes with high-paced action and fight scenes.', 'active'),
+('Action', 'Martial Arts', 'Films showcasing hand-to-hand combat and martial arts skills.', 'active'),
+('Drama', 'Romantic Drama', 'Emotional stories centered on love and relationships.', 'active'),
+('Drama', 'Historical Drama', 'Stories based on real historical events and figures.', 'inactive'),
+('Comedy', 'Slapstick', 'Humor involving exaggerated physical activity and silly situations.', 'active'),
+('Comedy', 'Dark Comedy', 'Funny stories with serious, sometimes grim undertones.', 'active'),
+('Horror', 'Supernatural', 'Scary stories involving ghosts, demons, or paranormal forces.', 'active'),
+('Horror', 'Psychological', 'Horror based on fear of the mind, paranoia, and suspense.', 'inactive'),
+('Sci-Fi', 'Space Opera', 'Science fiction stories set in outer space with epic adventures.', 'active'),
+('Sci-Fi', 'Cyberpunk', 'Futuristic films exploring hacking, AI, and dystopian societies.', 'active');

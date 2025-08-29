@@ -1,6 +1,6 @@
 @extends('Backend.layouts.app')
 @section('title', 'Role Management')
-@section('menu-open', 'menu-open')
+@section('user-menu-open', 'menu-open')
 @section('content')
     <div class="container-fluid py-4">
         <div class="card">

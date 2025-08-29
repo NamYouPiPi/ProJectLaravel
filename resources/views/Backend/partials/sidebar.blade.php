@@ -4,7 +4,8 @@
         <!--begin::Brand Link-->
         <a href="{{ url('/') }}" class="brand-link">
             <!--begin::Brand Image-->
-            <img src="{{ asset('assets/image/logo.png') }}" alt="Aurora Cinemas Logo" class="brand-image opacity-75 shadow" />
+            <img src="{{ asset('assets/image/logo.png') }}" alt="Aurora Cinemas Logo"
+                class="brand-image opacity-75 shadow" />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
             <span class="brand-text fw-light">Aurora Cinemas</span>
@@ -23,14 +24,14 @@
 
                 <!-- Dashboard -->
                 <li class="nav-item @yield('dashboard')">
-                    <a href="{{ url('/') }}" class="nav-link">
+                    <a href="{{ url('/dashboard') }}" class="nav-link">
                         <i class="nav-icon bi bi-palette"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 <!-- Inventory Section -->
-                <li class="nav-item @yield('menu-open')">
+                <li class="nav-item @yield('inventory-menu-open')">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-box-seam"></i>
                         <p>
@@ -61,7 +62,7 @@
                 </li>
 
                 <!-- Movies Section -->
-                <li class="nav-item @yield('menu-open')">
+                <li class="nav-item @yield('movies-menu-open')">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-film"></i>
                         <p>
@@ -91,19 +92,51 @@
                     </ul>
                 </li>
 
-                <!-- Halls -->
-                <li class="nav-item @yield('hallLocation')">
-                    <a href="{{ route('hall_locations.index') }}" class="nav-link">
-                        <i class="bi bi-geo-alt"></i>
-                        <p>Hall Location</p>
+                <li class="nav-item @yield('cinemas-menu-open')">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-camera-reels"></i>
+                        <p>Cinemas <i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item @yield('hall_locations')">
+                            <a href="{{ route('hall_locations.index') }}" class="nav-link @yield('hall_locations')">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Hall location</p>
+                            </a>
+                        </li>
+                        <li class="nav-item @yield('hallCinema')">
+                            <a href="{{ route('hallCinema.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Hall Cinema</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item @yield('hallCinema')">
-                    <a href="{{ route('hallCinema.index') }}" class="nav-link">
-                        <i class="bi bi-building"></i>
-                        <p>Hall Cinema</p>
+
+
+                <li class="nav-item @yield('seats-menu-open')">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-person-seat"></i>
+                        <p>Seats <i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item @yield('seat')">
+                            <a href="{{ route('seats.index') }}" class="nav-link @yield('seat')">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Seats</p>
+                            </a>
+                        </li>
+                        <!-- Seats -->
+                        <li class="nav-item @yield('seatTypes')">
+                            <a href="{{ route('seatTypes.index') }}" class="nav-link @yield('seatTypes')">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Seat Types</p>
+                            </a>
+                        </li>
+                    </ul>
+
                 </li>
+
 
                 <!-- Showtimes -->
                 <li class="nav-item @yield('showtimes')">
@@ -113,19 +146,7 @@
                     </a>
                 </li>
 
-                <!-- Seats -->
-                <li class="nav-item @yield('seatTypes')">
-                    <a href="{{ route('seatTypes.index') }}" class="nav-link">
-                        <i class="bi bi-layout-sidebar"></i>
-                        <p>Seat Types</p>
-                    </a>
-                </li>
-                <li class="nav-item @yield('seats')">
-                    <a href="{{ route('seats.index') }}" class="nav-link">
-                        <i class="bi bi-person-seat"></i>
-                        <p>Seats</p>
-                    </a>
-                </li>
+
                 <li class="nav-item  @yield('customer')">
                     <a href="{{route('customer.index')}}" class="nav-link">
                         <i class="bi bi-geo-alt"></i>
@@ -151,7 +172,7 @@
                         <p>Booking Seats</p>
                     </a>
                 </li>
-                <li class="nav-item @yield('menu-open')">
+                <li class="nav-item @yield('user-menu-open')">
                     <a href="#" class="nav-link ">
                         <i class="nav-icon bi bi-speedometer"></i>
                         <p>

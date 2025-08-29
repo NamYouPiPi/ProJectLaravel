@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Http;
 use App\Models\Booking;
 use App\Models\BookingSeat;
 use App\Models\Movies;
@@ -13,6 +13,68 @@ use Illuminate\Support\Facades\DB;
 
 class BookingSeatController extends Controller
 {
+
+
+     public function payWithABA(Request $request)
+    {
+        // Validate and get seat IDs
+        $seatIds = json_decode($request->input('seats'), true);
+        if (!$seatIds || !is_array($seatIds) || count($seatIds) === 0) {
+            return back()->with('error', 'No seats selected.');
+        }
+
+        // Calculate total price based on seat type
+        $seats = Seats::whereIn('id', $seatIds)->with('seatType')->get();
+        $total = $seats->sum(fn($seat) => $seat->seatType->price);
+
+        // Create booking (adjust fields as needed)
+        $booking = Booking::create([
+            'customer_id' => auth()->id(),
+            'showtime_id' => $request->showtime_id,
+            'total_price' => $total,
+            'status' => 'pending',
+        ]);
+
+        // Attach seats to booking
+        $booking->seats()->attach($seatIds);
+
+        // Prepare ABA PayWay payload
+        $tranId = $booking->id . '-' . time();
+        $payload = [
+            'tran_id' => $tranId,
+            'amount' => $total,
+            'currency' => 'USD',
+            'return_url' => route('booking.callback', ['booking' => $booking->id]),
+            'cancel_url' => route('booking.cancel', ['booking' => $booking->id]),
+            'client_ip' => $request->ip(),
+            'order' => [
+                'items' => $seats->map(fn($seat) => [
+                    'name' => 'Seat ' . $seat->seat_number,
+                    'quantity' => 1,
+                    'price' => $seat->seatType->price,
+                ])->values()->toArray(),
+            ],
+            'merchant_id' => trim(env('ABA_MERCHANT_ID')),
+        ];
+
+        // Call ABA PayWay API
+        $response = Http::withHeaders([
+            'x-api-key' => env('ABA_API_KEY'),
+            'Content-Type' => 'application/json',
+        ])->post(env('ABA_API_URL'), $payload);
+        if (!$response->successful()) {
+            dd($response->status(), $response->body(), $payload);
+        }
+        if ($response->successful() && isset($response['payment_url'])) {
+            // Optionally save tran_id to booking for later reference
+            $booking->update(['tran_id' => $tranId]);
+            // Redirect to ABA payment page
+            return redirect($response['payment_url']);
+        } else {
+            // Handle error
+            return back()->with('error', 'Payment gateway error: ' . $response->body());
+        }
+    }
     /**
      * Display a listing of the booking seats.
      *
@@ -159,7 +221,7 @@ class BookingSeatController extends Controller
         })->where('id', '!=', $bookingSeat->id)
           ->pluck('seat_id')->toArray();
 
-        $seats = Seat::where('hall_cinema_id', $showtime->hall_cinema_id)
+        $seats = Seats::where('hall_cinema_id', $showtime->hall_cinema_id)
                      ->whereNotIn('id', $bookedSeatIds)
                      ->orWhere('id', $bookingSeat->seat_id)
                      ->get();
@@ -342,38 +404,5 @@ class BookingSeatController extends Controller
         }
     }
 
-    public function payment(Request $request, $movieId)
-    {
-        $seats = json_decode($request->input('seats', $request->query('seats', '[]')), true);
-        $movie = Movies::findOrFail($movieId);
-        $showtimeId = $request->input('showtime_id', $request->query('showtime_id'));
-        $showtime = $showtimeId ? showtimes::findOrFail($showtimeId) : null;
-        $total = count($seats) * 3.00;
-
-        // Generate your ABA PayWay payment payload or URL here
-        // Example: $qrCodeData = 'https://payway.ababank.com/payway/payment?amount=' . $total . '&order_id=...';
-        // For demo, just use a placeholder string
-        $qrCodeData = 'ABA_PAYWAY_PAYMENT_PAYLOAD_OR_URL';
-
-        return view('Frontend.Booking.payment', [
-            'movie' => $movie,
-            'showtime' => $showtime,
-            'seats' => $seats,
-            'total' => $total,
-            'qrCodeData' => $qrCodeData,
-        ]);
-    }
-
-    public function completePayment(Request $request)
-    {
-        $seats = json_decode($request->input('seats', '[]'), true);
-
-        // Update seats status to 'booked'
-            Seats::whereIn('id', $seats)->update(['status' => 'booked']);
-
-        // You can also insert booking record here if needed
-
-        return redirect()->route('bookingseats.success');
-    }
 }
 

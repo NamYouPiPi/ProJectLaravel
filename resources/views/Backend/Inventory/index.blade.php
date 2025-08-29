@@ -1,7 +1,7 @@
 @extends('Backend.layouts.app')
 @section('title', 'inventory')
 @section('inventory', 'active')
-@section('menu-open', 'menu-open')
+@section('inventory-menu-open', 'menu-open')
 @section('content')
 
     {{-- ================== check message add and update if succeed =======================--}}

@@ -1,0 +1,11 @@
+INSERT INTO classifications (code, name, age_limit, description, country, status, created_at, updated_at) VALUES
+('MV001', 'The Dark Knight', 13, 'A superhero film featuring Batman battling the Joker.', 'USA', 'active', NOW(), NOW()),
+('MV002', 'Parasite', 15, 'A thriller exploring class division and family struggles.', 'South Korea', 'active', NOW(), NOW()),
+('MV003', 'Spirited Away', 7, 'An animated fantasy adventure in a magical spirit world.', 'Japan', 'active', NOW(), NOW()),
+('MV004', 'Inception', 13, 'A mind-bending sci-fi thriller about dreams within dreams.', 'USA', 'active', NOW(), NOW()),
+('MV005', 'The Godfather', 18, 'Crime drama about a powerful mafia family.', 'USA', 'inactive', NOW(), NOW()),
+('MV006', 'Train to Busan', 15, 'Zombie apocalypse thriller on a moving train.', 'South Korea', 'active', NOW(), NOW()),
+('MV007', 'Amélie', 10, 'A whimsical French romantic comedy about a young woman.', 'France', 'active', NOW(), NOW()),
+('MV008', 'Interstellar', 13, 'Sci-fi epic about space exploration and survival.', 'USA', 'active', NOW(), NOW()),
+('MV009', 'Gladiator', 15, 'Historical epic about a Roman general turned gladiator.', 'UK', 'inactive', NOW(), NOW()),
+('MV010', 'Your Name', 7, 'Japanese animated romance about two teenagers connected by fate.', 'Japan', 'active', NOW(), NOW());

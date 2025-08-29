@@ -2,7 +2,7 @@
 {{-- ============ add title and active =======================--}}
 @section('title', 'supplier')
 @section('supplier', 'active')
-@section('menu-open', 'menu-open')
+@section('inventory-menu-open', 'menu-open')
 @section('content')
     <style>
         /* Stats Cards */

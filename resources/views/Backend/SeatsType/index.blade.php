@@ -1,8 +1,8 @@
 @extends('Backend.layouts.app')
 {{-- ============ add title and active =======================--}}
 @section('title', 'supplier')
-@section('supplier', 'active')
-{{--@section('menu-open', 'menu-open')--}}
+@section('seatType', 'active')
+@section('seats-menu-open', 'menu-open')
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -16,8 +16,8 @@
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
     <x-create_modal dataTable="seatsType" title="Add New seatsType" class="">
-        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#createModal">
-            Add New Supplier
+        <button type="button" class="btn btn-outline-success m-3 float-end" data-bs-toggle="modal" data-bs-target="#createModal">
+            Add New Seat Type
         </button>
     </x-create_modal>
 

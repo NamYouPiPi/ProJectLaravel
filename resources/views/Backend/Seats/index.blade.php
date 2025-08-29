@@ -1,7 +1,7 @@
 @extends('Backend.layouts.app')
-@section('title', 'inventory')
-@section('inventory', 'active')
-{{--@section('menu-open', 'menu-open')--}}
+@section('title', 'seats')
+@section('seat', 'active')
+@section('seats-menu-open', 'menu-open')
 @section('content')
 
     {{-- ================== check message add and update if succeed =======================--}}
@@ -10,8 +10,8 @@
     {{-- ======================= end of check messange ========================= --}}
 
     <x-create_modal dataTable="seats" title="Add New Seats">
-        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#createModal">
-            <i class="fas fa-plus"></i> Add Supplier
+        <button type="button" class="btn btn-outline-success m-3 float-end" data-bs-toggle="modal" data-bs-target="#createModal">
+            <i class="fas fa-plus"></i> Add Seat
         </button>
     </x-create_modal>
 

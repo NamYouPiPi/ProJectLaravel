@@ -2,7 +2,7 @@
 @section('content')
 @section('title', 'sale ')
 @section('sale ', 'active')
-@section('menu-open', 'menu-open')
+@section('inventory-menu-open', 'menu-open')
 
 
     {{-- add message toast --}}
@@ -161,7 +161,7 @@
                     <td>{{ $sale->created_at->format("Y/m/d") }}</td>
                     {{-- <td>{{ $sale->updated_at->format("Y/m/d") }}</td> --}}
                     <td class="d-flex gap-3">
-             
+
                             <x-update-modal dataTable="sale" title="update sale ">
                                 <button type="button" class="btn btn-outline-primary btn-sm  btn_edit_sale" data-id="{{$sale->id}}"
                                     data-bs-toggle="modal" data-bs-target="#updateModal"><i class="bi bi-pencil-square"></i>

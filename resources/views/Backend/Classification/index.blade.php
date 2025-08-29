@@ -1,8 +1,8 @@
 @extends('Backend.layouts.app')
 @section('content')
 @section('title', 'inventory')
-@section('inventory', 'active')
-@section('menu-open', 'menu-open')
+@section('classification', 'active')
+@section('movies-menu-open', 'menu-open')
 
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
@@ -13,22 +13,12 @@
     <div class="m-4 d-flex justify-content-between">
         {{-- ==================== begin button add new ========================--}}
         <x-create_modal dataTable="classification" title="Add New classification">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                Add New classification
+            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#createModal">
+                <i class="bi bi-plus-lg"></i> Add New classification
             </button>
         </x-create_modal>
         {{--================================= end of button add new ==========================--}}
 
-
-
-        {{-- ===================== display data on table ===========================--}}
-        {{-- <label for="">Category </label>--}}
-        {{-- <select class="form-select float-end" style="width: 80px" aria-label="Default select example">
-            <option selected>Sort</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-        </select> --}}
 
     </div>
 

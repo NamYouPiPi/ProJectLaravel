@@ -1,7 +1,8 @@
 @extends('Backend.layouts.app')
 @section('content')
 @section('title', 'Hall Locations')
-
+@section('cinemas-menu-open', 'menu-open')
+@section('hall_locations', 'active')
     {{-- ================== Toast notifications =======================--}}
     @include('Backend.components.Toast')
     {{-- ======================= end of toast notifications ========================= --}}

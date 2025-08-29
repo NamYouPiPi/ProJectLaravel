@@ -1,7 +1,8 @@
 @extends('Backend.layouts.app')
 @section('content')
 @section('title', 'Users Management')
-@section('inventory', 'active')
+@section('user', 'active')
+@section('user-menu-open', 'menu-open')
 
     {{-- Toast notifications --}}
     @include('Backend.components.Toast')

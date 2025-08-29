@@ -84,9 +84,6 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 
 
-// aba
-Route::get('/pay' , [PaymentController::class, 'pay']);
-Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
 
 // google login and  google callback routes
@@ -104,8 +101,9 @@ Route::get('sale.report', [ConnectionSaleController::class, 'report'])->name('sa
 
 
 Route::get('/', [MoviesController::class, 'home'])->name('frontend.home');
-
-
+Route::post('/booking/pay', [BookingController::class, 'payWithABA'])->name('booking.pay');
+Route::get('/booking/callback/{booking}', [BookingController::class, 'paymentCallback'])->name('booking.callback');
+Route::get('/booking/cancel/{booking}', [BookingController::class, 'paymentCancel'])->name('booking.cancel');
 
 
 Route::resource('hall_locations', HallLocationController::class);
@@ -179,7 +177,6 @@ Route::get('/payments/callback/cancel', [PaymentController::class, 'handlePaymen
 Route::get('/payments/check-status/{transactionId}', [PaymentController::class, 'checkPaymentStatus'])->name('payments.check-status');
 Route::post('payments/{payment}/refund', [PaymentController::class, 'refund'])->name('payments.refund');
 
-Route::post('/aba/payway/redirect', [\App\Http\Controllers\AbaPaywayController::class, 'redirect'])->name('aba.payway.redirect');
 
 
 
@@ -202,22 +199,6 @@ Route::get('/hall-locations/cities', [HallLocationController::class, 'cities'])-
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Dashboard Route
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 Route::get('/dashboard/chart-data', [App\Http\Controllers\DashboardController::class, 'getChartData'])->name('dashboard.chart-data');
@@ -234,9 +215,7 @@ Route::post('/frontend/booking/payment', function (\Illuminate\Http\Request $req
     $total = $request->input('total', '$0.00');
     return view('Frontend.Booking.payment', ['total' => $total])->render();
 })->name('frontend.booking.payment');
-Route::post('/bookingseats/payment/{movie}', [BookingSeatController::class, 'payment'])->name('bookingseats.payment');
-Route::post('/bookingseats/complete-payment', [BookingSeatController::class, 'completePayment'])->name('bookingseats.completePayment');
+
 Route::get('/bookingseats/success', function() {
     return view('Frontend.Booking.success');
 })->name('bookingseats.success');
-Route::get('/bookingseats/payment/{movie}', [\App\Http\Controllers\BookingSeatController::class, 'payment'])->name('bookingseats.payment');

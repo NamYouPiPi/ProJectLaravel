@@ -2,7 +2,7 @@
 @section('content')
 @section('title', 'Movies')
 @section('movies', 'active')
-@section('menu-open', 'menu-open')
+@section('movies-menu-open', 'menu-open')
 
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
@@ -52,7 +52,7 @@
                             <option value="">All Suppliers</option>
                             @foreach($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : ''
-                                                                        }}>
+                                                                                }}>
                                     {{ $supplier->name }}
                                 </option>
                             @endforeach
@@ -118,7 +118,7 @@
                     <td class="text-muted">{{$movie->language}}</td>
                     <td class="text-muted">
                         @if($movie->poster)
-                            <img src="{{config('app.image_base_url')}}{{$movie->poster}}" alt="Poster" class="img-fluid"
+                            <img src="{{ asset('storage/' . $movie->poster) }}" alt="Poster" class="img-fluid"
                                 style="width: 40px; height: 40px;">
                         @else
                             No Image
@@ -147,8 +147,9 @@
                     {{-- <td>{{ $movie->updated_at->format("Y/m/d") }}</td> --}}
                     <td class="d-flex gap-2">
                         <x-update-modal dataTable="movies" title=" movies">
-                            <button type="button" dataTable="movies" class="btn-outline-primary btn btnEditMovie btn-sm" data-id="{{$movie->id}}"
-                                data-modal-title="UPDATE MOVIES" data-bs-toggle="modal" data-bs-target="#updateModal">Edit
+                            <button type="button" dataTable="movies" class="btn-outline-primary btn btnEditMovie btn-sm"
+                                data-id="{{$movie->id}}" data-modal-title="UPDATE MOVIES" data-bs-toggle="modal"
+                                data-bs-target="#updateModal">Edit
                             </button>
                         </x-update-modal>
                         <button type="button" class="btn btn-outline-danger btn-sm"

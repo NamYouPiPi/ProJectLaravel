@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class BookingController extends Controller
 {
@@ -36,20 +37,92 @@ class BookingController extends Controller
         return view('bookings.index', compact('bookings'))->with('success', 'Bookings retrieved successfully.');
     }
 
+public function paymentCallback(Request $request, Booking $booking)
+{
+    // Verify payment status with ABA if needed
+    $booking->update(['status' => 'paid']);
+    return view('Frontend.Booking.success', compact('booking'));
+}
 
-    public function showseats(){
-        $GroupA = Seats::where('seat_row', 'A')->get();
-        $GroupB = Seats::where('seat_row', 'B')->get();
-        $GroupC = Seats::where('seat_row', 'C')->get();
-        $GroupD = Seats::where('seat_row', 'D')->get();
-        $GroupE = Seats::where('seat_row', 'E')->get();
-        $GroupF = Seats::where('seat_row', 'F')->get();
-        $GroupG = Seats::where('seat_row', 'G')->get();
-        $GroupE = Seats::where('seat_row', 'E')->get();
-        $GroupF = Seats::where('seat_row', 'F')->get();
-        $GroupG = Seats::where('seat_row', 'G')->get();
-        return view('Frontend.Booking.create', compact('GroupA','GroupB','GroupC','GroupD','GroupE','GroupF','GroupG'));
+public function paymentCancel(Request $request, Booking $booking)
+{
+    $booking->update(['status' => 'cancelled']);
+    return view('Frontend.Booking.cancel', compact('booking'));
+}
+
+
+
+public function payWithABA(Request $request)
+{
+    $seatIds = json_decode($request->input('seats'), true);
+    if (!$seatIds || !is_array($seatIds) || count($seatIds) === 0) {
+        return back()->with('error', 'No seats selected.');
     }
+
+    // dd(request()->all());
+    $seats = Seats::whereIn('id', $seatIds)->with('seatType')->get();
+    $total = $seats->sum(fn($seat) => $seat->seatType->price);
+    $customer = Customer::find(auth()->id());
+    if (!$customer) {
+        return back()->with('error', 'Customer not found.');
+    }
+
+    // Create booking (adjust fields as needed)
+    $booking = Booking::create([
+        'customer_id' => $customer->id,
+        'showtime_id' => $request->showtime_id,
+        'total_amount' => $total,
+        'status' => 'pending',
+    ]);
+    $booking->seats()->attach($seatIds);
+
+    // Prepare ABA PayWay payload
+    $tranId = $booking->id . '-' . time();
+    $payload = [
+        'tran_id' => $tranId,
+        'amount' => $total,
+        'currency' => 'USD',
+        'return_url' => route('booking.callback', ['booking' => $booking->id]),
+        'cancel_url' => route('booking.cancel', ['booking' => $booking->id]),
+        'client_ip' => $request->ip(),
+        'order' => [
+            'items' => $seats->map(fn($seat) => [
+                'name' => 'Seat ' . $seat->seat_number,
+                'quantity' => 1,
+                'price' => $seat->seatType->price,
+            ])->values()->toArray(),
+        ],
+        'merchant_id' => trim(env('ABA_MERCHANT_ID')),
+    ];
+
+    // Call ABA PayWay API
+    $response = Http::withHeaders([
+        'x-api-key' => env('ABA_API_KEY'),
+        'Content-Type' => 'application/json',
+    ])->post(env('ABA_API_URL'), $payload);
+
+    if ($response->successful() && isset($response['payment_url'])) {
+        $booking->update(['tran_id' => $tranId]);
+        return redirect($response['payment_url']);
+    } else {
+        return back()->with('error', 'Payment gateway error: ' . $response->body());
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 public function createForShowtime($showtimeId)
 {
@@ -122,6 +195,9 @@ public function createForShowtime($showtimeId)
         $seatRows = collect(); // Empty collection to prevent undefined
         return view('bookings.create', compact('customers', 'showtimes'))->with('seatRows', $seatRows);
     }
+
+
+
 
     /**
      * Store a newly created resource in storage.
