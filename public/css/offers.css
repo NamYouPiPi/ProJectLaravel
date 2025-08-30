@@ -1,0 +1,92 @@
+body {
+    background: linear-gradient(180deg, #000000, #7f1d1d, #000000);
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+.promo-section {
+    max-width: 56rem;
+}
+
+.promo-card {
+    background: linear-gradient(135deg, #b91c1c, #1e3a8a);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.promo-image {
+    max-width: 28rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.offer-card {
+    background-color: #18181b;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.offer-card:hover {
+    transform: scale(1.02);
+}
+
+.offer-card img {
+    height: 192px;
+    object-fit: cover;
+}
+
+.text-yellow-custom {
+    color: #fde047;
+}
+
+.text-gray-400 {
+    color: #9ca3af;
+}
+
+.text-gray-200 {
+    color: #e5e7eb;
+}
+
+.btn-white-custom {
+    background-color: white;
+    color: black;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-white-custom:hover {
+    background-color: #e5e7eb;
+    color: black;
+}
+
+.link-custom {
+    color: #e5e7eb;
+    text-decoration: underline;
+    font-size: 0.875rem;
+}
+
+.link-custom:hover {
+    color: white;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.animate-slideDown {
+    animation: slideDown 0.5s ease;
+}
+
+.section-max-width {
+    max-width: 80rem;
+}

@@ -23,7 +23,10 @@ class BookingSeat extends Model
     {
         return $this->belongsTo(Booking::class);
     }
-
+        public function seats()
+        {
+            return $this->belongsToMany(\App\Models\Seats::class, 'booking_seats', 'booking_id', 'seat_id');
+        }
     /**
      * Get the seat associated with the booking seat.
      */

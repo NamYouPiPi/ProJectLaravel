@@ -1,0 +1,46 @@
+
+    .gradient-header {
+      background: linear-gradient(90deg, #3B82F6, #FB923C, #EC4899);
+      border-radius: 0.5rem;
+      margin: 1rem;
+    }
+
+    .cinema-card {
+      background-color: #374151;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .cinema-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .cinema-card img {
+      height: 128px;
+      object-fit: cover;
+    }
+
+    .cinema-card a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .cinema-card a:hover {
+      color: inherit;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .animate-slideDown {
+      animation: slideDown 0.5s ease;
+    }

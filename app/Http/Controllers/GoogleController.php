@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -18,50 +19,98 @@ class GoogleController extends Controller
 
     }
 
-   public function handleGoogleCallback()
-{
-    // $user = Socialite::driver('google')->user();
-    $user = Socialite::driver('google')->stateless()->user(); // Use stateless() to bypass state verification
+        public function handleGoogleCallback()
+        {
+            $googleUser = Socialite::driver('google')->stateless()->user();
 
-    $findUser = User::where('google_id', $user->getId())
-        ->orWhere('email', $user->getEmail())
-        ->first();
+            // 1. Check if email exists in users table (admin, employee, manager, superadmin)
+            $user = User::where('email', $googleUser->getEmail())->first();
+            if ($user && in_array(optional($user->role)->name, ['admin', 'employee', 'manager', 'superadmin'])) {
+                // Update google_id if needed
+                if (!$user->google_id) {
+                    $user->update([
+                        'google_id' => $googleUser->getId(),
+                        'avatar' => $googleUser->getAvatar()
+                    ]);
+                }
+                Auth::login($user);
+                return redirect('dashboard');
+            }
 
-    if ($findUser) {
-        // Update google_id if user exists by email but doesn't have google_id
-        if (!$findUser->google_id) {
-            $findUser->update([
-            'google_id' => $user->getId(),
-                'avatar' => $user->getAvatar()
+            // 2. Check if email exists in customers table
+            $customer = Customer::where('email', $googleUser->getEmail())->first();
+            if ($customer) {
+                // Update google_id if needed
+                if (!$customer->google_id) {
+                    $customer->update([
+                        'google_id' => $googleUser->getId(),
+                        'profile_photo' => $googleUser->getAvatar()
+                    ]);
+                }
+                Auth::login($customer);
+                return redirect('/')->with('success', 'Logged in as customer.');
+            }
+
+            // 3. If not found, create new customer
+            $newCustomer = Customer::create([
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
+                'google_id' => $googleUser->getId(),
+                'profile_photo' => $googleUser->getAvatar(),
+                'password' => '', // You may want to generate a random password
+                'status' => 'active'
             ]);
+            // If you use spatie/laravel-permission for roles
+            if (method_exists($newCustomer, 'assignRole')) {
+                $newCustomer->assignRole('customer');
+            }
+            Auth::login($newCustomer);
+            return redirect('/')->with('success', 'User created successfully and logged in as customer.');
         }
+        // public function handleGoogleCallback()
+        // {
+        //     // $user = Socialite::driver('google')->user();
+        //     $user = Socialite::driver('google')->stateless()->user(); // Use stateless() to bypass state verification
 
-        Auth::login($findUser);
+        //     $findUser = User::where('google_id', $user->getId())
+        //         ->orWhere('email', $user->getEmail())
+        //         ->first();
 
-        // Redirect based on role
-        if ($findUser->role && $findUser->role->name === 'customer') {
-            return redirect('/');
-        } else {
-            // Redirect admin, employee, superadmin, manager to dashboard
-            return redirect('dashboard');
-        }
-    } else {
-        $newUser = User::create([
-            'name' => $user->name,
-            'email' => $user->email,
-            'google_id' => $user->getId(),
-            'avatar' => $user->getAvatar(),
-            'password' => ''
-        ]);
+        //     if ($findUser) {
+        //         // Update google_id if user exists by email but doesn't have google_id
+        //         if (!$findUser->google_id) {
+        //             $findUser->update([
+        //             'google_id' => $user->getId(),
+        //                 'avatar' => $user->getAvatar()
+        //             ]);
+        //         }
 
-        // Assign default role to new user
-        $newUser->assignRole('customer');
+        //         Auth::login($findUser);
 
-        Auth::login($newUser);
+        //         // Redirect based on role
+        //         if ($findUser->role && $findUser->role->name === 'customer') {
+        //             return redirect('/');
+        //         } else {
+        //             // Redirect admin, employee, superadmin, manager to dashboard
+        //             return redirect('dashboard');
+        //         }
+        //     } else {
+        //         $newUser = Customer::create([
+        //             'name' => $user->name,
+        //             'email' => $user->email,
+        //             'google_id' => $user->getId(),
+        //             'avatar' => $user->getAvatar(),
+        //             'password' => ''
+        //         ]);
 
-        // Redirect new customers to home, not dashboard
-        return redirect('/')->with('success', 'User created successfully and logged in.');
-    }
-}
+        //         // Assign default role to new user
+        //         $newUser->assignRole('customer');
+
+        //         Auth::login($newUser);
+
+        //         // Redirect new customers to home, not dashboard
+        //         return redirect('/')->with('success', 'User created successfully and logged in.');
+        //     }
+        // }
 }
 

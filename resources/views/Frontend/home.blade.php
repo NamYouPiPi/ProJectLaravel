@@ -11,26 +11,21 @@
                 aria-label="Experience Cinema"></button>
             <button type="button" data-bs-target="#cinemaCarousel" data-bs-slide-to="2" aria-label="VIP Lounge"></button>
         </div>
-
         <!-- Slides -->
         <div class="carousel-inner">
-            <!-- Slide 1 -->
             <div class="carousel-item active">
                 <img src="https://coolbeans.sgp1.digitaloceanspaces.com/legend-cinema-prod/480251c7-01bb-478e-a18d-dba2a8d62a39.jpeg"
                     class="d-block w-100 carousel-image" alt="Diamond Member">
             </div>
-            <!-- Slide 2 -->
             <div class="carousel-item">
                 <img src="https://coolbeans.sgp1.digitaloceanspaces.com/legend-cinema-prod/480251c7-01bb-478e-a18d-dba2a8d62a39.jpeg"
                     class="d-block w-100 carousel-image" alt="Experience Cinema">
             </div>
-            <!-- Slide 3 -->
             <div class="carousel-item">
                 <img src="https://coolbeans.sgp1.digitaloceanspaces.com/legend-cinema-prod/480251c7-01bb-478e-a18d-dba2a8d62a39.jpeg"
                     class="d-block w-100 carousel-image" alt="VIP Lounge">
             </div>
         </div>
-
         <!-- Controls -->
         <button class="carousel-control-prev" type="button" data-bs-target="#cinemaCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -42,11 +37,64 @@
         </button>
     </div>
 
+    @php
+        use Carbon\Carbon;
+        $today = Carbon::today();
+        $days = collect(range(0, 6))->map(fn($i) => $today->copy()->addDays($i));
+        $selectedDate = request('date', $today->toDateString());
+        $search = request('search');
+        // Filter movies by showtimes on selected date
+        $filteredMovies = $movies->filter(function ($movie) use ($selectedDate, $search) {
+            $hasShowtime = $movie->showtimes->where('start_time', '>=', $selectedDate . ' 00:00:00')
+                ->where('start_time', '<=', $selectedDate . ' 23:59:59')
+                ->count() > 0;
+            $matchesSearch = !$search || str_contains(strtolower($movie->title), strtolower($search));
+            return $hasShowtime && $matchesSearch;
+        });
+    @endphp
+
+    <!-- Search Bar -->
+    <form method="get" action="" class="mb-4 d-flex justify-content-center flex-wrap gap-2">
+        <input type="hidden" name="date" value="{{ $selectedDate }}">
+        <input type="text" name="search" value="{{ $search }}" class="form-control w-auto" placeholder="Search movies..."
+            style="min-width:200px;">
+        <button type="submit" class="btn btn-danger">Search</button>
+    </form>
+
+    <!-- Date Picker Bar -->
+    <div class="d-flex gap-3 justify-content-center mb-5 flex-wrap">
+        @foreach($days as $day)
+            <form method="get" action="" class="m-0 p-0">
+                <input type="hidden" name="date" value="{{ $day->toDateString() }}">
+                @if($search)
+                    <input type="hidden" name="search" value="{{ $search }}">
+                @endif
+                <button type="submit" class="bg-black text-white border rounded-4 px-4 py-3 text-center" style="border: 2px solid {{ $day->toDateString() === $selectedDate ? '#e50914' : '#444' }};
+                                   box-shadow: {{ $day->toDateString() === $selectedDate ? '0 0 10px #e50914' : 'none' }};
+                                   min-width: 120px;">
+                    <div style="font-size: 0.9rem;">
+                        {{ $day->isToday() ? 'Today' : $day->format('D') }}
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: bold;">
+                        {{ $day->format('d') }}
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        {{ $day->format('M') }}
+                    </div>
+                </button>
+            </form>
+        @endforeach
+    </div>
+
     <!-- Movies Section -->
     <section id="movies" class="py-4 py-md-5">
         <div class="container">
+            @if($filteredMovies->isEmpty())
+                <div class="alert alert-warning text-center">No movies found for this date{{ $search ? ' and search' : '' }}.
+                </div>
+            @endif
             <div class="row g-3 g-md-4">
-                @foreach($movies as $movie)
+                @foreach($filteredMovies as $movie)
                     <div class="col-6 col-sm-4 col-md-3 col-lg-3">
                         <div class="movie-card h-100">
                             <a href="{{ route('movies.show', $movie->id) }}" class="text-decoration-none">
@@ -74,18 +122,15 @@
         /* Responsive Carousel */
         .carousel-image {
             height: 300px;
-            /* Mobile default */
             object-fit: cover;
         }
 
-        /* Tablet */
         @media (min-width: 768px) {
             .carousel-image {
                 height: 500px;
             }
         }
 
-        /* Desktop */
         @media (min-width: 1024px) {
             .carousel-image {
                 height: 700px;
@@ -109,7 +154,6 @@
 
         .movie-poster {
             aspect-ratio: 2/3;
-            /* Standard movie poster ratio */
             width: 100%;
             height: auto;
             transition: transform 0.3s ease;
@@ -198,6 +242,17 @@
 
             .movie-date {
                 font-size: 0.7rem;
+            }
+        }
+
+        /* Date Picker Bar Responsive */
+        .date-picker-bar form {
+            flex: 1 1 120px;
+        }
+
+        @media (max-width: 768px) {
+            .date-picker-bar {
+                gap: 1rem !important;
             }
         }
     </style>

@@ -127,6 +127,18 @@ Route::resource('classification' , ClassificationController::class);
 
 
 
+
+Route::get('/theaters', function () {
+    return view('Frontend.theaters');
+})->name('theaters');
+
+Route::get('/offer', function () {
+    return view('Frontend.offers');
+})->name('offer');
+
+
+
+
 // Permission Management Routes
    Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index');
     Route::put('permissions', [PermissionController::class, 'update'])->name('permissions.update');

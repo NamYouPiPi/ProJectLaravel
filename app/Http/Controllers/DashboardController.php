@@ -33,7 +33,7 @@ class DashboardController extends Controller
         $startOfMonth = Carbon::now()->startOfMonth();
         $totalRevenue = Booking::where('status', 'confirmed')
                             ->where('created_at', '>=', $startOfMonth)
-                            ->sum('final_amount');
+                            ->sum('total_amount');
 
         // Get monthly bookings count
         $totalBookings = Booking::where('created_at', '>=', $startOfMonth)->count();

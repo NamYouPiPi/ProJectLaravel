@@ -42,10 +42,10 @@ class Booking extends Model
     /**
      * Get the seats for the booking.
      */
-    public function seats()
-    {
-        return $this->hasMany(BookingSeat::class);
-    }
+  public function seats()
+{
+    return $this->belongsToMany(\App\Models\Seats::class, 'booking_seats', 'booking_id', 'seat_id');
+}
     public function payment()
     {
         return $this->hasOne(Payment::class);
