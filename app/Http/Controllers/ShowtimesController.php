@@ -11,6 +11,14 @@ use Carbon\Carbon;
 
 class ShowtimesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_showtimes')->only(['index', 'show']);
+        $this->middleware('permission:create_showtimes')->only(['create', 'store']);
+        $this->middleware('permission:edit_showtimes')->only(['edit', 'update']);
+        $this->middleware('permission:delete_showtimes')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *

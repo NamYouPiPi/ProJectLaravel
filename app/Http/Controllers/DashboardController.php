@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+
+  
+
+
     /**
      * Create a new controller instance.
      *

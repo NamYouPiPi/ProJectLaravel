@@ -30,6 +30,14 @@
                     </a>
                 </li>
 
+                {{-- promotions --}}
+                <li class="nav-item @yield('promotion')">
+                    <a href="{{ route('promotions.index') }}" class="nav-link">
+                        <i class="nav-icon bi bi-megaphone"></i>
+                        <p>Promotions</p>
+                    </a>
+                </li>
+
                 <!-- Inventory Section -->
                 <li class="nav-item @yield('inventory-menu-open')">
                     <a href="#" class="nav-link">

@@ -7,6 +7,17 @@ use Illuminate\Http\Request;
 
 class SeatTypeController extends Controller
 {
+
+
+
+    public function __construct()
+    {
+        $this->middleware('permission:view_seat_types')->only(['index', 'show']);
+        $this->middleware('permission:create_seat_types')->only(['create', 'store']);
+        $this->middleware('permission:edit_seat_types')->only(['edit', 'update']);
+        $this->middleware('permission:delete_seat_types')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *

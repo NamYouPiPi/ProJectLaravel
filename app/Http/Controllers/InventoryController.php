@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Storage;
 
 class InventoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_inventory')->only(['index', 'show']);
+        $this->middleware('permission:create_inventory')->only(['create', 'store']);
+        $this->middleware('permission:edit_inventory')->only(['edit', 'update']);
+        $this->middleware('permission:delete_inventory')->only(['destroy']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -63,7 +70,7 @@ class InventoryController extends Controller
         $inventories = $query->paginate(10)->withQueryString();
         $suppliers = Supplier::all();
         $categories = Inventory::select('category')->distinct()->get();
-        
+
         return view('Backend.inventory.index', compact('inventories', 'suppliers', 'categories', 'stats'));
 
     }
@@ -222,11 +229,13 @@ class InventoryController extends Controller
      */
     public function destroy(Inventory $inventory)
     {
-        $inventory->delete();
-
-        if ($inventory->image && Storage::disk('public')->exists($inventory->image)) {
+             if ($inventory->image && Storage::disk('public')->exists($inventory->image)) {
             Storage::disk('public')->delete($inventory->image);
         }
+        $inventory->status = 'inactive';
+        $inventory->save();
+
+
 
             return redirect()->route('inventory.index')
                 ->with('success', 'Inventory deleted successfully!');

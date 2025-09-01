@@ -74,7 +74,7 @@
                                         <span class="badge bg-danger">Cancelled</span>
                                     @endif
                                 </td>
-                                <td>{{ $seat->created_at->format('Y-m-d H:i') }}</td>
+                                {{-- <td>{{ $seat->created_at->format('Y-m-d H:i') }}</td> --}}
                                 <td>
                                     <div class="btn-group">
                                         <a href="{{ route('booking-seats.edit', $seat->id) }}" class="btn btn-sm btn-outline-primary">

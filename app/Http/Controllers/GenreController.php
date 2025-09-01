@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 
 class GenreController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_genres')->only(['index', 'show']);
+        $this->middleware('permission:create_genres')->only(['create', 'store']);
+        $this->middleware('permission:edit_genres')->only(['edit', 'update']);
+        $this->middleware('permission:delete_genres')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *

@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\DB;
 
 class BookingSeatController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_booking_seats')->only(['index', 'show']);
+        $this->middleware('permission:create_booking_seats')->only(['create', 'store', 'bookMultipleSeats', 'payWithABA']);
+        $this->middleware('permission:edit_booking_seats')->only(['edit', 'update']);
+        $this->middleware('permission:delete_booking_seats')->only(['destroy']);
+    }
 
 
      public function payWithABA(Request $request)

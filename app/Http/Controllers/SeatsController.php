@@ -10,6 +10,14 @@ use Illuminate\Http\Request;
 
 class SeatsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_seats')->only(['index', 'show']);
+        $this->middleware('permission:create_seats')->only(['create', 'store']);
+        $this->middleware('permission:edit_seats')->only(['edit', 'update']);
+        $this->middleware('permission:delete_seats')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *

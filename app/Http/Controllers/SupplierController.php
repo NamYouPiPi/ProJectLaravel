@@ -8,6 +8,14 @@ use Illuminate\Http\JsonResponse;
 
 class SupplierController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_suppliers')->only(['index', 'show']);
+        $this->middleware('permission:create_suppliers')->only(['create', 'store']);
+        $this->middleware('permission:edit_suppliers')->only(['edit', 'update']);
+        $this->middleware('permission:delete_suppliers')->only(['destroy']);
+    }
+
     public function index(Request $request)
         {
             $searchStatus = $request->input('status'); // Get status from the filter

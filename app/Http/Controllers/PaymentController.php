@@ -8,6 +8,17 @@ use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:view_payments')->only(['index', 'show']);
+        $this->middleware('permission:create_payments')->only(['create', 'store']);
+        $this->middleware('permission:edit_payments')->only(['edit', 'update']);
+        $this->middleware('permission:delete_payments')->only(['destroy']);
+        $this->middleware('permission:refund_payments')->only(['refund']);
+    }
+
+
     /**
      * Display a listing of the payments.
      */
@@ -364,7 +375,7 @@ class PaymentController extends Controller
         ]);
 
         $transactionId = 'TEST_' . time() . rand(100, 999);
-        
+
         // Create a test payment record - Use 0 instead of null for booking_id
         $payment = Payment::create([
             'booking_id' => 0, // Use a default value instead of null
@@ -396,7 +407,7 @@ class PaymentController extends Controller
         $apiKey = env('ABA_API_KEY');
         $hashSecret = env('ABA_HASH_SECRET');
         $apiUrl = "https://checkout-sandbox.payway.com.kh/api/payment-gateway/v1/payments/purchase";
-        
+
         $payload = [
             "merchant_id" => $merchantId,
             "amount" => $amount,
@@ -467,7 +478,7 @@ class PaymentController extends Controller
         $apiKey = env('ABA_API_KEY');
         $hashSecret = env('ABA_HASH_SECRET');
         $apiUrl = "https://checkout-sandbox.payway.com.kh/api/payment-gateway/v1/payments/purchase";
-        
+
         $payload = [
             "merchant_id" => $merchantId,
             "amount" => $amount,
@@ -511,7 +522,7 @@ class PaymentController extends Controller
                     'status' => 'pending',
                 ]);
             }
-            
+
             if (isset($result['checkout_url'])) {
                 // Store transaction info for reference
                 session(['test_transaction' => [
@@ -519,7 +530,7 @@ class PaymentController extends Controller
                     'amount' => $amount,
                     'time' => now()->format('Y-m-d H:i:s')
                 ]]);
-                
+
                 // Redirect to ABA card payment page
                 return redirect($result['checkout_url']);
             }
@@ -537,23 +548,23 @@ class PaymentController extends Controller
         $apiKey = env('ABA_API_KEY');
         $hashSecret = env('ABA_HASH_SECRET');
         $apiUrl = "https://checkout-sandbox.payway.com.kh/api/payment-gateway/v1/payments/check-transaction";
-        
+
         $payload = [
             "merchant_id" => $merchantId,
             "tran_id" => $transactionId,
             "req_time" => now()->format('YmdHis'),
         ];
-        
+
         // Generate hash
         $dataString = implode("", $payload);
         $hash = hash_hmac('sha512', $dataString, $hashSecret);
         $payload['hash'] = $hash;
-        
+
         $response = Http::withHeaders([
             'Authorization' => 'Basic ' . base64_encode($merchantId . ":" . $apiKey),
             'Content-Type' => 'application/json',
         ])->post($apiUrl, $payload);
-        
+
         // Return the complete response for testing purposes
         if ($request->wantsJson()) {
             return response()->json([
@@ -563,7 +574,7 @@ class PaymentController extends Controller
                 'timestamp' => now()->toIso8601String()
             ]);
         }
-        
+
         // For web requests, return a view with the transaction details
         return view('payments.test.transaction-status', [
             'transactionId' => $transactionId,

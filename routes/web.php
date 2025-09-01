@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaywayController;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{InventoryController,
@@ -20,8 +21,9 @@ use App\Http\Controllers\{InventoryController,
     PermissionController,
     UserController,
     BookingController,
-    BookingSeatController
-
+    BookingSeatController,
+    CarouselController,
+    PromotionController
 };
 
 use Illuminate\Support\Facades\Auth;
@@ -53,6 +55,10 @@ use App\Http\Controllers\Auth\{
 
 
 
+Route::get('/', [MoviesController::class, 'home'])->name('frontend.home');
+Route::post('/booking/pay', [BookingController::class, 'payWithABA'])->name('booking.pay');
+Route::get('/booking/callback/{booking}', [BookingController::class, 'paymentCallback'])->name('booking.callback');
+Route::get('/booking/cancel/{booking}', [BookingController::class, 'paymentCancel'])->name('booking.cancel');
 
 
 
@@ -62,13 +68,6 @@ use App\Http\Controllers\Auth\{
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-
-Route::get('/', function () {
-    return view('Frontend.home');
-})->name('home');
-
-// Route::get('/booking/{movie}', [MoviesController::class, 'bookingCreate'])->name('booking.create');
-
 
 
 // Registration Routes
@@ -98,18 +97,9 @@ Route::resource('inventory',InventoryController::class );
 Route::resource('sale'  , ConnectionSaleController::class);
 Route::post('sale.best-sellers', [ConnectionSaleController::class, 'bestSellers'])->name('sale.best-sellers');
 Route::get('sale.report', [ConnectionSaleController::class, 'report'])->name('sale.report');
-
-
-Route::get('/', [MoviesController::class, 'home'])->name('frontend.home');
-Route::post('/booking/pay', [BookingController::class, 'payWithABA'])->name('booking.pay');
-Route::get('/booking/callback/{booking}', [BookingController::class, 'paymentCallback'])->name('booking.callback');
-Route::get('/booking/cancel/{booking}', [BookingController::class, 'paymentCancel'])->name('booking.cancel');
-
-
 Route::resource('hall_locations', HallLocationController::class);
 Route::resource('hallCinema', HallCinemaController::class);
 Route::resource('movies' , MoviesController::class);
-Route::get('/movies/search', [MoviesController::class, 'search'])->name('movies.search');
 
 Route::resource('showtimes', ShowtimesController::class);
 Route::resource('genre' ,GenreController::class);
@@ -124,7 +114,9 @@ Route::get('/booking/create/{showtime}', [BookingController::class, 'createForSh
 Route::resource('booking-seats', BookingSeatController::class);
 Route::resource('payments', PaymentController::class);
 Route::resource('classification' , ClassificationController::class);
-
+// carousel
+Route::resource('carousels', CarouselController::class);
+Route::resource('promotions', PromotionController::class);
 
 
 
@@ -136,6 +128,41 @@ Route::get('/offer', function () {
     return view('Frontend.offers');
 })->name('offer');
 
+
+
+
+
+
+
+// superadmin access
+
+Route::middleware(['auth', 'role:superadmin'])->prefix('super-admin')->name('super-admin.')->group(function () {
+    Route::get('/system/info', function () {
+        // Return a view or controller for system info
+        return view('Backend.SuperAdmin.system-info');
+    })->name('system.info');
+
+    Route::get('/system/logs', function () {
+        // Return a view or controller for system logs
+        return view('Backend.SuperAdmin.system-logs');
+    })->name('system.logs');
+
+    Route::get('/database/status', function () {
+        // Return a view or controller for database status
+        return view('Backend.SuperAdmin.database-status');
+    })->name('database.status');
+
+    Route::get('/users/all', function () {
+        // Return a view or controller for managing users
+        return view('Backend.SuperAdmin.users-all');
+    })->name('users.all');
+
+    Route::get('/roles/all', function () {
+        // Return a view or controller for managing roles
+        return view('Backend.SuperAdmin.roles-all');
+    })->name('roles.all');
+});
+// ...existing code...
 
 
 
@@ -223,10 +250,6 @@ Route::get('/booking/create/{movieId}', [BookingController::class, 'createForMov
 Route::post('/booking/{movieId}', [BookingController::class, 'store'])->name('booking.store');
 Route::get('/booking-seat-map/{hallId}', [BookingSeatController::class, 'showSeatMap'])->name('booking-seat.map');
 
-Route::post('/frontend/booking/payment', function (\Illuminate\Http\Request $request) {
-    $total = $request->input('total', '$0.00');
-    return view('Frontend.Booking.payment', ['total' => $total])->render();
-})->name('frontend.booking.payment');
 
 Route::get('/bookingseats/success', function() {
     return view('Frontend.Booking.success');

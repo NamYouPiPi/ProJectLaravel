@@ -43,6 +43,31 @@ class PermissionController extends Controller
         }
     }
 
+        public function create()
+            {
+                $permissions = Permission::all()->groupBy('group');
+                $roles = Role::where('is_protected', false)->get();
+
+                return view('ManagementEmployee.Permission.create', compact('permissions', 'roles'));
+            }
+
+
+    public function store (Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'display_name' => 'required|string|max:255',
+            'group' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+        ]);
+
+        Permission::create($request->all());
+
+        return redirect()->route('permissions.index')
+                         ->with('success', 'Permission created successfully');
+    }
+
+
     public function getRolePermissions(Role $role)
     {
         return response()->json([

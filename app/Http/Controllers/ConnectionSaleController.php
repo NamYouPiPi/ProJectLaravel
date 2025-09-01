@@ -10,6 +10,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 class ConnectionSaleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_connection_sales')->only(['index', 'show', 'analytics', 'monthlyReport', 'chartData', 'generateReport', 'bestSellers']);
+        $this->middleware('permission:create_connection_sales')->only(['create', 'store']);
+        $this->middleware('permission:edit_connection_sales')->only(['edit', 'update']);
+        $this->middleware('permission:delete_connection_sales')->only(['destroy']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -247,7 +254,7 @@ class ConnectionSaleController extends Controller
     {
         // Test with simple dummy data to isolate the issue
         $currentMonth = Carbon::now();
-        
+
         return view('Backend.ConnectionSale.analytics', [
             'currentMonthSales' => 1500.00,
             'previousMonthSales' => 1200.00,

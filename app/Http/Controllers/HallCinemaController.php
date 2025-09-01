@@ -8,7 +8,13 @@ use Illuminate\Http\Request;
 
 class HallCinemaController extends Controller
 {
-
+ public function __construct()
+    {
+        $this->middleware('permission:view_hall_cinemas')->only(['index', 'show', 'analytics', 'search']);
+        $this->middleware('permission:create_hall_cinemas')->only(['create', 'store']);
+        $this->middleware('permission:edit_hall_cinemas')->only(['edit', 'update']);
+        $this->middleware('permission:delete_hall_cinemas')->only(['destroy']);
+    }
 
 
     /**

@@ -10,6 +10,14 @@ use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_roles')->only(['index', 'show']);
+        $this->middleware('permission:create_roles')->only(['create', 'store']);
+        $this->middleware('permission:edit_roles')->only(['edit', 'update']);
+        $this->middleware('permission:delete_roles')->only(['destroy']);
+    }
+
     public function index()
     {
         $roles = Role::withCount('users')

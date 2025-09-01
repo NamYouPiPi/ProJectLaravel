@@ -5,8 +5,13 @@
 @section('content')
     <div class="container-fluid py-4">
         <div class="card">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Permission Management</h4>
+            <div class="card-header bg-primary text-white ">
+                <h4 class="mb-0 float-start">Permission Management</h4>
+                <x-create_modal dataTable="permission" title="Add New Permission">
+                    <button type="button" class="btn btn-outline-warning float-end" data-bs-toggle="modal" data-bs-target="#createModal">
+                        ➕ Add New Permission
+                    </button>
+                </x-create_modal>
             </div>
 
             @include('Backend.components.Toast')

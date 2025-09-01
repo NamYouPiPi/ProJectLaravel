@@ -176,21 +176,29 @@
                             <span class="detail-value" id="totalPrice">--</span>
                         </div>
                     </div>
+{{-- filepath: c:\xampp\htdocs\aurora_cinema\resources\views\Frontend\Booking\create.blade.php --}}
+{{-- ...existing code... --}}
+    <div class="action-buttons">
+        <button class="btn-back" onclick="history.back()">Back</button>
+        @if($movie)
+            @if(Auth::check())
+                <form id="bookingForm" action="{{ route('booking.pay') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="seats" id="seatsInput" value="">
+                    <input type="hidden" name="showtime_id" value="{{ $showtime->id }}">
+                    <button type="submit" class="btn-continue" id="continueBtn" disabled>Continue</button>
+                </form>
+            @else
+                <a href="{{ route('register') }}" class="btn-continue d-block text-center" id="continueBtn" style="text-decoration:none;">
+                     continue
+                </a>
 
-                    <div class="action-buttons">
-                        <button class="btn-back" onclick="history.back()">Back</button>
-                        @if($movie)
-
-                      <form id="bookingForm" action="{{ route('booking.pay') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="seats" id="seatsInput" value="">
-                            <input type="hidden" name="showtime_id" value="{{ $showtime->id }}">
-                            <button type="submit" class="btn-continue" id="continueBtn" disabled>Continue</button>
-                        </form>
-                        @else
-                            <button class="btn-continue" disabled>Movie not found</button>
-                        @endif
-                    </div>
+            @endif
+        @else
+            <button class="btn-continue" disabled>Movie not found</button>
+        @endif
+    </div>
+    {{-- ...existing code... --}}
                 </div>
             </div>
         </div>

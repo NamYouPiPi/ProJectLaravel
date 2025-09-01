@@ -72,6 +72,12 @@
                     @case('roles')
                         @include("ManagementEmployee.Role.create")
                     @break
+                    @case('permission')
+                        @include("ManagementEmployee.Permission.create")
+                    @break
+                    @case('promotion')
+                        @include("Backend.promotion.create")
+                    @break
                     @default
                         <div>No data available</div>
                 @endswitch

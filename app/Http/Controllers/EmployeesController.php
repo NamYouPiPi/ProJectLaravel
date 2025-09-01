@@ -8,6 +8,14 @@ use Carbon\Carbon;
 
 class EmployeesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_employees')->only(['index', 'show']);
+        $this->middleware('permission:create_employees')->only(['create', 'store']);
+        $this->middleware('permission:edit_employees')->only(['edit', 'update']);
+        $this->middleware('permission:delete_employees')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *

@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class ClassificationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_classifications')->only(['index', 'show']);
+        $this->middleware('permission:create_classifications')->only(['create', 'store']);
+        $this->middleware('permission:edit_classifications')->only(['edit', 'update']);
+        $this->middleware('permission:delete_classifications')->only(['destroy']);
+    }
     /**
      * Display a listing of the resource.
      *

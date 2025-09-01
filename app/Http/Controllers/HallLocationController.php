@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class HallLocationController extends Controller
 {
+    public function __construct()
+        {
+            $this->middleware('permission:view_hall_locations')->only(['index', 'show', 'analytics', 'search']);
+            $this->middleware('permission:create_hall_locations')->only(['create', 'store']);
+            $this->middleware('permission:edit_hall_locations')->only(['edit', 'update']);
+            $this->middleware('permission:delete_hall_locations')->only(['destroy']);
+        }
     /**
      * Display a listing of the resource.
      *
@@ -64,12 +71,12 @@ class HallLocationController extends Controller
         $totalCinemas = Hall_cinema::count();
 
         return view("Backend.Hall_Location.index", compact(
-            'hallocation', 
-            'cities', 
-            'states', 
+            'hallocation',
+            'cities',
+            'states',
             'countries',
             'totalLocations',
-            'activeLocations', 
+            'activeLocations',
             'inactiveLocations',
             'totalCinemas'
         ));
@@ -156,9 +163,9 @@ class HallLocationController extends Controller
             'postal_code'=> 'nullable|string|max:255',
             'state'      => 'nullable|string|max:255',
         ]);
-        
+
         $hall_location->update($data);
-        
+
         // Return JSON response for AJAX requests
         if ($request->expectsJson()) {
             return response()->json([
@@ -167,7 +174,7 @@ class HallLocationController extends Controller
                 'data' => $hall_location
             ]);
         }
-        
+
         return redirect()->route('hall_locations.index')->with('success', 'Hall_location updated successfully!');
     }
 

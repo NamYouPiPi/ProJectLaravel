@@ -17,6 +17,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\TextUI\XmlConfiguration\Groups;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -25,6 +26,14 @@ class BookingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('permission:view_bookings')->only(['index', 'show']);
+        $this->middleware('permission:create_bookings')->only(['create', 'store']);
+        $this->middleware('permission:edit_bookings')->only(['edit', 'update']);
+        $this->middleware('permission:delete_bookings')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $query = Booking::with(['customer', 'showtime']);
@@ -41,8 +50,13 @@ class BookingController extends Controller
 public function paymentCallback(Request $request, Booking $booking)
 {
     // Verify payment status with ABA if needed
-    $booking->update(['status' => 'paid']);
-    return view('Frontend.Booking.success', compact('booking'));
+   $booking->update(['status' => 'paid']);
+
+    // Update all related seats to 'booked'
+    foreach ($booking->seats as $seat) {
+        $seat->pivot->status = 'booked';
+        $seat->pivot->save();
+    }    return view('Frontend.Booking.success', compact('booking'));
 }
 
 public function paymentCancel(Request $request, Booking $booking)
@@ -51,143 +65,70 @@ public function paymentCancel(Request $request, Booking $booking)
     return view('Frontend.Booking.cancel', compact('booking'));
 }
 
-public function payWithABA(Request $request)
-{
-    $seatIds = json_decode($request->input('seats'), true);
-    if (!$seatIds || !is_array($seatIds) || count($seatIds) === 0) {
-        return back()->with('error', 'No seats selected.');
-    }
-
-    // Get seats and calculate total price
-    $seats = Seats::whereIn('id', $seatIds)->with('seatType')->get();
-    $total = $seats->sum(fn($seat) => $seat->seatType->price);
-
-    // Get authenticated customer
-    $customer = Customer::find(auth()->id());
-    if (!$customer) {
-        return back()->with('error', 'Customer not found.');
-    }
-
-    // Create booking
-    $booking = Booking::create([
-        'customer_id' => $customer->id,
-        'showtime_id' => $request->showtime_id,
-        'total_price' => $total,
-        'status' => 'pending',
-    ]);
-
-    // Prepare pivot data for seats
-    $pivotData = [];
-    foreach ($seats as $seat) {
-        $pivotData[$seat->id] = [
-            'price' => $seat->seatType->price,
-            'status' => 'reserved',
-        ];
-    }
-    $booking->seats()->attach($pivotData);
-
-    // Prepare ABA PayWay payload
-    $tranId = $booking->id . '-' . time();
-    $reqTime = now()->format('YmdHis');
-
-    // CORRECT HASH GENERATION - Follow ABA's exact order
-    $hashData = [
-        'merchant_id' => config('aba.merchant_id'),
-        'tran_id' => $tranId,
-        'amount' => number_format($total, 2, '.', ''),
-        'items' => json_encode($seats->map(fn($seat) => [
-            'name' => 'Seat ' . $seat->seat_number,
-            'quantity' => 1,
-            'price' => number_format($seat->seatType->price, 2, '.', ''),
-        ])->toArray()),
-        'firstname' => $customer->name ?? '',
-        'lastname' => '',
-        'email' => $customer->email ?? '',
-        'phone' => $customer->phone ?? '',
-        'return_url' => route('booking.callback', ['booking' => $booking->id]),
-        'cancel_url' => route('booking.cancel', ['booking' => $booking->id]),
-    ];
-
-    // dd($hashData);
-   $hashString = $reqTime .
-             $hashData['merchant_id'] .
-             $hashData['tran_id'] .
-             $hashData['amount'] .
-             $hashData['items'] .
-             '' . // shipping
-             $hashData['firstname'] .
-             $hashData['lastname'] .
-             $hashData['email'] .
-             $hashData['phone'] .
-             '' . // payment_option
-             $hashData['return_url'] .
-             $hashData['cancel_url'] .
-             '' . // continue_success_url
-             '' . // return_deeplink
-             'USD' . // currency
-             '' . // custom_fields
-             '' . // return_params
-             '' . // payout (add if required)
-             '' . // lifetime (add if required)
-             '' . // additional_params (add if required)
-             '' . // google_pay_token (add if required)
-             ''; // skip_success_page (add if required)
-
-// Generate hash using hash_secret
-$hash = base64_encode(hash_hmac('sha512', $hashString, config('aba.hash_secret'), true));
-
-    // dd($hashString , $hash);
-    // Full payload
-    $payload = [
-        'req_time' => $reqTime,
-        'merchant_id' => config('aba.merchant_id'),
-        'tran_id' => $tranId,
-        'amount' => number_format($total, 2, '.', ''),
-        'currency' => 'USD',
-        'return_url' => route('booking.callback', ['booking' => $booking->id]),
-        'cancel_url' => route('booking.cancel', ['booking' => $booking->id]),
-        'client_ip' => $request->ip(),
-        'order' => [
-            'items' => $seats->map(fn($seat) => [
-                'name' => 'Seat ' . $seat->seat_number,
-                'quantity' => 1,
-                'price' => number_format($seat->seatType->price, 2, '.', ''),
-            ])->toArray(),
-        ],
-        'firstname' => $customer->name ?? '',
-        'lastname' => '',
-        'email' => $customer->email ?? '',
-        'phone' => $customer->phone ?? '',
-        'hash' => $hash,
-    ];
-
-    // Call ABA PayWay API
-    $response = Http::withHeaders([
-        'x-api-key' => config('aba.api_key'),
-        'Content-Type' => 'application/json',
-    ])->post(config('aba.api_url'), $payload);
-
-    // dd($response->status());
-    dd($response);
-    // Handle response
-    if ($response->successful()) {
-        $data = $response->json();
-        if (isset($data['payment_url'])) {
-            $booking->update(['tran_id' => $tranId]);
-            return redirect($data['payment_url']);
-        } else {
-            return back()->with('error', 'Payment URL not found in response.');
+    public function payWithABA(Request $request)
+    {
+        $seatIds = json_decode($request->input('seats'), true);
+        // Get seats and calculate total price
+        $seats = Seats::whereIn('id', $seatIds)->with('seatType')->get();
+        $total = $seats->sum(fn($seat) => $seat->seatType->price);
+        // Get authenticated customer
+        $customer = Customer::find(auth()->id());
+        if (!$customer) {
+            return back()->with('error', 'Customer not found.');
         }
-    } else {
-        \Log::error('ABA PayWay API Error', [
-            'status' => $response->status(),
-            'body' => $response->body(),
-            'payload' => $payload,
-            'hash_string' => $hashString,
+
+        // Create booking
+        $booking = Booking::create([
+            'customer_id' => $customer->id,
+            'showtime_id' => $request->showtime_id,
+            'total_price' => $total,
+            'status' => 'pending',
         ]);
-        return back()->with('error', 'Payment gateway error: ' . $response->body());
-    }
-}
+
+        // Prepare pivot data for seats
+        $pivotData = [];
+        foreach ($seats as $seat) {
+            $pivotData[$seat->id] = [
+                'price' => $seat->seatType->price,
+                'status' => 'reserved',
+            ];
+        }
+        $booking->seats()->attach($pivotData);
+
+        $request_time = now()->format('YmdHis');
+        $merchant_id = config('aba.merchant_id');
+        $tran_id = (string) $booking->id . date('YmdHis');
+        $amount = number_format($total, 2, '.', '');
+        $currency = 'USD';
+
+        // Hash string must include amount and currency in the correct order
+        $b4hash = $request_time . $merchant_id . $tran_id . $amount . $currency;
+        $hash = base64_encode(hash_hmac('sha512', $b4hash, config('aba.api_key'), true));
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->post(config('aba.api_url'), [
+            'req_time' => $request_time,
+            'merchant_id' => $merchant_id,
+            'tran_id' => $tran_id,
+            'amount' => $amount,
+            'currency' => $currency,
+            'hash' => $hash,
+        ]);
+
+        $data = $response->json();
+        dd($data);
+    $booking->update(['tran_id' => $tran_id]);
+    // Pass QR data to the view
+    return view('Frontend.Booking.khqr', [
+        'booking' => $booking,
+        'qrImage' => $data['qrImage'],
+        'abapay_deeplink' => $data['abapay_deeplink'] ?? null,
+        'qrString' => $data['qrString'] ?? null,
+    ]);
+   }
+
+
 
 public function createForShowtime($showtimeId)
 {

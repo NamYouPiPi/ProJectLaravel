@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\DB;
 
 class MoviesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view_movies')->only(['index', 'show', 'home', 'bookingCreate']);
+        $this->middleware('permission:create_movies')->only(['create', 'store']);
+        $this->middleware('permission:edit_movies')->only(['edit', 'update']);
+        $this->middleware('permission:delete_movies')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *
