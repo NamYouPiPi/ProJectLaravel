@@ -78,6 +78,9 @@
                     @case('promotion')
                         @include("Backend.promotion.create")
                     @break
+                    @case('carousel')
+                        @include("Backend.carousel.create")
+                    @break
                     @default
                         <div>No data available</div>
                 @endswitch

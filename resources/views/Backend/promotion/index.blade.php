@@ -3,18 +3,20 @@
 @section('title', 'promotion')
 @section('promotion', 'active')
 @section('content')
-    <h1 class="h3 mb-4">Manage Promotions</h1>
-
+    <div class="d-flex justify-content-between p-3">
+        <h1 class="h3 mb-4 float-start">Manage Promotions</h1>
+        <x-create_modal dataTable="promotion" title="Add New Promotion" class="">
+            <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#createModal">
+                Add New Promotion
+            </button>
+        </x-create_modal>
+    </div>
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
 
 
-    <x-create_modal dataTable="promotion" title="Add New Promotion" class="">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-            Add New Promotion
-        </button>
-    </x-create_modal>
-    <div class="table-responsive card m-2">
+
+    <div class="table-responsive card m-2 p-3">
         <table class="table table-hover " id="suppliersTable">
             <thead>
                 <tr>
@@ -33,6 +35,8 @@
                             <img src="{{ asset('storage/' . $promotion->proImage) }}" style="width: 40px ; " alt="">
                         </td>
                         <td>{{ $promotion->description }}</td>
+                        <td><span class="badge bg-success">{{ $promotion->status == 'active' ? 'Active' : 'Inactive' }}</span>
+                        </td>
                         <td>{{ $promotion->created_at->format("Y/m/d") }}</td>
                         <td class="d-flex gap-2">
                             <x-update-modal dataTable="promotion" title="update Supplier">

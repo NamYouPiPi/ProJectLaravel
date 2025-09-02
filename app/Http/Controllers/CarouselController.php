@@ -15,17 +15,21 @@ class CarouselController extends Controller
      */
     public function index()
     {
-        // Not used, handled in PromotionController@index
+        $carousels = Carousel::paginate(10);
+    return view('Backend.carousel.index', compact('carousels'));
     }
+
+   
 
     /**
      * Show the form for creating a new resource.
-     *
+    *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
         //
+        return view('Backend.carousel.create');
     }
 
     /**
@@ -36,20 +40,20 @@ class CarouselController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'carouselImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $imageName = time() . '_' . $request->file('image_path')->getClientOriginalName();
-        $request->file('image_path')->storeAs('public/promotions', $imageName);
+        $imageName = null;
+            if ($request->hasFile('carouselImage')) {
+                $imageName = $request->file('carouselImage')->store('carousels', 'public');
+            }
 
-        Carousel::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'image_path' => $imageName,
-        ]);
+            Carousel::create([
+                'carousel_image' => $imageName, // Ensure this column exists in your database
+                'status' => 'active',
+            ]);
 
         return redirect()->back()->with('success', 'Carousel image added successfully.');
     }
@@ -74,6 +78,7 @@ class CarouselController extends Controller
     public function edit(Carousel $carousel)
     {
         //
+        return view('Backend.carousel.create', compact('carousel'));
     }
 
     /**
@@ -86,28 +91,19 @@ class CarouselController extends Controller
     public function update(Request $request, Carousel $carousel)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'carouselImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        $imagePath = $carousel->carousel_image;
 
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description,
-        ];
-
-        if ($request->hasFile('image_path')) {
-            // Delete old image
-            if ($carousel->image_path && Storage::exists('public/promotions/' . $carousel->image_path)) {
-                Storage::delete('public/promotions/' . $carousel->image_path);
+            if($request->hasFile('carouselImage')){
+                if($carousel->carousel_image){
+                    Storage::disk('public')->delete($carousel->carousel_image);
+                }
+                $imagePath = $request->file('carouselImage')->store('carousels', 'public');
             }
-            $imageName = time() . '_' . $request->file('image_path')->getClientOriginalName();
-            $request->file('image_path')->storeAs('public/promotions', $imageName);
-            $data['image_path'] = $imageName;
-        }
-
-        $carousel->update($data);
-
+        $carousel->update([
+            'carousel_image' => $imagePath,
+        ]);
         return redirect()->back()->with('success', 'Carousel image updated successfully.');
     }
 
@@ -119,10 +115,8 @@ class CarouselController extends Controller
      */
     public function destroy(Carousel $carousel)
     {
-        if ($carousel->image_path && Storage::exists('public/promotions/' . $carousel->image_path)) {
-            Storage::delete('public/promotions/' . $carousel->image_path);
-        }
-        $carousel->delete();
+        $carousel->status = 'inactive';
+        $carousel->save();
         return redirect()->back()->with('success', 'Carousel image deleted successfully.');
     }
 }

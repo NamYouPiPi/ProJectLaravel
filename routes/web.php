@@ -53,6 +53,8 @@ Route::get('/booking/cancel/{booking}', [BookingController::class, 'paymentCance
 // google login and  google callback routes
 Route::get('login/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
+Route::resource('carousels' , CarouselController::class);
+
 // end of google login and  google callback routes
 
 Route::get('/theaters', function () {
@@ -60,7 +62,7 @@ Route::get('/theaters', function () {
 })->name('theaters');
 
 Route::get('/offer', [PromotionController::class, 'Frontend'])->name('offer');
-
+Route::get('/carousel', [CarouselController::class, 'FrontendCarousel'])->name('carousel');
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
@@ -83,6 +85,9 @@ Route::middleware(['auth', 'permission:access_dashboard'])->group(function () {
     })->name('dashboard');
     Route::get('/dashboard/chart-data', [App\Http\Controllers\DashboardController::class, 'getChartData'])->name('dashboard.chart-data');
 });
+
+
+
 
 // ===== Supplier Management =====
 Route::middleware(['auth', 'permission:view_suppliers'])->group(function () {

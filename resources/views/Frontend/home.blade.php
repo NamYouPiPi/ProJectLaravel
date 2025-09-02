@@ -13,18 +13,11 @@
         </div>
         <!-- Slides -->
         <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="https://coolbeans.sgp1.digitaloceanspaces.com/legend-cinema-prod/480251c7-01bb-478e-a18d-dba2a8d62a39.jpeg"
-                    class="d-block w-100 carousel-image" alt="Diamond Member">
-            </div>
-            <div class="carousel-item">
-                <img src="https://coolbeans.sgp1.digitaloceanspaces.com/legend-cinema-prod/480251c7-01bb-478e-a18d-dba2a8d62a39.jpeg"
-                    class="d-block w-100 carousel-image" alt="Experience Cinema">
-            </div>
-            <div class="carousel-item">
-                <img src="https://coolbeans.sgp1.digitaloceanspaces.com/legend-cinema-prod/480251c7-01bb-478e-a18d-dba2a8d62a39.jpeg"
-                    class="d-block w-100 carousel-image" alt="VIP Lounge">
-            </div>
+            @foreach($carousels as $key => $carousel)
+                <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                    <img src="{{ asset('storage/' . $carousel->carousel_image) }}" class="d-block w-100 carousel-image">
+                </div>
+            @endforeach
         </div>
         <!-- Controls -->
         <button class="carousel-control-prev" type="button" data-bs-target="#cinemaCarousel" data-bs-slide="prev">
@@ -68,8 +61,8 @@
                 <input type="hidden" name="date" value="{{ $day->toDateString() }}">
 
                 <button type="submit" class="bg-black text-white border rounded-4 px-4 py-3 text-center" style="border: 2px solid {{ $day->toDateString() === $selectedDate ? '#e50914' : '#444' }};
-                                   box-shadow: {{ $day->toDateString() === $selectedDate ? '0 0 10px #e50914' : 'none' }};
-                                   min-width: 120px;">
+                                           box-shadow: {{ $day->toDateString() === $selectedDate ? '0 0 10px #e50914' : 'none' }};
+                                           min-width: 120px;">
                     <div style="font-size: 0.9rem;">
                         {{ $day->isToday() ? 'Today' : $day->format('D') }}
                     </div>
@@ -102,8 +95,10 @@
                                 </div>
                                 <div class="movie-info p-2 p-md-3">
                                     <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap">
-                                        <small class="text-white movie-date">{{ $movie->release_date->format('M,d, Y') }}</small>
-                                        <span class="badge bg-secondary movie-rating">{{ $movie->classification->code ?? '' }}</span>
+                                        <small
+                                            class="text-white movie-date">{{ $movie->release_date->format('M,d, Y') }}</small>
+                                        <span
+                                            class="badge bg-secondary movie-rating">{{ $movie->classification->code ?? '' }}</span>
                                     </div>
                                     <h6 class="movie-title text-light mb-0">{{ $movie->title }}</h6>
                                 </div>

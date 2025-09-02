@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carousel;
 use App\Models\Classification;
 use App\Models\Genre;
 use App\Models\Movies;
@@ -118,8 +119,9 @@ class MoviesController extends Controller
     }
 
     public function home (){
-        $movies = Movies::where('status', 'active')->get(); // or with any filters you want
-        return view('Frontend.home', compact('movies'));
+        $movies = Movies::where('status', 'active')->get();
+        $carousels = Carousel::where('status', 'active')->get();
+        return view('Frontend.home', compact('movies', 'carousels'));
     }
 
     /**

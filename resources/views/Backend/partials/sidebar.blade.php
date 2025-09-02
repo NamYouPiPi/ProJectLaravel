@@ -23,7 +23,7 @@
                 aria-label="Main navigation" data-accordion="false" id="navigation">
 
                 <!-- Dashboard -->
-                @if(auth()->user()->hasPermission('access_dashboard'))
+                @if(auth()->user()->hasPermission('view_dashboard'))
                     <li class="nav-item @yield('dashboard')">
                         <a href="{{ url('/dashboard') }}" class="nav-link">
                             <i class="nav-icon bi bi-palette"></i>
@@ -33,14 +33,22 @@
                 @endif
 
                 {{-- promotions --}}
-                @if(auth()->user()->hasPermission('view_promotions'))
+                {{-- @if(auth()->user()->hasPermission('view_promotions')) --}}
                     <li class="nav-item @yield('promotion')">
                         <a href="{{ route('promotions.index') }}" class="nav-link">
                             <i class="nav-icon bi bi-megaphone"></i>
                             <p>Promotions</p>
                         </a>
                     </li>
-                @endif
+                {{-- @endif --}}
+
+                <li class="nav-item @yield('carousel')">
+                    <a href="{{ route('carousels.index') }}" class="nav-link">
+                        <i class="nav-icon bi bi-image"></i>
+                        <p>Carousels</p>
+                    </a>
+                </li>
+
 
                 <!-- Inventory Section -->
                 @if(auth()->user()->hasAnyPermission(['view_inventory', 'view_suppliers', 'view_sales']))
