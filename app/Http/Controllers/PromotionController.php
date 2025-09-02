@@ -31,6 +31,16 @@ class PromotionController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function Frontend(){
+        $promotions = Promotion::where('status', 'active')->get();
+        // dd($promotions);
+        return view('Frontend.offers', compact('promotions'));
+    }
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

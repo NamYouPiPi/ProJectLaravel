@@ -64,50 +64,20 @@
     <div class="row g-4">
 
       <!-- Card 1 -->
-      <div class="col-sm-6 col-lg-4">
-        <div class="offer-card">
-          <img src="./final image/movies.avif" alt="Movie" class="w-100">
-          <div class="p-3">
-            <h3 class="h5 fw-semibold mb-2">Hurry up! The Undertaker is now showing!</h3>
-            <p class="small text-gray-400 mb-0">Book your tickets at any Legend location.</p>
-          </div>
-        </div>
-      </div>
+        @foreach ($promotions as $promotion) 
 
-      <!-- Card 2 -->
-      <div class="col-sm-6 col-lg-4">
-        <div class="offer-card">
-          <img src="./final image/Screenshot 2025-08-25 141659.png" alt="Membership" class="w-100">
-          <div class="p-3">
-            <h3 class="h5 fw-semibold mb-2">Unlock Incredible Perks</h3>
-            <p class="small text-gray-400 mb-0">Get discounts with Legend Membership Card!</p>
-          </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="offer-card">
+                <img src="{{ 'storage/'.$promotion->proImage }}" alt="Movie" class="w-100">
+                <div class="p-3">
+                    <h3 class="h5 fw-semibold mb-2">{{ $promotion->title }}</h3>
+                    <p class="small text-gray-400 mb-0">{{ $promotion->description }}</p>
+                </div>
+            </div>
         </div>
-      </div>
+        @endforeach
 
-      <!-- Card 3 -->
-      <div class="col-sm-6 col-lg-4">
-        <div class="offer-card">
-          <img src="./final image/Screenshot 2025-08-25 155908.png" alt="Movie" class="w-100">
-          <div class="p-3">
-            <h3 class="h5 fw-semibold mb-2">Hurry up! The Undertaker is now showing!</h3>
-            <p class="small text-gray-400 mb-0">Book your tickets at any Legend location.</p>
-          </div>
-        </div>
-      </div>
 
-      <!-- Card 4 -->
-      <div class="col-sm-6 col-lg-4">
-        <div class="offer-card">
-          <img src="./final image/1536x864_Retail_Banner_3_Snacks_no_text-min.webp" alt="Membership" class="w-100">
-          <div class="p-3">
-            <h3 class="h5 fw-semibold mb-2">Unlock Incredible Perks</h3>
-            <p class="small text-gray-400 mb-0">Get discounts with Legend Membership Card!</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- You can add more cards here following the same pattern -->
 
     </div>
   </section>

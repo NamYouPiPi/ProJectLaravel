@@ -59,9 +59,7 @@ Route::get('/theaters', function () {
     return view('Frontend.theaters');
 })->name('theaters');
 
-Route::get('/offer', function () {
-    return view('Frontend.offers');
-})->name('offer');
+Route::get('/offer', [PromotionController::class, 'Frontend'])->name('offer');
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

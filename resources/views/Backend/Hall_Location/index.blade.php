@@ -7,113 +7,7 @@
     @include('Backend.components.Toast')
     {{-- ======================= end of toast notifications ========================= --}}
 
-    <style>
-        .stats-card {
-            transition: transform 0.2s;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
 
-        /* .stats-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-                } */
-
-        .stats-number {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        /* .filter-section {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    border-radius: 15px;
-                    padding: 20px;
-                    margin-bottom: 20px;
-                } */
-
-
-
-        .status-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-        }
-
-        .status-active {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-        }
-
-        .status-inactive {
-            background: linear-gradient(45deg, #dc3545, #fd7e14);
-            color: white;
-        }
-
-        /* Make entire card clickable */
-        .location-card {
-            transition: transform 0.2s;
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-        }
-
-        .location-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Table row hover effect */
-        /* #tableContainer tbody tr {
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                }
-
-                #tableContainer tbody tr:hover {
-                    background-color: rgba(102, 126, 234, 0.1);
-                } */
-
-        /* Add ripple effect for better click feedback */
-        /* .ripple {
-                    position: relative;
-                    overflow: hidden;
-                    transform: translate3d(0, 0, 0);
-                }
-
-                .ripple:after {
-                    content: "";
-                    display: block;
-                    position: absolute;
-                    width: 100%;
-                    height: 100%;
-                    top: 0;
-                    left: 0;
-                    pointer-events: none;
-                    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
-                    background-repeat: no-repeat;
-                    background-position: 50%;
-                    transform: scale(10, 10);
-                    opacity: 0;
-                    transition: transform .5s, opacity 1s;
-                }
-
-                .ripple:active:after {
-                    transform: scale(0, 0);
-                    opacity: .3;
-                    transition: 0s;
-                }
-
-                Prevent action buttons from triggering card click */
-        /* .card-footer .btn {
-                    position: relative;
-                    z-index: 10;
-                } */
-    </style>
 
     {{-- Dashboard Cards --}}
     <div class="row mb-4">
@@ -223,7 +117,7 @@
     <div class="m-4 d-flex justify-content-between">
         {{-- ==================== begin button add new ========================--}}
         <x-create_modal dataTable="hall_location" title="Add New Location">
-            <button type="button" class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#createModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                 📍 Add New Location
             </button>
         </x-create_modal>
@@ -317,11 +211,11 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="btn-group" role="group">
             <button type="button" class="btn btn-outline-primary active" id="cardView">📱 Card View</button>
-            <button type="button" class="btn btn-outline-primary" id="tableView">📋 Table View</button>
+            {{-- <button type="button" class="btn btn-outline-primary" id="tableView">📋 Table View</button> --}}
         </div>
     </div>
 
-    {{-- Traditional Table View (initially hidden) --}}
+    {{-- Traditional Table View (initially hidden)
     <div class="card shadow d-none" id="">
         <div class="card-body">
             <table class="table table-responsive table-hover">
@@ -376,7 +270,7 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> --}}
 
 
 

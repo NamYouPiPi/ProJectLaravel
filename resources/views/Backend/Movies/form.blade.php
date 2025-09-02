@@ -112,8 +112,8 @@
                <div class="col-md-6">
                 <label for="release_date" class="form-label float-start">Release Date <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" name="release_date" id="release_date"
-                    value="{{ old('release_date', isset($movie->release_date) ? $movie->release_date : '') }}"
-                    required>
+                        value="{{ old('release_date', isset($movie->release_date) ? $movie->release_date->format('Y-m-d') : '') }}"
+                        required>
             </div>
             <div class="col-md-12">
                 <label for="description" class="form-label float-start">Description</label>

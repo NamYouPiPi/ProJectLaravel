@@ -13,9 +13,7 @@ use App\Http\Controllers\PaymentController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/payments/initiate-aba', [PaymentController::class, 'initiateAbaPayment']);
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/api/testing' , function(){
+    return response()->json(['message' => 'API is working']);
 });
 

@@ -140,9 +140,9 @@
                                 </li>
                             @endif
 
-                            @if(auth()->user()->hasPermission('view_hall_cinema'))
+                            @if(auth()->user()->hasPermission('view_hall_cinemas'))
                                 <li class="nav-item @yield('hallCinema')">
-                                    <a href="{{ route('hallCinema.index') }}" class="nav-link">
+                                    <a href="{{ route('hallCinema.index') }}" class="nav-link @yield('hallCinema')">
                                         <i class="nav-icon bi bi-circle"></i>
                                         <p>Hall Cinema</p>
                                     </a>
