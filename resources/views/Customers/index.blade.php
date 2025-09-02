@@ -7,42 +7,14 @@
     @include('Backend.components.Toast')
     {{-- ======================= end of toast notifications ========================= --}}
 
-    {{-- Dashboard Cards --}}
-{{--    <div class="row mb-4">--}}
-{{--        <div class="col-md-4">--}}
-{{--            <div class="card stats-card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">--}}
-{{--                <div class="card-body text-center">--}}
-{{--                    <h5 class="card-title">Total Genres</h5>--}}
-{{--                    <div class="stats-number">{{  }}</div>--}}
-{{--                    <p class="card-text">All registered genres</p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="col-md-4">--}}
-{{--            <div class="card stats-card text-white" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">--}}
-{{--                <div class="card-body text-center">--}}
-{{--                    <h5 class="card-title">Active Genres</h5>--}}
-{{--                    <div class="stats-number">{{  }}</div>--}}
-{{--                    <p class="card-text">Currently active</p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="col-md-4">--}}
-{{--            <div class="card stats-card text-white" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);">--}}
-{{--                <div class="card-body text-center">--}}
-{{--                    <h5 class="card-title">Inactive Genres</h5>--}}
-{{--                    <div class="stats-number">{{  }}</div>--}}
-{{--                    <p class="card-text">Currently inactive</p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+
 
     {{-- Filter Section --}}
-    <div class="filter-section">
+    <div class="p-5">
+        <h2 class="float-start">Customer Management</h2>
              {{-- ==================== begin button add new ========================--}}
         <x-create_modal dataTable="customer" title="Add New Customer">
-            <button type="button" class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#createModal">
+            <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#createModal">
                 ➕ Add New Genre
             </button>
         </x-create_modal>
@@ -58,7 +30,7 @@
 
 
 
-            <div class="card shadow">
+            <div class="card shadow ">
                 <div class="card-body">
                     <table id="example" class="display table table-responsive table-hover" style="width:100%">
                         <thead class="table-dark">

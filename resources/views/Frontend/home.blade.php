@@ -54,21 +54,19 @@
     @endphp
 
     <!-- Search Bar -->
-    <form method="get" action="" class="mb-4 d-flex justify-content-center flex-wrap gap-2">
+    {{-- <form method="get" action="" class="mb-4 d-flex justify-content-center flex-wrap gap-2">
         <input type="hidden" name="date" value="{{ $selectedDate }}">
         <input type="text" name="search" value="{{ $search }}" class="form-control w-auto" placeholder="Search movies..."
             style="min-width:200px;">
         <button type="submit" class="btn btn-danger">Search</button>
-    </form>
+    </form> --}}
 
     <!-- Date Picker Bar -->
-    <div class="d-flex gap-3 justify-content-center mb-5 flex-wrap">
+    <div class="d-flex gap-3 justify-content-center mb-5 mt-5 flex-wrap">
         @foreach($days as $day)
-            <form method="get" action="" class="m-0 p-0">
+            <form method="get" action="" class="m-0">
                 <input type="hidden" name="date" value="{{ $day->toDateString() }}">
-                @if($search)
-                    <input type="hidden" name="search" value="{{ $search }}">
-                @endif
+
                 <button type="submit" class="bg-black text-white border rounded-4 px-4 py-3 text-center" style="border: 2px solid {{ $day->toDateString() === $selectedDate ? '#e50914' : '#444' }};
                                    box-shadow: {{ $day->toDateString() === $selectedDate ? '0 0 10px #e50914' : 'none' }};
                                    min-width: 120px;">
@@ -87,13 +85,13 @@
     </div>
 
     <!-- Movies Section -->
-    <section id="movies" class="py-4 py-md-5">
+    <section id="movies" class=" py-md-5">
         <div class="container">
             @if($filteredMovies->isEmpty())
                 <div class="alert alert-warning text-center">No movies found for this date{{ $search ? ' and search' : '' }}.
                 </div>
             @endif
-            <div class="row g-3 g-md-4">
+            <div class="row">
                 @foreach($filteredMovies as $movie)
                     <div class="col-6 col-sm-4 col-md-3 col-lg-3">
                         <div class="movie-card h-100">
@@ -104,9 +102,8 @@
                                 </div>
                                 <div class="movie-info p-2 p-md-3">
                                     <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap">
-                                        <small class="text-muted movie-date">{{ $movie->release_date }}</small>
-                                        <span
-                                            class="badge bg-secondary movie-rating">{{ $movie->classification->code ?? '' }}</span>
+                                        <small class="text-white movie-date">{{ $movie->release_date->format('M,d, Y') }}</small>
+                                        <span class="badge bg-secondary movie-rating">{{ $movie->classification->code ?? '' }}</span>
                                     </div>
                                     <h6 class="movie-title text-light mb-0">{{ $movie->title }}</h6>
                                 </div>

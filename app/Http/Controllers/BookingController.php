@@ -117,7 +117,7 @@ public function paymentCancel(Request $request, Booking $booking)
         ]);
 
         $data = $response->json();
-        dd($data);
+        // dd($data);
     $booking->update(['tran_id' => $tran_id]);
     // Pass QR data to the view
     return view('Frontend.Booking.khqr', [

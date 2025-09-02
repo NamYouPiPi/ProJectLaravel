@@ -253,10 +253,20 @@
     <!-- JavaScript for Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Pass PHP data to JS
+        const revenueChartData = @json($revenueChartData ?? [
+            'labels' => [],
+            'data' => [],
+        ]);
+        const topMoviesData = @json($topMoviesData ?? [
+            'labels' => [],
+            'data' => [],
+        ]);
+
         document.addEventListener('DOMContentLoaded', function () {
-            // Sample data - this would come from your backend in a real application
+            // Use real data for revenue chart
             const revenueData = {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                labels: revenueChartData.labels,
                 datasets: [{
                     label: "Revenue",
                     lineTension: 0.3,
@@ -270,7 +280,7 @@
                     pointHoverBorderColor: "rgba(78, 115, 223, 1)",
                     pointHitRadius: 10,
                     pointBorderWidth: 2,
-                    data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
+                    data: revenueChartData.data,
                 }],
             };
 
@@ -351,11 +361,11 @@
                 }
             });
 
-            // Pie Chart for Top Movies
+            // Use real data for top movies pie chart
             const movieData = {
-                labels: ["Avengers: Endgame", "Spider-Man: No Way Home", "Black Widow", "F9: The Fast Saga", "Others"],
+                labels: topMoviesData.labels,
                 datasets: [{
-                    data: [30, 25, 20, 15, 10],
+                    data: topMoviesData.data,
                     backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
                     hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be2617'],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -409,71 +419,9 @@
 
         // Function to update chart based on time period
         function updateChart(period) {
-            // This would fetch data from your backend in a real application
-            let newData;
-
-            if (period === 'weekly') {
-                newData = {
-                    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                    datasets: [{
-                        label: "Revenue",
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(78, 115, 223, 1)",
-                        pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHoverRadius: 3,
-                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHitRadius: 10,
-                        pointBorderWidth: 2,
-                        data: [1000, 2000, 1500, 3000, 5000, 7000, 6000],
-                    }],
-                };
-            } else if (period === 'yearly') {
-                newData = {
-                    labels: ["2018", "2019", "2020", "2021", "2022", "2023"],
-                    datasets: [{
-                        label: "Revenue",
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(78, 115, 223, 1)",
-                        pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHoverRadius: 3,
-                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHitRadius: 10,
-                        pointBorderWidth: 2,
-                        data: [120000, 150000, 100000, 180000, 220000, 250000],
-                    }],
-                };
-            } else {
-                // Monthly data (default)
-                newData = {
-                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                    datasets: [{
-                        label: "Revenue",
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(78, 115, 223, 1)",
-                        pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHoverRadius: 3,
-                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHitRadius: 10,
-                        pointBorderWidth: 2,
-                        data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
-                    }],
-                };
-            }
-
-            window.revenueChart.data = newData;
-            window.revenueChart.update();
+            // TODO: Implement AJAX call to fetch real data for the selected period
+            // For now, just reload the page or use a similar approach to update data
         }
     </script>
 @endsection
+              

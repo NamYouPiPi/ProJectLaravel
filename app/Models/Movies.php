@@ -23,7 +23,10 @@ class Movies extends Model
         'genre_id',
         'supplier_id'
     ];
-
+protected $casts = [
+    'release_date' => 'datetime',
+    // ...your other casts
+];
 
 
 
