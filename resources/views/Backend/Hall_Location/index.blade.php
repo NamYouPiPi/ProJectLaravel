@@ -115,6 +115,8 @@
     </div>
 
     <div class="m-4 d-flex justify-content-between">
+         @if(auth()->user()->hasPermission('create_location'))
+
         {{-- ==================== begin button add new ========================--}}
         <x-create_modal dataTable="hall_location" title="Add New Location">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
@@ -122,7 +124,7 @@
             </button>
         </x-create_modal>
         {{--================================= end of button add new ==========================--}}
-
+        @endif
         {{-- Quick Actions --}}
         <div class="d-flex gap-2">
             <button class="btn btn-info btn-sm" id="analyticsBtn">📊 Analytics</button>
@@ -137,8 +139,13 @@
     {{-- Card-based layout for better visual presentation --}}
     <div class="row" id="cardViewContainer">
         @forelse($hallocation as $hall)
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card location-card h-100 ripple" data-id="{{ $hall->id }}">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card location-card h-100 ripple" data-id="{{ $hall->id }}">
+
+                        <div class="card-img-top text-center bg-light" style="height:180px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                <img src="{{ asset('storage/' . $hall->image) }}" alt="{{ $hall->name }}" style="max-height:170px; max-width:100%; object-fit:cover;">
+
+                        </div>
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h6 class="mb-0 fw-bold">{{ $hall->name }}</h6>
                         @if($hall->status === 'active')
@@ -178,14 +185,19 @@
                     <div class="card-footer d-flex gap-2 justify-content-center">
                         <button class="btn btn-sm btn-outline-info location-details-btn"
                             data-id="{{ $hall->id }}">detail</button>
-                        <x-update-modal dataTable="hall_location" title="Edit Location">
+                                            @if(auth()->user()->hasPermission('edit_hallLocation'))
+
+                            <x-update-modal dataTable="hall_location" title="Edit Location">
                             <button type="button" class="btn btn-sm btn-outline-primary btn_update_hall"
                                 data-id="{{ $hall->id}}" data-bs-toggle="modal" data-bs-target="#updateModal">edit</button>
                         </x-update-modal>
+                        @endif
+                        @if(auth()->user()->hasPermission('delete_halllocation'))
                         <button type="button" class="btn btn-sm btn-outline-danger"
                             onclick="event.stopPropagation(); confirmDelete({{ $hall->id }}, 'hall_locations')">
                             del
                         </button>
+                        @endif
                     </div>
                 </div>
             </div>

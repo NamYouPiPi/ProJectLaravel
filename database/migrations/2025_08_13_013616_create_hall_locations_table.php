@@ -22,6 +22,7 @@ return new class extends Migration
            $table->string('postal_code')->nullable()->comment('Postal code of the hall location');
            $table->string('country')->nullable()->comment('Country of the hall location');
            $table->string('phone')->nullable()->comment('Phone number of the hall location');
+           $table->text('image')->nullable();
            $table->enum('status', ['active', 'inactive'])->default('active')->comment('Status of the hall location');
            $table->timestamps();
         });

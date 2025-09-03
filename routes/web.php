@@ -57,15 +57,13 @@ Route::resource('carousels' , CarouselController::class);
 
 // end of google login and  google callback routes
 
-Route::get('/theaters', function () {
-    return view('Frontend.theaters');
-})->name('theaters');
+Route::get('/theaters', [HallLocationController::class, 'Theater'])->name('theaters');
 
 Route::get('/offer', [PromotionController::class, 'Frontend'])->name('offer');
 Route::get('/carousel', [CarouselController::class, 'FrontendCarousel'])->name('carousel');
 // Authentication Routes
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [LoginController::class, 'login']);
+Route::get('/login', [LoginController::class, 'showLoginForm']);
+Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // Registration Routes

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hall_cinema;
 use App\Models\Hall_location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class HallLocationController extends Controller
 {
@@ -103,7 +104,8 @@ class HallLocationController extends Controller
     public function store(Request $request)
     {
         //
-        $data = $request->validate([
+        // dd($request->all());
+         $request->validate([
             'name'       => 'required|string|max:255',
             'address'    => 'required|string|max:255',
             'phone'      => 'required|string|max:255',
@@ -112,8 +114,24 @@ class HallLocationController extends Controller
             'status'     => 'required|in:active,inactive',
             'postal_code'=> 'nullable|string|max:255',
             'state'      => 'nullable|string|max:255',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        Hall_location::create($data);
+        $imagePath =null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('halllocations', 'public');
+        }
+
+        Hall_location::create([
+            'name'       => $request->name,
+            'address'    => $request->address,
+            'phone'      => $request->phone,
+            'city'       => $request->city,
+            'country'    => $request->country,
+            'status'     => $request->status,
+            'postal_code'=> $request->postal_code,
+            'state'      => $request->state,
+            'image'      => $imagePath,
+        ]);
 
         return redirect()->route('hall_locations.index')->with('success', 'Hall_location created successfully!');
     }
@@ -153,7 +171,7 @@ class HallLocationController extends Controller
     {
         //
         // dd($request->all());
-         $data = $request->validate([
+          $request->validate([
             'name'       => 'required|string|max:255',
             'address'    => 'required|string|max:255',
             'phone'      => 'required|string|max:255',
@@ -164,7 +182,25 @@ class HallLocationController extends Controller
             'state'      => 'nullable|string|max:255',
         ]);
 
-        $hall_location->update($data);
+        $imagePath =$hall_location->image;
+        if ($request->hasFile('image')) {
+              if($hall_location->image){
+                   Storage::disk('public')->delete($hall_location->image);
+               }
+            $imagePath = $request->file('image')->store('halllocations', 'public');
+        }
+
+        $hall_location->update([
+            'name'       => $request->name,
+            'address'    => $request->address,
+            'phone'      => $request->phone,
+            'city'       => $request->city,
+            'country'    => $request->country,
+            'status'     => $request->status,
+            'postal_code'=> $request->postal_code,
+            'state'      => $request->state,
+            'image'      => $imagePath,
+        ]);
 
         // Return JSON response for AJAX requests
         if ($request->expectsJson()) {
@@ -176,6 +212,14 @@ class HallLocationController extends Controller
         }
 
         return redirect()->route('hall_locations.index')->with('success', 'Hall_location updated successfully!');
+    }
+
+
+    public function Theater()
+    {
+        //
+        $theaters  = Hall_location::where('status' , 'active')->get();
+        return view('frontend.theaters' , compact('theaters'));
     }
 
     /**

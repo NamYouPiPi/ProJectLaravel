@@ -20,9 +20,8 @@
     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
       @if(auth()->user() && auth()->user()->profile_image)
         <img src="{{ asset('storage/' . auth()->user()->profile_image) }}" class="user-image rounded-circle shadow" alt="User Image" width="32" height="32" />
-      @else
-        <img src="{{ asset('assets/image/default-profile.png') }}" class="user-image rounded-circle shadow" alt="User Image" width="32" height="32" />
       @endif
+
       <span class="d-none d-md-inline">
         {{ auth()->user()->name ?? 'Guest' }}
         @if(auth()->user() && auth()->user()->role)

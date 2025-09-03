@@ -80,6 +80,16 @@
                    required >{{ old('address',$hall_location->address ?? '') }}</textarea>
         </div>
     </div>
+
+    <div class="md-3">
+        <div class="col-md-12">
+            <label for="image" class="form-label float-start">Image</label>
+            <input type="file"
+                   class="form-control"
+                   id="image"
+                   name="image" accept="image/*">
+    </div>
+    </div>
 </div>
 
 {{---------------- start cart footer ----------------------}}

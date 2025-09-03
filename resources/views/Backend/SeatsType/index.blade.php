@@ -9,22 +9,21 @@
 
     {{--================= end of add title and active ==============--}}
 
-
-    {{-- Alert Container for AJAX responses --}}
-    <div id="alert-container"></div>
-
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
-    <x-create_modal dataTable="seatsType" title="Add New seatsType" class="">
-        <button type="button" class="btn btn-outline-success m-3 float-end" data-bs-toggle="modal" data-bs-target="#createModal">
-            Add New Seat Type
-        </button>
-    </x-create_modal>
+    <div class="d-flex justify-content-between align-items-center p-2">
+        <h4 class="m-3">Seat Types List</h4>
+        <x-create_modal dataTable="seatsType" title="Add New seatsType" class="">
+            <button type="button" class="btn btn-primary m-3 float-end" data-bs-toggle="modal" data-bs-target="#createModal">
+                Add New Seat Type
+            </button>
+        </x-create_modal>
+    </div>
 
 
     {{-- ================ Table for Suppliers detail all ===================== --}}
-    <div class="table-responsive">
-        <table class="table table-hover " id="suppliersTable">
+    <div class="table-responsive card">
+        <table class="table table-hover p-3 " id="suppliersTable">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -51,15 +50,17 @@
                         {{-- <td>{{ $seat_type->updated_at->format('Y-m-d') }}</td> --}}
                         <td class="d-flex gap-2">
                             <x-update-modal dataTable="SeatsType" title="update SeatsType">
-                                <button type="button" class="btn btn-outline-primary  btnUpdateSeats"
+                                <button type="button" class="btn btn-outline-primary  btn-sm btnUpdateSeats"
                                     data-id="{{ $seat_type->id }}">
-                                    <i class="bi bi-pencil-square"></i>
+                                    Edit
+
                                 </button>
                             </x-update-modal>
 
-                            <button type="button" class="btn btn-outline-danger"
+                            <button type="button" class="btn btn-outline-danger btn-sm"
                                 onclick="confirmDelete({{ $seat_type->id }}, 'seatTypes')">
-                                <i class="bi bi-trash3"></i>
+                                {{-- <i class="bi bi-trash3"></i> --}}
+                                Delete
                             </button>
 
                     </tr>

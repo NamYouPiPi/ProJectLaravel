@@ -23,8 +23,9 @@ class User extends Authenticatable
         'password',
         'google_id',
         'avatar',
-        'role_id'
-        ,'status'
+        'role_id',
+        'status',
+     
     ];
 
     /**
@@ -49,6 +50,11 @@ class User extends Authenticatable
      public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function userProfile()
+    {
+        return $this->hasOne(UserProfile::class);
     }
 
     public function hasPermission($permissionName)

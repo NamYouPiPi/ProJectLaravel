@@ -8,15 +8,17 @@
     @include('backend.components.toast')
 
     {{-- ======================= end of check messange ========================= --}}
-
-    <x-create_modal dataTable="seats" title="Add New Seats">
-        <button type="button" class="btn btn-outline-success m-3 float-end" data-bs-toggle="modal" data-bs-target="#createModal">
-            <i class="fas fa-plus"></i> Add Seat
-        </button>
-    </x-create_modal>
+    <div class="d-flex justify-content-between align-items-center p-2">
+        <h4 class="m-3">Seats List</h4>
+        <x-create_modal dataTable="seats" title="Add New Seats">
+            <button type="button" class="btn btn-outline-success m-3 float-end" data-bs-toggle="modal" data-bs-target="#createModal">
+                <i class="fas fa-plus"></i> Add Seat
+            </button>
+        </x-create_modal>
+    </div>
 
     {{-- Table Section --}}
-    <div class="card">
+    <div class="card p-2">
         <div class="card-body m-2">
             <table id="example" class="display table table-responsive table-hover" style="width:100% ">
                 <thead>

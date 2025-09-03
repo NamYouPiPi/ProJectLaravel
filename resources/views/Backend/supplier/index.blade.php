@@ -151,8 +151,6 @@
     {{--================= end of add title and active ==============--}}
 
 
-    {{-- Alert Container for AJAX responses --}}
-    <div id="alert-container"></div>
 
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
@@ -260,8 +258,8 @@
 
 
     {{-- ================ Table for Suppliers detail all ===================== --}}
-    <div class="table-responsive">
-        <table class="table table-hover " id="suppliersTable">
+    <div class="table-responsive card px-5">
+        <table class="table table-hover p-3 " id="suppliersTable">
             <thead>
                 <tr>
                     {{-- <th>ID</th>--}}
@@ -279,7 +277,7 @@
             </thead>
             <tbody>
                 @foreach($suppliers as $supplier)
-                            <tr id="supplier-row{{ $supplier->id }}">
+                            <tr class="text-muted" id="supplier-row{{ $supplier->id }}">
                                 {{-- <td>{{ $supplier->id }}</td>--}}
                                 <td>{{ $supplier->name }}</td>
                                 <td>{{ $supplier->email }}</td>
@@ -333,11 +331,11 @@
         {{ $suppliers->appends(request()->query())->links() }}
     </div>
 
-    <script src="{{ asset('js/supplier-filter.js') }}"></script>
 
-    </div>
-    {{-- ================ end of pagination ================--}}
+</div>
 
+{{-- ================ end of pagination ================--}}
+<script src="{{ asset('js/supplier-filter.js') }}"></script>
     <Script src="{{ asset('js/ajax.js')}}"></Script>
     <script>
         $(document).ready(function () {

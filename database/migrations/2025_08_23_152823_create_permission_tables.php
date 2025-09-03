@@ -219,14 +219,15 @@ return new class extends Migration
             ])
             ->pluck('id');
 
-        // Employee permissions
+        // Employee permissions (added view_dashboard)
         $employeePermissionIds = DB::table('permissions')
             ->whereIn('name', [
                 'view_movies', 'edit_movies', 'search_movies', 'filter_movies',
                 'view_inventory', 'edit_inventory',
                 'view_showtimes', 'edit_showtimes',
                 'view_bookings', 'create_bookings', 'edit_bookings',
-                'view_payments', 'process_payments'
+                'view_payments', 'process_payments',
+                'view_dashboard'
             ])
             ->pluck('id');
 

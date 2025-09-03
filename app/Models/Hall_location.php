@@ -17,6 +17,8 @@ class Hall_location extends Model
         'country',
         'phone',
         'status',
+        
+'image',
     ];
     public function Hall_cinema(){
         return $this->hasMany(Hall_cinema::class);

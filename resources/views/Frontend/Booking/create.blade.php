@@ -75,6 +75,10 @@
                                     'E' => $GroupE ?? [],
                                     'F' => $GroupF ?? [],
                                     'G' => $GroupG ?? [],
+                                    'H' => $GroupH ?? [],
+                                    'I' => $GroupI ?? [],
+                                    'J' => $GroupJ ?? [],
+
                                 ];
                             @endphp
 

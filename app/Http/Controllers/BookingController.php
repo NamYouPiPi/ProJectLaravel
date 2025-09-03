@@ -95,26 +95,35 @@ public function paymentCancel(Request $request, Booking $booking)
         }
         $booking->seats()->attach($pivotData);
 
-        $request_time = now()->format('YmdHis');
-        $merchant_id = config('aba.merchant_id');
-        $tran_id = (string) $booking->id . date('YmdHis');
-        $amount = number_format($total, 2, '.', '');
-        $currency = 'USD';
+      $request_time = now()->format('YmdHis');
+    $merchant_id = config('aba.merchant_id');
+    $tran_id = (string) $booking->id; // keep it stable and stored
+    $amount = number_format($total, 2, '.', '');
+    $currency = 'USD';
+    // $return_param = "51275117";
+    // Build items JSON
+    $items = json_encode($seats->map(fn($seat) => [
+        'name' => 'Seat ' . $seat->seat_number,
+        'quantity' => 1,
+        'price' => number_format($seat->seatType->price, 2, '.', ''),
+    ]));
 
-        // Hash string must include amount and currency in the correct order
-        $b4hash = $request_time . $merchant_id . $tran_id . $amount . $currency;
-        $hash = base64_encode(hash_hmac('sha512', $b4hash, config('aba.api_key'), true));
+// Hash string (MUST match ABA docs order)
+$b4hash = $request_time . $merchant_id . $tran_id  . $amount . $items . '' . $currency;
 
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-        ])->post(config('aba.api_url'), [
-            'req_time' => $request_time,
-            'merchant_id' => $merchant_id,
-            'tran_id' => $tran_id,
-            'amount' => $amount,
-            'currency' => $currency,
-            'hash' => $hash,
-        ]);
+$hash = base64_encode(hash_hmac('sha512', $b4hash, config('aba.api_key'), true));
+// dd($b4hash, $hash);
+$response = Http::withHeaders([
+    'Content-Type' => 'application/json',
+])->post(config('aba.api_url'), [
+    'req_time'    => $request_time,
+    'merchant_id' => $merchant_id,
+    'tran_id'     => $tran_id,
+    'amount'      => $amount,
+    'currency'    => $currency,
+    'items'       => $items,
+    'hash'        => $hash,
+]);
 
         $data = $response->json();
         // dd($data);
@@ -165,6 +174,22 @@ public function createForShowtime($showtimeId)
         $GroupH = Seats::where('seat_row', 'H')->get();
         $GroupI = Seats::where('seat_row', 'I')->get();
         $GroupJ = Seats::where('seat_row', 'J')->get();
+        $GroupK = Seats::where('seat_row', 'K')->get();
+        $GroupL = Seats::where('seat_row', 'L')->get();
+        $GroupM = Seats::where('seat_row', 'M')->get();
+        $GroupN = Seats::where('seat_row', 'N')->get();
+        $GroupO = Seats::where('seat_row', 'O')->get();
+        $GroupP = Seats::where('seat_row', 'P')->get();
+        $GroupQ = Seats::where('seat_row', 'Q')->get();
+        $GroupR = Seats::where('seat_row', 'R')->get();
+        $GroupS = Seats::where('seat_row', 'S')->get();
+        $GroupT = Seats::where('seat_row', 'T')->get();
+        $GroupU = Seats::where('seat_row', 'U')->get();
+        $GroupV = Seats::where('seat_row', 'V')->get();
+        $GroupW = Seats::where('seat_row', 'W')->get();
+        $GroupX = Seats::where('seat_row', 'X')->get();
+        $GroupY = Seats::where('seat_row', 'Y')->get();
+        $GroupZ = Seats::where('seat_row', 'Z')->get();
 
 
 
@@ -186,6 +211,22 @@ public function createForShowtime($showtimeId)
         'GroupH' => $GroupH,
         'GroupI' => $GroupI,
         'GroupJ' => $GroupJ,
+        'GroupK' => $GroupK,
+        'GroupL' => $GroupL,
+        'GroupM' => $GroupM,
+        'GroupN' => $GroupN,
+        'GroupO' => $GroupO,
+        'GroupP' => $GroupP,
+        'GroupQ' => $GroupQ,
+        'GroupR' => $GroupR,
+        'GroupS' => $GroupS,
+        'GroupT' => $GroupT,
+        'GroupU' => $GroupU,
+        'GroupV' => $GroupV,
+        'GroupW' => $GroupW,
+        'GroupX' => $GroupX,
+        'GroupY' => $GroupY,
+        'GroupZ' => $GroupZ,
     ]);
 }
 

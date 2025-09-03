@@ -82,6 +82,8 @@
 
     {{-- Filter Section --}}
     <div class="filter-section">
+
+        @if(auth()->user()->hasPermission('create_genres'))
              {{-- ==================== begin button add new ========================--}}
         <x-create_modal dataTable="genre" title="Add New Genre">
             <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#createModal">
@@ -89,17 +91,14 @@
             </button>
         </x-create_modal>
         {{--================================= end of button add new ==========================--}}
+        @endif
 
-
-            <div>
-
-
-
-                <form method="GET" action="{{ route('genre.index') }}" id="filterForm">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label for="search" class="form-label">Search by Name</label>
-                            <input type="text" class="form-control" id="search" name="search"
+        <div class="filter-container">
+            <form method="GET" action="{{ route('genre.index') }}" id="filterForm">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">Search by Name</label>
+                        <input type="text" class="form-control" id="search" name="search"
                             value="{{ request('search') }}" placeholder="Search main or sub genre...">
                         </div>
                         <div class="col-md-3">
@@ -130,7 +129,7 @@
                         </div>
                     </div>
                 </div>
-            </form>
+                </form>
         </div>
     </div>
 
@@ -166,19 +165,21 @@
                                 <td class="text-muted">{{ $genre->created_at->format("d/m/Y") }}</td>
                                 {{-- <td>{{ $genre->updated_at->format("d/m/Y") }}</td> --}}
                                 <td class="d-flex gap-2 justify-content-center">
+                                                    @if(auth()->user()->hasPermission('edit_genres'))
+
                                     <x-update-modal dataTable="genre" title="Edit Genre">
                                         <button type="button" class="btn btn-sm btn-outline-primary btn_update_genre" data-id="{{ $genre->id}}"
                                                 data-bs-toggle="modal" data-bs-target="#updateModal">
                                          Edit
                                         </button>
                                     </x-update-modal>
-
+                                    @endif
+                                    @if(auth()->user()->hasPermission('delete_genres'))
                                    <button type="button" class="btn btn-outline-danger btn-sm"
                                     onclick="confirmDelete({{ $genre->id }}, 'genre')">
-                                    {{-- <i class="bi bi-trash3"></i>
-                                     --}}
                                      del
-                                </button>
+                                    </button>
+                                @endif
                                 </td>
                             </tr>
                         @empty

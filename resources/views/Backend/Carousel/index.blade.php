@@ -6,6 +6,7 @@
 
     <div class="d-flex justify-content-between p-3">
          <h1 class="h3 mb-4">Manage Carousels</h1>
+         
     <x-create_modal dataTable="carousel" title="Add New Carousel" class="" >
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
             Add New Carousel

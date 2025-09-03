@@ -111,7 +111,7 @@
                                 </li>
                             @endif
 
-                            @if(auth()->user()->hasPermission('view_genre'))
+                            @if(auth()->user()->hasPermission('view_genres'))
                                 <li class="nav-item">
                                     <a href="{{ route('genre.index') }}" class="nav-link @yield('genre')">
                                         <i class="nav-icon bi bi-circle"></i>

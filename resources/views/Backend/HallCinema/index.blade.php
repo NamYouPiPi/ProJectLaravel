@@ -6,7 +6,7 @@
 {{-- ================== Toast notifications =======================--}}
 @include('Backend.components.Toast')
 {{-- ======================= end of toast notifications ========================= --}}
-
+{{--
 <style>
     .stats-card {
         transition: transform 0.2s;
@@ -70,7 +70,7 @@
     .type-premium { background-color: #ffeaa7; color: #d63031; }
     .type-outdoor { background-color: #d1ecf1; color: #17a2b8; }
     .type-private { background-color: #f8d7da; color: #721c24; }
-</style>
+</style> --}}
 
 {{-- Dashboard Cards --}}
 <div class="row mb-4">
@@ -112,9 +112,19 @@
     </div>
 </div>
 
+<div class="d-flex justify-content-between align-items-center mb-4 p-3">
+    <h3>Management Hall Cinema</h3>
+     {{-- ==================== begin button add new ========================--}}
+        <x-create_modal dataTable="hall_cinema" title="Add New Hall Cinema" :hall_location="$hall_location">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                🎬 Add New Cinema Hall
+            </button>
+        </x-create_modal>
+        {{--================================= end of button add new ==========================--}}
+</div>
 {{-- Filter Section --}}
-<div class="filter-section">
-    <h5 class="mb-3">🎬 Search & Filter Cinema Halls</h5>
+<div class="p-3">
+    {{-- <h5 class="mb-3">🎬 Search & Filter Cinema Halls</h5> --}}
     <form method="GET" action="{{ route('hallCinema.index') }}" id="filterForm">
         <div class="row g-3">
             <div class="col-md-3">
@@ -152,22 +162,10 @@
             </div>
         </div>
     </form>
+
 </div>
 
-    <div class="m-4 d-flex justify-content-between">
-        {{-- ==================== begin button add new ========================--}}
-        <x-create_modal dataTable="hall_cinema" title="Add New Hall Cinema" :hall_location="$hall_location">
-            <button type="button" class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#createModal">
-                🎬 Add New Cinema Hall
-            </button>
-        </x-create_modal>
-        {{--================================= end of button add new ==========================--}}
 
-        {{-- Results info --}}
-        <div class="text-muted">
-            Showing {{ $hall_cinema->firstItem() ?? 0 }} to {{ $hall_cinema->lastItem() ?? 0 }} of {{ $hall_cinema->total() }} results
-        </div>
-    </div>
 
     <div class="card shadow">
         <div class="card-body">
@@ -204,9 +202,9 @@
                             </td>
                             <td>
                                 @if($hall_cinemas->status == 'active')
-                                    <span class="status-badge status-active">✓ Active</span>
+                                    <span class="badge bg-success">✓ Active</span>
                                 @else
-                                    <span class="status-badge status-inactive">✗ Inactive</span>
+                                    <span class="badge bg-danger">✗ Inactive</span>
                                 @endif
                             </td>
                             <td>{{ $hall_cinemas->created_at->format("d/m/Y") }}</td>

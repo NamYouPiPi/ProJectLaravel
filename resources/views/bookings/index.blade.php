@@ -83,14 +83,11 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     @if($booking->status != 'cancelled')
-                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Are you sure you want to cancel this booking?')">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                            onclick="confirmDelete({{ $booking->id }}, 'bookings')">
+                                            {{-- <i class="bi bi-trash3"></i> --}}
+                                            Delete
+                                        </button>
                                     @endif
                                 </div>
                             </td>
@@ -111,4 +108,15 @@
 
         {{ $bookings->appends(request()->query())->links() }}
     </div>
-@endsection
+   <Script src="{{ asset('js/ajax.js')}}"></Script>
+    <script>
+
+
+        $(document).ready(function () {
+
+            EditById($('.btnUpdateSeats'), 'seatTypes');
+        });
+    </script>
+
+    @endsection
+

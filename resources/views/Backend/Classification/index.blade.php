@@ -12,11 +12,15 @@
 
     <div class="m-4 d-flex justify-content-between">
         {{-- ==================== begin button add new ========================--}}
-        <x-create_modal dataTable="classification" title="Add New classification">
-            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#createModal">
-                <i class="bi bi-plus-lg"></i> Add New classification
-            </button>
-        </x-create_modal>
+        @if(auth()->user()->hasPermission('create_classification'))
+
+            <x-create_modal dataTable="classification" title="Add New classification">
+                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <i class="bi bi-plus-lg"></i> Add New classification
+                </button>
+            </x-create_modal>
+        @endif
+
         {{--================================= end of button add new ==========================--}}
 
 
@@ -34,32 +38,39 @@
                 <th>Description</th>
                 <th>Create_at</th>
                 {{-- <th>Update_at</th> --}}
-                <th>Action</th>
+                @if(auth()->user()->hasPermission('edit_classification'))
+                    <th>Action</th>
+                @endif
             </tr>
         </thead>
         <tbody>
             @foreach($classifications as $classification)
                 <tr class="text-center" id="classification-row{{$classification->id}}">
                     {{-- <td>{{$classification->id}}</td> --}}
-                    <td ><span class="badge bg-secondary">{{$classification->code}}</span></td>
+                    <td><span class="badge bg-secondary">{{$classification->code}}</span></td>
                     <td class="text-muted">{{$classification->name}}</td>
                     <td class="text-muted">{{$classification->age_limit}}</td>
                     <td><span class="badge bg-info"> {{$classification->country}}</span></td>
-                    <td ><span class="badge bg-primary">{{$classification->status}}</span></td>
+                    <td><span class="badge bg-primary">{{$classification->status}}</span></td>
                     <td class="text-muted">{{$classification->description}}</td>
-                    <td >{{ $classification->created_at->format("Y/m/d") }}</td>
+                    <td>{{ $classification->created_at->format("Y/m/d") }}</td>
                     {{-- <td class="classification-updated">{{ $classification->updated_at->format("Y/m/d") }}</td> --}}
                     <td class="d-flex gap-1">
-                        <x-update-modal dataTable="classification" title="Edit classification">
-                            <button type="button" class="btn btn-outline-primary btn-sm btn_edit_clss" data-id="{{$classification->id}}"
-                                data-bs-toggle="modal" data-bs-target="#updateModal">edit
-                            </button>
-                        </x-update-modal>
-
-                        <button type="button" class="btn btn-outline-danger btn-sm"
-                                    onclick="confirmDelete({{ $classification->id }}, 'classification')">
-                                   del
+                        @if(auth()->user()->hasPermission('edit_classification'))
+                            <x-update-modal dataTable="classification" title="Edit classification">
+                                <button type="button" class="btn btn-outline-primary btn-sm btn_edit_clss"
+                                    data-id="{{$classification->id}}" data-bs-toggle="modal" data-bs-target="#updateModal">edit
                                 </button>
+                            </x-update-modal>
+                        @endif
+
+                        @if (auth()->user()->hasPermission('delete_classification'))
+
+                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                onclick="confirmDelete({{ $classification->id }}, 'classification')">
+                                del
+                            </button>
+                        @endif
 
                     </td>
                 </tr>
@@ -70,13 +81,14 @@
 
 
     {{-- ========== paginate ----------------}}
- <div class="d-flex justify-content-between align-items-center m-4">
-    {{-- Results info --}}
+    <div class="d-flex justify-content-between align-items-center m-4">
+        {{-- Results info --}}
         <div class="text-muted">
-            Showing {{ $classifications->firstItem() ?? 0 }} to {{ $classifications->lastItem() ?? 0 }} of {{ $classifications->total() }} results
+            Showing {{ $classifications->firstItem() ?? 0 }} to {{ $classifications->lastItem() ?? 0 }} of
+            {{ $classifications->total() }} results
         </div>
 
-            {{ $classifications->appends(request()->query())->links() }}
+        {{ $classifications->appends(request()->query())->links() }}
 
     </div>
     {{-- ---------- end of paginate ------------}}

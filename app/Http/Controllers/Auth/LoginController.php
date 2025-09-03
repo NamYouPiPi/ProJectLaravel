@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -37,4 +42,32 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+ public function login(Request $request)
+{
+    // Validate request
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:5'
+    ]);
+
+    // Attempt to authenticate the user
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
+        $request->session()->regenerate();
+            return redirect()->intended('dashboard');
+    }
+    else{
+            $customer = Customer::where('email', $request->email)->first();
+        if ($customer && Hash::check($request->password, $customer->password)) {
+            Auth::login($customer);
+            $request->session()->regenerate();
+            return redirect()->intended('/');
+        }
+    }
+
+    // Authentication failed
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ])->withInput($request->except('password'));
+}
 }
