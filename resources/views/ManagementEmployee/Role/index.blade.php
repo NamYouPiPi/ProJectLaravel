@@ -4,10 +4,10 @@
 @section('content')
     <div class="container-fluid py-4">
         <div class="card">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Manage Roles</h4>
+            <div class="card-header">
+                <h4 class="mb-0 float-start">Manage Roles</h4>
                 <x-create_modal dataTable="roles" title="Add New Roles">
-                    <button type="button" class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <button type="button" class="btn float-end btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                         ➕ Add New User
                     </button>
                 </x-create_modal>

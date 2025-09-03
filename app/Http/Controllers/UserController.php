@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -20,8 +21,12 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('role')->paginate(10); // Load 'role' (singular)
+        $users = User::with('role', 'userProfile')->paginate(10); // Load 'role' (singular)
         $roles = Role::all();
+        // $users = DB::table('users')->join('roles' , 'users.role_id' , '=' , 'roles.id')
+        // ->join('user_profiles' , 'users.id' , '=' , 'user_profiles.user_id')
+        // ->select('users.*' , 'roles.name as role_name' , 'user_profiles.bio' , 'user_profiles.profile_image')
+        // ->paginate(10);
         return view('ManagementEmployee.User.index', compact('users', 'roles'));
     }
 

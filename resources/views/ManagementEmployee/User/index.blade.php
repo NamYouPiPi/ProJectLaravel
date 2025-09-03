@@ -7,22 +7,14 @@
     {{-- Toast notifications --}}
     @include('Backend.components.Toast')
 
-    {{-- Check if impersonating --}}
-    @if(session('is_impersonating'))
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Impersonation Mode:</strong> You are currently impersonating {{ Auth::user()->name }}.
-            <a href="{{ route('impersonation.stop') }}" class="btn btn-sm btn-outline-dark ms-2">
-                Stop Impersonation
-            </a>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+
 
     {{-- Filter Section --}}
-    <div class="filter-section">
+    <div class="d-flex justify-content-between p-3">
         {{-- Add New User Button --}}
+        <h2>Management users </h2>
         <x-create_modal dataTable="user" title="Add New User">
-            <button type="button" class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#createModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                 ➕ Add New User
             </button>
         </x-create_modal>
@@ -36,6 +28,9 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Roles</th>
+                        <th>Profile</th>
+                        <th>bio</th>
+                        {{-- <th></th> --}}
                         <th>Status</th>
                         <th>Created</th>
                         {{-- <th>Updated</th> --}}
@@ -60,11 +55,18 @@
                             </td>
                             <td>{{ $user->email }}</td>
                             <td>
-                                @if($user->role && $user->role->count() > 0)
+                                @if($user->role)
                                     <span class="badge bg-info me-1">{{ $user->role->name }}</span>
                                 @else
                                     <span class="badge bg-secondary">No Role</span>
                                 @endif
+                            </td>
+                            <td>
+                                <img src="{{ asset('storage/' . $user->profile_image) }}" width="50" height="50"
+                                    class="rounded-circle" alt="">
+                            </td>
+                            <td>
+                                {{ $user->bio }}
                             </td>
                             <td>
                                 @if ($user->is_active ?? true)
@@ -76,44 +78,23 @@
                             <td>{{ $user->created_at->format('Y-m-d') }}</td>
                             {{-- <td>{{ $user->updated_at->format('Y-m-d') }}</td> --}}
                             <td>
-                                <div class="btn-group" role="group">
-                                    {{-- View Button --}}
-                                    <a href="{{ route('users.show', $user) }}" class="btn btn-outline-info btn-sm" title="View">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
+                                <div class="btn-group gap-2" role="group">
 
                                     {{-- Edit Button --}}
                                     <x-update-modal dataTable="user" title="Update User">
                                         <button type="button" class="btn btn-outline-primary btn-sm btn-user"
                                             data-id="{{ $user->id }}" data-bs-toggle="modal" data-bs-target="#updateModal"
                                             title="Edit">
-                                            <i class="bi bi-pencil"></i>
+                                            {{-- <i class="bi bi-pencil"></i>
+                                            --}}
+                                            edit
                                         </button>
                                     </x-update-modal>
-
-                                    {{-- Impersonate Button (Only for Super Admin and not self) --}}
-                                    @can('impersonate users')
-                                        @if(Auth::id() !== $user->id && !session('is_impersonating'))
-                                            <button type="button" class="btn btn-outline-warning btn-sm"
-                                                onclick="confirmImpersonate({{ $user->id }}, '{{ $user->name }}')" title="Impersonate">
-                                                <i class="bi bi-person-check"></i>
-                                            </button>
-                                        @endif
-                                    @endcan
-
-                                    {{-- Toggle Status Button --}}
-                                    @if(Auth::id() !== $user->id)
-                                        <button type="button" class="btn btn-outline-secondary btn-sm"
-                                            onclick="toggleUserStatus({{ $user->id }})" title="Toggle Status">
-                                            <i class="bi bi-toggle-{{ $user->is_active ?? true ? 'on' : 'off' }}"></i>
-                                        </button>
-                                    @endif
-
-                                    {{-- Delete Button --}}
                                     @if(Auth::id() !== $user->id)
                                         <button type="button" class="btn btn-outline-danger btn-sm"
                                             onclick="confirmDelete({{ $user->id }}, 'users')" title="Delete">
-                                            <i class="bi bi-trash3"></i>
+                                            {{-- <i class="bi bi-trash3"></i> --}}
+                                            del
                                         </button>
                                     @endif
                                 </div>

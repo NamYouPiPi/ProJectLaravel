@@ -42,32 +42,29 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
- public function login(Request $request)
-{
-    // Validate request
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|min:5'
-    ]);
+        public function login(Request $request)
+        {
+            // Validate request
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|min:5'
+            ]);
 
-    // Attempt to authenticate the user
-    if (Auth::attempt($credentials)) {
-        $user = Auth::user();
-        $request->session()->regenerate();
-            return redirect()->intended('dashboard');
-    }
-    else{
+            // Attempt to authenticate the user
+            if (Auth::attempt($credentials)) {
+                $user = Auth::user();
+                $request->session()->regenerate();
+                    return redirect()->intended('dashboard');
+            }
+            else{
             $customer = Customer::where('email', $request->email)->first();
-        if ($customer && Hash::check($request->password, $customer->password)) {
-            Auth::login($customer);
-            $request->session()->regenerate();
-            return redirect()->intended('/');
+                if ($customer && Hash::check($request->password, $customer->password)) {
+                    // Log in the customer manually
+                    // dd($customer);
+                    $request->session()->put('customer_id', $customer->id);
+                    $request->session()->regenerate();
+                    return redirect()->intended('/');
+                }
+            }
         }
-    }
-
-    // Authentication failed
-    return back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
-    ])->withInput($request->except('password'));
-}
 }

@@ -97,8 +97,10 @@ public function paymentCancel(Request $request, Booking $booking)
 
       $request_time = now()->format('YmdHis');
     $merchant_id = config('aba.merchant_id');
-    $tran_id = (string) $booking->id; // keep it stable and stored
-    $amount = number_format($total, 2, '.', '');
+//    $tran_id = (string) $booking->id ; // keep it stable and stored
+        $tran_id = $booking->id . '-' .time();
+
+        $amount = number_format($total, 2, '.', '');
     $currency = 'USD';
     // $return_param = "51275117";
     // Build items JSON
@@ -109,7 +111,7 @@ public function paymentCancel(Request $request, Booking $booking)
     ]));
 
 // Hash string (MUST match ABA docs order)
-$b4hash = $request_time . $merchant_id . $tran_id  . $amount . $items . '' . $currency;
+$b4hash = $request_time . $merchant_id . $tran_id  . $amount . $items  . $currency;
 
 $hash = base64_encode(hash_hmac('sha512', $b4hash, config('aba.api_key'), true));
 // dd($b4hash, $hash);
@@ -124,9 +126,9 @@ $response = Http::withHeaders([
     'items'       => $items,
     'hash'        => $hash,
 ]);
-
         $data = $response->json();
-        // dd($data);
+
+         dd($data);
     $booking->update(['tran_id' => $tran_id]);
     // Pass QR data to the view
     return view('Frontend.Booking.khqr', [
@@ -135,7 +137,7 @@ $response = Http::withHeaders([
         'abapay_deeplink' => $data['abapay_deeplink'] ?? null,
         'qrString' => $data['qrString'] ?? null,
     ]);
-   }
+}
 
 
 

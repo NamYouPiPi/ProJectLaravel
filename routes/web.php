@@ -1,3 +1,4 @@
+
 <?php
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PaymentController;
@@ -23,7 +24,8 @@ use App\Http\Controllers\{InventoryController,
     BookingController,
     BookingSeatController,
     CarouselController,
-    PromotionController
+    PromotionController,
+    UserProfileController
 };
 
 use Illuminate\Support\Facades\Auth;
@@ -54,7 +56,13 @@ Route::get('/booking/cancel/{booking}', [BookingController::class, 'paymentCance
 Route::get('login/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
 Route::resource('carousels' , CarouselController::class);
-
+// User Profile routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/change-password', [App\Http\Controllers\ProfileController::class, 'changePassword'])->name('profile.changePassword');
+});
 // end of google login and  google callback routes
 
 Route::get('/theaters', [HallLocationController::class, 'Theater'])->name('theaters');

@@ -61,8 +61,14 @@
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-person"></i> {{ Auth::user()->name }}
-                            </a>
+                              @if(session('customer_id'))
+    {{-- Show customer dropdown/profile --}}
+                            <span>{{ \App\Models\Customer::find(session('customer_id'))->name ?? 'Customer' }}</span>
+                        @elseif(Auth::check())
+                            {{-- Show user dropdown/profile --}}
+                            <span>{{ Auth::user()->name }}</span>
+                        @endif
+                                                    </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
