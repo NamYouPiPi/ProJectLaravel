@@ -26,57 +26,59 @@
 
     </div>
 
-    <table id="example" class="display table table-responsive table-hover  " style="width:100%">
-        <thead>
-            <tr class="text-center ">
-                {{-- <th>Id</th> --}}
-                <th>Code</th>
-                <th>Name</th>
-                <th>Age Limit</th>
-                <th>Country</th>
-                <th>Status</th>
-                <th>Description</th>
-                <th>Create_at</th>
-                {{-- <th>Update_at</th> --}}
-                @if(auth()->user()->hasPermission('edit_classification'))
-                    <th>Action</th>
-                @endif
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($classifications as $classification)
-                <tr class="text-center" id="classification-row{{$classification->id}}">
-                    {{-- <td>{{$classification->id}}</td> --}}
-                    <td><span class="badge bg-secondary">{{$classification->code}}</span></td>
-                    <td class="text-muted">{{$classification->name}}</td>
-                    <td class="text-muted">{{$classification->age_limit}}</td>
-                    <td><span class="badge bg-info"> {{$classification->country}}</span></td>
-                    <td><span class="badge bg-primary">{{$classification->status}}</span></td>
-                    <td class="text-muted">{{$classification->description}}</td>
-                    <td>{{ $classification->created_at->format("Y/m/d") }}</td>
-                    {{-- <td class="classification-updated">{{ $classification->updated_at->format("Y/m/d") }}</td> --}}
-                    <td class="d-flex gap-1">
-                        @if(auth()->user()->hasPermission('edit_classification'))
-                            <x-update-modal dataTable="classification" title="Edit classification">
-                                <button type="button" class="btn btn-outline-primary btn-sm btn_edit_clss"
-                                    data-id="{{$classification->id}}" data-bs-toggle="modal" data-bs-target="#updateModal">edit
-                                </button>
-                            </x-update-modal>
-                        @endif
-
-                        @if (auth()->user()->hasPermission('delete_classification'))
-
-                            <button type="button" class="btn btn-outline-danger btn-sm"
-                                onclick="confirmDelete({{ $classification->id }}, 'classification')">
-                                del
-                            </button>
-                        @endif
-
-                    </td>
+    <div class="card m-3">
+        <table id="example" class="display table table-responsive table-hover  " style="width:100%">
+            <thead>
+                <tr class="text-center bg-light`">
+                    {{-- <th>Id</th> --}}
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Age Limit</th>
+                    <th>Country</th>
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th>Create_at</th>
+                    {{-- <th>Update_at</th> --}}
+                    {{-- @if(auth()->user()->hasPermission('edit_classification')) --}}
+                        <th>Action</th>
+                    {{-- @endif --}}
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach($classifications as $classification)
+                    <tr class="text-center" id="classification-row{{$classification->id}}">
+                        {{-- <td>{{$classification->id}}</td> --}}
+                        <td><span class="badge bg-secondary">{{$classification->code}}</span></td>
+                        <td class="text-muted">{{$classification->name}}</td>
+                        <td class="text-muted">{{$classification->age_limit}}</td>
+                        <td><span class="badge bg-info"> {{$classification->country}}</span></td>
+                        <td><span class="badge bg-primary">{{$classification->status}}</span></td>
+                        <td class="text-muted">{{$classification->description}}</td>
+                        <td>{{ $classification->created_at->format("Y/m/d") }}</td>
+                        {{-- <td class="classification-updated">{{ $classification->updated_at->format("Y/m/d") }}</td> --}}
+                        <td class="d-flex gap-1">
+                            @if(auth()->user()->hasPermission('edit_classification'))
+                                <x-update-modal dataTable="classification" title="Edit classification">
+                                    <button type="button" class="btn btn-outline-primary btn-sm btn_edit_clss"
+                                        data-id="{{$classification->id}}" data-bs-toggle="modal" data-bs-target="#updateModal">edit
+                                    </button>
+                                </x-update-modal>
+                            @endif
+
+                            @if (auth()->user()->hasPermission('delete_classification'))
+
+                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                    onclick="confirmDelete({{ $classification->id }}, 'classification')">
+                                    del
+                                </button>
+                            @endif
+
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
     {{-- --------------- end of display data --------------------------}}
 
 

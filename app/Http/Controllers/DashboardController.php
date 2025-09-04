@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
 
-  
+
 
 
     /**
@@ -31,111 +31,60 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
-    {
-        // Calculate monthly revenue
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $totalRevenue = Booking::where('status', 'confirmed')
-                            ->where('created_at', '>=', $startOfMonth)
-                            ->sum('total_amount');
+public function index()
+{
+    $now = now();
+    $lastMonth = now()->subMonth();
 
-        // Get monthly bookings count
-        $totalBookings = Booking::where('created_at', '>=', $startOfMonth)->count();
+    $bookingsThisMonth = \App\Models\Booking::whereYear('created_at', $now->year)
+        ->whereMonth('created_at', $now->month)
+        ->count();
 
-        // Get active movies count
-        $activeMovies = Movies::where('status', 'active')->count();
+    $bookingsLastMonth = \App\Models\Booking::whereYear('created_at', $lastMonth->year)
+        ->whereMonth('created_at', $lastMonth->month)
+        ->count();
 
-        // Get pending bookings count
-        $pendingBookings = Booking::where('status', 'pending')->count();
+    $bookingGrowth = $bookingsLastMonth > 0
+        ? round((($bookingsThisMonth - $bookingsLastMonth) / $bookingsLastMonth) * 100, 2)
+        : 0;
 
-        // Get recent bookings with safety checks
-        try {
-            $recentBookings = Booking::with([
-                'customer:id,name',
-                'showtime:id,start_time',
-                'showtime.movie:id,title',
-                'showtime.hall:id,cinema_name,capacity'
-            ])
-            ->whereHas('customer')
-            ->whereHas('showtime.movie')
-            ->whereHas('showtime.hall')
-            ->whereNotNull('booking_reference')
-            ->latest()
-            ->take(5)
-            ->get();
-        } catch (\Exception $e) {
-            $recentBookings = collect(); // Empty collection as fallback
-        }
+    $revenueThisMonth = \App\Models\Booking::where('status', 'paid')
+        ->whereYear('created_at', $now->year)
+        ->whereMonth('created_at', $now->month)
+        ->sum('total_price');
 
-        // Get upcoming showtimes with safety checks
-        try {
-            $now = Carbon::now();
-            $upcomingShowtimes = Showtimes::with([
-                'movie:id,title',
-                'hall:id,cinema_name,capacity'
-            ])
-            ->whereHas('movie')
-            ->whereHas('hall')
-            ->where('start_time', '>', $now)
-            ->orderBy('start_time')
-            ->take(5)
-            ->get();
+    $revenueLastMonth = Booking::where('status', 'paid')
+        ->whereYear('created_at', $lastMonth->year)
+        ->whereMonth('created_at', $lastMonth->month)
+        ->sum('total_price');
 
-            // Add booked seats count to each showtime
-            foreach ($upcomingShowtimes as $showtime) {
-                $bookedSeatsCount = DB::table('booking_seats')
-                    ->join('bookings', 'booking_seats.booking_id', '=', 'bookings.id')
-                    ->where('bookings.showtime_id', $showtime->id)
-                    ->where('bookings.status', '!=', 'cancelled')
-                    ->where('booking_seats.status', 'active')
-                    ->count();
+    $revenueGrowth = $revenueLastMonth > 0
+        ? round((($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth) * 100, 2)
+        : 0;
 
-                $showtime->booked_seats_count = $bookedSeatsCount;
-            }
-        } catch (\Exception $e) {
-            $upcomingShowtimes = collect(); // Empty collection as fallback
-        }
+    $processedPayments = Booking::where('status', 'paid')->sum('total_price');
+$payments = Booking::with('customer')
+    ->where('status', 'paid')
+    ->orderByDesc('updated_at')
+    ->limit(10)
+    ->get();
 
-        // Get monthly revenue data for chart
-        // $monthlyRevenue = Booking::where('status', 'confirmed')
-        //                     ->whereYear('created_at', Carbon::now()->year)
-        //                     ->select(
-        //                         DB::raw('MONTH(created_at) as month'),
-        //                         DB::raw('SUM(final_amount) as revenue')
-        //                     )
-        //                     ->groupBy('month')
-        //                     ->get()
-        //                     ->pluck('revenue', 'month')
-        //                     ->toArray();
+    return view('Backend.Dashboard.index', compact(
+        'bookingsThisMonth',
+        'bookingsLastMonth',
+        'bookingGrowth',
+        'revenueThisMonth',
+        'revenueLastMonth',
+        'revenueGrowth',
+        'processedPayments'
+    ));
+}
 
-        // Get top movies by booking count
-        $topMovies = DB::table('bookings')
-                    ->join('showtimes', 'bookings.showtime_id', '=', 'showtimes.id')
-                    ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
-                    ->where('bookings.status', '!=', 'cancelled')
-                    ->select('movies.title', DB::raw('COUNT(*) as booking_count'))
-                    ->groupBy('movies.id', 'movies.title')
-                    ->orderBy('booking_count', 'desc')
-                    ->take(5)
-                    ->get();
-
-        return view('Backend.Dashboard.index', compact(
-            'totalRevenue',
-            'totalBookings',
-            'activeMovies',
-            'pendingBookings',
-            'recentBookings',
-            'upcomingShowtimes',
-            // 'monthlyRevenue',
-            'topMovies'
-        ));
-    }
-
-    /**
-     * Get chart data for AJAX requests
-     */
-    public function getChartData(Request $request)
-    {
+/**
+ * Get chart data for AJAX requests
+ */
+public function getChartData(Request $request)
+{
         $period = $request->input('period', 'monthly');
         $currentYear = Carbon::now()->year;
 

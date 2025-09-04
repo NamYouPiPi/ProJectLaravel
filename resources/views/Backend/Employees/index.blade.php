@@ -15,13 +15,17 @@
 
     {{-- ================== check message add and update if succeed =======================--}}
     @include('Backend.components.Toast')
-        @if(auth()->user()->hasPermission('create_employee'))
+        {{-- @if(auth()->user()->hasPermission('create_employee')) --}}
+    <div class="d-flex justify-content-between mb-3 align-items-center p-4">
+        <h3 class="text-muted">Management Employees</h3>
     <x-create_modal dataTable="employees" title="Add New employees" class="">
-        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#createModal">
-            Add New Employee
-        </button>
+                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#createModal">
+                    Add New Employee
+                </button>
     </x-create_modal>
-    @endif
+
+    </div>
+        {{-- @endif --}}
 
 
     {{-- ================ Table for Suppliers detail all ===================== --}}
@@ -70,21 +74,17 @@
                         <td>{{ $employee->created_at->format('Y-m-d') }}</td>
                         <td>{{ $employee->updated_at->format('Y-m-d') }}</td>
                         <td class="d-flex gap-2">
-                         @if(auth()->user()->hasPermission('edit_employee'))
                          <x-update-modal dataTable="employees" title="update employees">
                                 <button type="button" class="btn btn-outline-primary  btn-sm btn-employees " data-id="{{$employee->id}}"
                                     data-bs-toggle="modal" data-bs-target="#updateModal">edit
                                 </button>
                             </x-update-modal>
-                        @endif
 
-                                        @if(auth()->user()->hasPermission('delete_employee'))
 
                             <button type="button" class="btn btn-outline-danger btn-sm"
                                 onclick="confirmDelete({{ $employee->id }}, 'employees')">
                                 del
                             </button>
-                            @endif
 
                     </tr>
 
